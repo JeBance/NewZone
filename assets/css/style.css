@@ -67,12 +67,22 @@ hr {
 	height: 100%;
 	padding: 1em;
 	display: flex;
+	align-items: center;
+	align-content: center;
+	flex-wrap: wrap;
 	position: absolute;
-	justify-content: space-around;
+	justify-content: center;
 	flex-direction: column;
+	color:  white;
 	background-color: black;
 	border: 0;
 	z-index: 999;
+}
+
+.poster {
+	width: 200px;
+	height: 200px;
+	margin: 1em;
 }
 
 .menu {
