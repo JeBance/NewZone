@@ -46,6 +46,6 @@
     ],
     "start_url": "/NewZone/index.html",
     "display": "fullscreen",
-    "theme_color": "#111111",
-    "background_color": "#111111"
+    "theme_color": "#000000",
+    "background_color": "#000000"
 }
