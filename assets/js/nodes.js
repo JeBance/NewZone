@@ -21,7 +21,7 @@ class nodes {
 				ping: node.ping,
 				status: 'active'
 			};
-			console.log('New node:', this.list[node.keyID]);
+			console.log('\x1b[1m%s\x1b[0m', 'New node:', this.list[node.keyID]);
 		} catch(e) {
 			console.log(e);
 		}
@@ -101,6 +101,7 @@ class nodes {
 			let node = await this.getInfo(this.list[keyID]);
 			if (node !== false && keyID === node.keyID) {
 				this.list[keyID] = node;
+				this.list[keyID].status = 'active';
 				await this.getNodes(this.list[keyID]);
 			} else {
 				this.list[keyID].status = 'blocked';
@@ -122,7 +123,25 @@ class nodes {
 		}, 1000);
 	}
 
+	async getFastNodes() {
+		let result = [];
+		let keys = Object.keys(this.list);
+		if (keys.length > 0) {
+			for (let i = 0, l = keys.length; i < l; i++) {
+				if (NODES.list[keys[i]].net === config.net
+				&& NODES.list[keys[i]].status !== 'blocked') {
+					result.push(NODES.list[keys[i]]);
+				}
+			}
+			result.sort((a, b) => a.ping > b.ping ? 1 : -1);
+			return result;
+		} else {
+			return false;
+		}
+	}
 }
 
 const NODES = new nodes();
 NODES.cyclicNodesCheck();
+let config = {};
+config.net = 'ALPHA';

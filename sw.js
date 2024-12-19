@@ -20,6 +20,8 @@ self.addEventListener("install", (event) => {
       "/NewZone/assets/img/icon-196.png",
       "/NewZone/assets/img/icon-256.png",
       "/NewZone/assets/img/icon-512.png",
+      "/NewZone/assets/js/messages.js",
+      "/NewZone/assets/js/nodes.js",
       "/NewZone/assets/js/pwa.js"
     ])
   );
