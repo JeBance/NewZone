@@ -7,7 +7,7 @@ class messages {
 		this.list = {};
 		this.messages = [];
 		this.monitor = {
-			firstMessage: { hash: null, timestamp: 0 },
+			firstMessage: { hash: null, timestamp: new Date().getTime() },
 			lastMessage: { hash: null, timestamp: 0 }
 		};
 	}
@@ -65,8 +65,9 @@ class messages {
 						if (message) await this.add(message);
 					}
 				}
+				this.messages = this.messages.unique();
 				await this.messages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
-				if (this.monitor.firstMessage.timestamp < this.messages[0].timestamp) {
+				if (this.messages[0].timestamp < this.monitor.firstMessage.timestamp) {
 					this.monitor.firstMessage.hash = this.messages[0].hash;
 					this.monitor.firstMessage.timestamp = this.messages[0].timestamp;
 				}
