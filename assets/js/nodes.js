@@ -1,5 +1,6 @@
 class nodes {
 	list;
+	nets;
 
 	constructor() {
 		this.list = {};
@@ -76,6 +77,7 @@ class nodes {
 			let response = await fetch('https://raw.githubusercontent.com/JeBance/nzserver/refs/heads/gh-pages/hosts.json');
 			if (response.ok) {
 				let list = await response.json();
+				let nets = new Set();
 				let keys = Object.keys(list);
 				for (let i = 0, l = keys.length; i < l; i++) {
 					if (this.list[keys[i]] === undefined)
@@ -87,7 +89,9 @@ class nodes {
 						port: list[keys[i]].port,
 						ping: 10
 					});
+					nets.add(list[keys[i]].net);
 				}
+				this.nets = new Set([...nets]);
 			} else {
 				console.log(response.status);
 			}
@@ -140,8 +144,3 @@ class nodes {
 		}
 	}
 }
-
-const NODES = new nodes();
-NODES.cyclicNodesCheck();
-let config = {};
-config.net = 'ALPHA';

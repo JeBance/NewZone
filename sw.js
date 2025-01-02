@@ -1,4 +1,4 @@
-const cacheName = 'NewZone-v0.0.2';
+const cacheName = 'NewZone-v0.0.3';
 
 const addResourcesToCache = async (resources) => {
 	const cache = await caches.open(cacheName);
@@ -20,6 +20,8 @@ self.addEventListener("install", (event) => {
       "/NewZone/assets/img/icon-196.png",
       "/NewZone/assets/img/icon-256.png",
       "/NewZone/assets/img/icon-512.png",
+      "/NewZone/assets/js/app.js",
+      "/NewZone/assets/js/db.js",
       "/NewZone/assets/js/messages.js",
       "/NewZone/assets/js/nodes.js",
       "/NewZone/assets/js/prototypes.js",

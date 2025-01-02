@@ -1,14 +1,14 @@
-async function dbInit()
+async function dbInit(nameDB)
 {
 	return new Promise((resolve, reject) => {
-		let openRequest = indexedDB.open("DB", 1);
+		let openRequest = indexedDB.open(nameDB, 1);
 
 		openRequest.onupgradeneeded = function() {
 			let db = openRequest.result;
 			switch(event.oldVersion) {
 				case 0:
 					let contacts = db.createObjectStore('contacts', {keyPath: 'fingerprint'});
-					let messages = db.createObjectStore('messages', {keyPath: 'id'});
+					let messages = db.createObjectStore('messages', {keyPath: 'hash'});
 					let nicknameIndex = contacts.createIndex('nickname_id', 'nickname');
 					let chatIndex = messages.createIndex('chat_id', 'chat');
 					break;
