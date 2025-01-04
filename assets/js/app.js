@@ -1,5 +1,6 @@
 const config = {};
 const NODES = new nodes();
+const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 
 loader.show = () => {
 	loader.className = 'flex transparentBackground';
@@ -24,7 +25,7 @@ async function wrap(elem) {
 		case 'buttonStart':
 			buttonStart.hide();
 			NODES.cyclicNodesCheck();
-			selectNodeBlock.className = 'flex block';
+			selectNodeBlock.show('flex');
 			loader.show();
 			fillingNodeNetsSelectionOtions;
 			break;
@@ -32,8 +33,12 @@ async function wrap(elem) {
 		case 'buttonSelectNode':
 			config.net = selectNode.value;
 			selectNodeBlock.hide();
-//			selectNodeBlock.className = 'flex block';
-//			loader.show();
+//			if (secureStorage.activeAllSecureData() == true) {
+//				await container.generate();
+//			} else {
+				container.choice();
+//			}
+			container.show('flex container');
 			break;
 
 		default:
