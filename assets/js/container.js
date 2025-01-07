@@ -68,10 +68,10 @@ container.click = async function(elem)
 					&& (containerNameInput.value.length > 0)
 					&& (containerEmailInput.value.length > 0)) {
 						if (EMAIL_REGEXP.test(containerEmailInput.value)) {
-							loader.show();
 							try {
 								container.elements.hide();
 								containerInfo.innerHTML = 'Генерация контейнера ...';
+								loader.show(container, containerContent);
 								await secureStorage.createStorage(containerNameInput.value, containerEmailInput.value, containerPasswordInput.value);
 								if (secureStorage.activeAllSecureData() == true) await container.generate();
 							} catch(e) {
@@ -122,7 +122,7 @@ container.generate = async function()
 	let fileHref = await secureStorage.generateSecureFile();
 	downloadNZPGPhref.setAttribute('href', fileHref);
 	downloadNZPGPhref.setAttribute('download', secureStorage.fingerprint + '.nz');
-	containerInfo.innerHTML = '<b>Отпечаток:</b> ' + secureStorage.fingerprint;
+	containerInfo.innerHTML = secureStorage.fingerprint;
 	containerNickname.innerHTML = '<b>Никнейм:</b> ' + secureStorage.nickname;
 	containerEmail.innerHTML = '<b>E-mail:</b> ' + secureStorage.email;
 	containerNickname.show();
