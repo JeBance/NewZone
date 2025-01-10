@@ -2,22 +2,22 @@ Array.prototype.unique = function () {
 	return Array.from(new Set(this));
 };
 
-Object.prototype.hide = function() {
-	this.className = 'hide';
-};
+//Object.prototype.hide = function() {
+//	this.className = 'hide';
+//};
 
-Object.prototype.show = function(attribute = null) {
-	if (attribute == null) {
-		this.className = 'show';
-	} else {
-		this.setAttribute('class', attribute);
-	}
-};
+//Object.prototype.show = function(attribute = null) {
+//	if (attribute == null) {
+//		this.className = 'show';
+//	} else {
+//		this.setAttribute('class', attribute);
+//	}
+//};
 
 String.prototype.isJsonString = function() {
 	try {
 		JSON.parse(this);
-	} catch (e) {
+	} catch(e) {
 		return false;
 	}
 	return true;

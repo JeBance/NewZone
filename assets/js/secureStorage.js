@@ -209,5 +209,3 @@ class SecureStorage {
 		}
 	}
 }
-
-let secureStorage = new SecureStorage();

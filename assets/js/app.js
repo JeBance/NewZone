@@ -1,5 +1,9 @@
 const config = {};
+const UI = new ui();
 const NODES = new nodes();
+const MESSAGES = new messages();
+let secureStorage = new SecureStorage();
+//MESSAGES.cyclicMessagesCheck();
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 const modal = {};
 const hide = {};
@@ -18,59 +22,11 @@ let fillingNodeNetsSelectionOtions = setInterval(async () => {
 			selectNode.append(new Option(value, value));
 		}
 		clearInterval(fillingNodeNetsSelectionOtions);
-		loader.hide();
+		UI.hide(loader);
 	}
 }, 1000);
 
-async function wrap(elem) {
-	switch(elem.id) {
-		case 'buttonStart':
-			buttonStart.hide();
-			NODES.cyclicNodesCheck();
-			selectNodeBlock.show('flex');
-			loader.show(modalStart, selectNodeBlock);
-			fillingNodeNetsSelectionOtions;
-			break;
-
-		case 'buttonSelectNode':
-			config.net = selectNode.value;
-			selectNodeBlock.hide();
-			modalStart.hide();
-			modalHeaderBtnContainer.hide();
-			containerHeader.show('flex modal-header');
-			if (secureStorage.activeAllSecureData() === true) {
-				await container.generate();
-			} else {
-				container.choice();
-			}
-			container.show('modal flex-start color-whiteblack');
-			break;
-
-		default:
-			break;
-	}
-}
-
-modal.elements = document.getElementsByName("modal");
-
-modal.elements.hide = () => {
-	for (let i = 0, l = modal.elements.length; i < l; i++) modal.elements[i].hide();
-}
-
-modal.click = (elem) => {
-	try {
-		if (secureStorage.activeAllSecureData() !== true) throw new Error('Container not connected');
-		if (elem.id === 'modalBackground') {
-			modal.elements.hide();
-			modalBackground.hide();
-		}
-	} catch(e) {
-		console.log(e);
-	}
-}
-
-menu.animation = function()
-{
+menu.animation = () => {
 	if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
 		menu.className = 'showMenu menu';
 		shade.className = 'shade';
@@ -85,38 +41,36 @@ async function backWrap(elem)
 	switch(elem.id) {
 		case 'backCenterTopButton':
 			hide.tempDataInLocalStorage();
-			blockCenter.hide();
-			blockLeft.show('left');
+			UI.hide(blockCenter);
+UI.show(blockLeft, 'left');
 
 		default:
 			break;
 	}
 }
 
-window.onresize = function()
-{
+window.onresize = () => {
 	if (document.documentElement.clientWidth > 799) {
-		menu.show('menu');
-		shade.hide();
-		backCenterTopButton.hide();
-		blockLeft.show('left');
+		UI.show(menu, 'menu');
+		UI.hide(shade);
+		UI.hide(backCenterTopButton);
+		UI.show(blockLeft, 'left');
 	} else {
-		backCenterTopButton.show('fa fa-chevron-left fa-2x square');
+		UI.show(backCenterTopButton, 'square');
 		if ((localStorage.recipientFingerprint.length > 0)
 		&& (localStorage.recipientPublicKey.length > 0)) {
-			blockLeft.hide();
-			blockCenter.show('center');
+			UI.hide(blockLeft);
+			UI.show(blockCenter, 'center');
 		}
-
 	}
 }
 
 hide.pages = () => {
-	contacts.hide();
-	chats.hide();
-	infoPage.hide();
-	messagesPage.hide();
-	accountPage.hide();
+	UI.hide(contacts);
+	UI.hide(chats);
+	UI.hide(infoPage);
+	UI.hide(messagesPage);
+	UI.hide(accountPage);
 }
 
 hide.tempDataInLocalStorage = () => {
@@ -124,7 +78,78 @@ hide.tempDataInLocalStorage = () => {
 	localStorage.recipientPublicKey = '';
 }
 
-hide.pages();
-menuButtonContacts.hide();
-menuButtonChats.hide();
+async function wrap(elem) {
+	try {
+
+		switch(elem.id) {
+			case 'modalBackground':
+				if (secureStorage.activeAllSecureData() !== true)
+				throw new Error('Container not connected');
+				UI.hideAll('modal');
+				UI.hideAll('subModal');
+				UI.hide(modalBackground);
+				break;
+
+			case 'buttonStart':
+				UI.hide(buttonStart);
+				NODES.cyclicNodesCheck();
+				UI.show(selectNodeBlock, 'flex');
+				loader.show(modalStart, selectNodeBlock);
+				fillingNodeNetsSelectionOtions;
+				break;
+
+			case 'buttonSelectNode':
+				config.net = selectNode.value;
+				UI.hide(selectNodeBlock);
+				UI.hide(modalStart);
+				UI.hideAll('modalSubBack');
+				UI.show(containerHeader, 'header');
+				if (secureStorage.activeAllSecureData() === true) {
+					await container.generate();
+				} else {
+					container.choice();
+				}
+				UI.show(container, 'modal flex-start');
+				break;
+
+			case 'menuButtonSettings':
+				menu.animation();
+				UI.show(modalBackground, 'modal-background');
+				UI.show(listSettings, 'modal');
+				break;
+
+			case 'setContainer':
+				UI.hide(listSettings);
+				UI.show(container, 'modal');
+				break;
+
+			default:
+				break;
+		}
+
+		switch(elem.getAttribute("name")) {
+			case 'modalBack':
+				UI.hideAll('modal');
+				UI.hideAll('subModal');
+				UI.hide(modalBackground);
+				break;
+
+			case 'modalSubBack':
+				UI.hideAll('subModal');
+				UI.show(listSettings, 'modal');
+				break;
+
+			default:
+				break;
+		}
+
+	} catch(e) {
+		console.log(e);
+	}
+}
+
+
+//hide.pages();
+UI.hide(menuButtonContacts);
+UI.hide(menuButtonChats);
 

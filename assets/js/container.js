@@ -7,12 +7,12 @@ container.click = async function(elem)
 
 		case 'containerCreate':
 			containerInfo.innerHTML = 'Заполните форму. Эти данные будут добавлены в Ваш PGP-ключ. Придумайте сложный пароль от 8 символов для шифрования контейнера.';
-			container.elements.hide();
-			containerNameArea.show('input-container');
+			UI.hideAll('container');
+			UI.show(containerNameArea, 'input-container');
 			containerNameInput.focus();
-			containerEmailArea.show('input-container');
-			containerPasswordArea.show('input-container');
-			containerPasswordAccept.show('btn btn-start');
+			UI.show(containerEmailArea, 'input-container');
+			UI.show(containerPasswordArea, 'input-container');
+			UI.show(containerPasswordAccept, 'btn btn-start');
 			break;
 
 		case 'containerSave':
@@ -23,8 +23,9 @@ container.click = async function(elem)
 			secureStorage.eraseAllSecureData();
 			downloadNZPGPhref.removeAttribute('href');
 			downloadNZPGPhref.removeAttribute('download');
-//			menuButtonContacts.hide();
-//			menuButtonChats.hide();
+			UI.hide(menuButtonContacts);
+			UI.hide(menuButtonChats);
+			UI.hideAll('modalSubBack');
 			container.choice();
 			break;
 
@@ -38,11 +39,11 @@ container.click = async function(elem)
 					file.data = reader.result;
 					secureStorage.checkStorage(file.data).then((value) => {
 						if (value == true) {
-							container.elements.hide();
+							UI.hideAll('container');
 							containerInfo.innerHTML = 'Введите пароль для дешифровки контейнера.';
-							containerPasswordArea.show('input-container');
+							UI.show(containerPasswordArea, 'input-container');
 							containerPasswordInput.focus();
-							containerPasswordAccept.show('btn btn-start');
+							UI.show(containerPasswordAccept, 'btn btn-start');
 						}
 					})
 				} else {
@@ -69,7 +70,7 @@ container.click = async function(elem)
 					&& (containerEmailInput.value.length > 0)) {
 						if (EMAIL_REGEXP.test(containerEmailInput.value)) {
 							try {
-								container.elements.hide();
+								UI.hideAll('container');
 								containerInfo.innerHTML = 'Генерация контейнера ...';
 								loader.show(container, containerContent);
 								await secureStorage.createStorage(containerNameInput.value, containerEmailInput.value, containerPasswordInput.value);
@@ -77,7 +78,7 @@ container.click = async function(elem)
 							} catch(e) {
 								console.error(e);
 							}
-							loader.hide();
+							UI.hide(loader);
 						} else {
 							alert('Вы ввели некорректный email!');
 						}
@@ -89,12 +90,6 @@ container.click = async function(elem)
 		default:
 			break;
 	}
-}
-
-container.elements = document.getElementsByName("container");
-
-container.elements.hide = function() {
-	for (let i = 0, l = container.elements.length; i < l; i++) container.elements[i].hide();
 }
 
 container.clearInputs = function()
@@ -109,26 +104,27 @@ container.clearInputs = function()
 container.choice = function()
 {
 	container.clearInputs();
-	container.elements.hide();
+	UI.hideAll('container');
 	containerInfo.innerHTML = 'Все данные передаются через сервера в зашифрованном виде. Подключите свой ранее созданный PGP контейнер, или создайте новый.';
-	containerBrowse.show('btn btn-start');
-	containerCreate.show('btn btn-start');
+	UI.show(containerBrowse, 'btn btn-start');
+	UI.show(containerCreate, 'btn btn-start');
 }
 
 container.generate = async function()
 {
 	container.clearInputs();
-	container.elements.hide();
+	UI.hideAll('container');
 	let fileHref = await secureStorage.generateSecureFile();
 	downloadNZPGPhref.setAttribute('href', fileHref);
 	downloadNZPGPhref.setAttribute('download', secureStorage.fingerprint + '.nz');
 	containerInfo.innerHTML = secureStorage.fingerprint;
 	containerNickname.innerHTML = '<b>Никнейм:</b> ' + secureStorage.nickname;
 	containerEmail.innerHTML = '<b>E-mail:</b> ' + secureStorage.email;
-	containerNickname.show();
-	containerEmail.show();
-	containerSave.show('btn btn-start');
-	containerOff.show('btn btn-start');
-	menuButtonContacts.show('button');
-	menuButtonChats.show('button');
+	UI.show(containerNickname, 'show');
+	UI.show(containerEmail, 'show');
+	UI.show(containerSave, 'btn btn-start');
+	UI.show(containerOff, 'btn btn-start');
+	UI.show(menuButtonContacts, 'button');
+	UI.show(menuButtonChats, 'button');
+	UI.showAll('modalSubBack', 'btn-square');
 }

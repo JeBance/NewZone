@@ -94,6 +94,3 @@ class messages {
 	}
 
 }
-
-const MESSAGES = new messages();
-MESSAGES.cyclicMessagesCheck();

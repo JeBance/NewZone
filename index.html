@@ -8,6 +8,7 @@
 	<meta name="theme-color" content="#111111">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="manifest" href="NewZone.webmanifest">
+	<link rel="stylesheet" href="assets/css/buttons.css">
 	<link rel="stylesheet" href="assets/css/colors.css">
 	<link rel="stylesheet" href="assets/css/loader.css">
 	<link rel="stylesheet" href="assets/css/modal.css">
@@ -22,15 +23,33 @@
 	<script src="assets/js/nodes.js" defer></script>
 	<script src="assets/js/messages.js" defer></script>
 	<script src="assets/js/prototypes.js" defer></script>
+	<script src="assets/js/ui.js" defer></script>
 	<script src="assets/js/app.js" defer></script>
 </head>
 <body>
 
-	<div id="modalBackground" class="modal-background" onclick="modal.click(this)">
+	<div id="loader" class="hide">
+		<span class="loader"></span>
 	</div>
 
-	<div id="modalStart" class="modal space-between color-whiteblack" name="modal">
-		<img id="poster" class="poster" src="assets/img/poster.svg">
+	<div id="shade" class="hide" onclick="menu.animation()"></div>
+
+	<div id="menu" class="menu">
+		<div id="pubkeyqr">
+			<h1>QR-code</h1>
+		</div>
+		<ul class="nav">
+			<a id="menuButtonMain" class="button" onclick="wrap(this)"><li>☸ Главная</li></a>
+			<a id="menuButtonContacts" class="button" onclick="wrap(this)"><li>🗝 Контакты</li></a>
+			<a id="menuButtonChats" class="button" onclick="wrap(this)"><li>✉ Сообщения</li></a>
+			<a id="menuButtonSettings" onclick="wrap(this)"><li>⚙ Настройки</li></a>
+		</ul>
+	</div>
+
+	<div id="modalBackground" class="modal-background" onclick="wrap(this)"></div>
+
+	<div id="modalStart" class="modal space-between" name="modal">
+		<img id="poster" style="width:250px; height:250px;" src="assets/img/poster.svg">
 		<p id="jsCheck">Please turn JavaScript on and reload the page</p>
 
 		<div id="buttonStart" class="btn btn-start" onclick="wrap(this)">
@@ -51,20 +70,28 @@
 			<svg id="github" height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" data-view-component="true" style="fill:white;margin:1em;">
 			<path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
 			</svg></a>
-			<button id="a2hs">Install</button>
+			<div id="a2hs" class="btn btn-start">Install</div>
 		</div>
 	</div>
 
 	<div id="listSettings" class="hide" name="modal">
+		<div class="header">
+			<div class="btn-square" name="modalBack" onclick="wrap(this)"><</div>
+			<h1>Настройки</h1>
+		</div>
+
+		<div class="content">
+			<div id="setContainer" class="btn-settings" onclick="wrap(this)">Контейнер</div>
+		</div>
 	</div>
 
-	<div id="container" class="hide" name="modal">
-		<div id="containerHeader" class="modal-header">
-			<div id="modalHeaderBtnContainer" class="modal-header-btn"><</div>
+	<div id="container" class="hide" name="subModal">
+		<div id="containerHeader" class="header">
+			<div class="btn-square" name="modalSubBack" onclick="wrap(this)"><</div>
 			<h1>Контейнер</h1>
 		</div>
 
-		<div id="containerContent" class="modal-content">
+		<div id="containerContent" class="content">
 			<p id="containerInfo" style="width: 300px; margin: 1em;">Все данные передаются через сервера в зашифрованном виде. Подключите свой ранее созданный PGP контейнер, или создайте новый.</p>
 			<p id="containerNickname" class="hide" name="container"></p>
 			<p id="containerEmail" class="hide" name="container"></p>
@@ -109,9 +136,6 @@
 		</div>
 	</div>
 
-	<div id="loader" class="hide">
-		<span class="loader"></span>
-	</div>
 
 
 
@@ -133,52 +157,16 @@
 
 
 
-	<div id="menu" class="menu">
-		<div class="logo">
-			<h1><a href="https://jebance.github.io/"><i class="fa fa-grav fa-lg" style="margin: 0 10px 0 0" aria-hidden="true"></i> jebance.github.io</a></h1>
-			<hr>
-		</div>
-		<ul class="nav">
-			<a id="menuButtonMain" class="button" onclick="wrap(this)"><li><i class="fa fa-home fa-fw" aria-hidden="true"></i>Главная</li></a>
-			<a id="menuButtonContacts" class="button" onclick="wrap(this)"><li><i class="fa fa-address-book-o fa-fw" aria-hidden="true"></i>Контакты</li></a>
-			<a id="menuButtonChats" class="button" onclick="wrap(this)"><li><i class="fa fa-comments-o fa-fw" aria-hidden="true"></i>Сообщения</li></a>
-			<a id="menuButtonSettings" class="button" onclick="wrap(this)"><li><i class="fa fa-cogs fa-fw" aria-hidden="true"></i>Настройки</li></a>
-		</ul>
-	</div>
 
-	<div id="shade" class="hide" onclick="menu.animation()"></div>
-<!--
-	<div id="modalContactBlock" class="hide">
-			<h2>Новый контакт</h2>
-			<div class="form">
-				<input id="contactFingerprint" type="text" onkeydown="{if(event.key=='Enter')addNewContact.click()}" placeholder="Отпечаток" class="selectable">
-				<input id="contactPassword" type="password" onkeydown="{if(event.key=='Enter')addNewContact.click()}" placeholder="Пароль собеседнику" class="selectable">
-				<p>Введите отпечаток собеседника и пароль для подтверждения собеседником отправки Вам своего публичного ключа.</p>
-				<button id="addNewContact" onclick="contact.addNew()">Добавить</button>
-			</div>
-	</div>
-	<div id="shadeContactBlock" class="hide" onclick="contact.animation()"></div>
--->
 	<div class="wraper">
 
 		<div id="blockLeft" class="left">
 
-			<div id="blockLeftTop" class="leftTop">
-
-				<button class="square" aria-hidden="true" onclick="menu.animation()">≡</button>
-				<div class="search">
-					<div class="search-line"><input id="searchLine" type="text" placeholder="Поиск по сайту" class="selectable"></div>
-					<div class="lamp">
-						<label class="switch">
-							<input id="lamp" type="checkbox" checked>
-							<span class="slider round"><i class="fa fa-lightbulb-o fa-lg fa-fw" aria-hidden="true"></i></span>
-						</label>
-					</div>
-				</div>
-
+			<div id="blockLeftTop" class="header">
+				<div class="btn-square" onclick="menu.animation()">≡</div>
 			</div>
 
-			<div id="blockLeftCenter" class="leftCenter">
+			<div id="blockLeftCenter" class="content">
 
 				<div id="contacts" class="hide">
 					<div class="leftItem" onclick="contact.animation()"><div style="display:grid;justify-content:center;"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></div><div>Добавить контакт</div></div>
@@ -261,11 +249,11 @@
 
 		</div>
 
-		<div id="blockCenter" class="hide">
+		<div id="blockCenter" class="center">
 
-			<div id="blockCenterTop" class="centerTop">
+			<div id="blockCenterTop" class="header">
 				<div class="tools">
-					<button id="backCenterTopButton" class="fa fa-chevron-left fa-2x square" aria-hidden="true" onclick="backWrap(this)"></button>
+					<div id="backCenterTopButton" class="btn-square" onclick="backWrap(this)"></div>
 					<div class="topChat">
 						<div class="avatarChat">👾</div>
 						<div class="topChatInfo">
@@ -276,8 +264,34 @@
 				</div>
 			</div>
 
-			<div id="blockCenterCenter" class="centerCenter">
+			<div id="blockCenterCenter" class="content">
 				<div id="chatReadArea" class="chatReadArea">
+					<div id="1" name="messagesDate" class="message messagesDate">Saturday</div>
+					<div id="1" name="message" class="message outgoingMessage">Hello!
+						<div name="message" class="rightMessageTime">12:30</div>
+					</div>
+					<div id="2" name="message" class="message incomingMessage">Hi!
+						<div name="message" class="leftMessageTime">12:31</div>
+					</div>
+					<div id="3" name="message" class="message outgoingMessage">How do you do?
+						<div name="message" class="rightMessageTime">12:32</div>
+					</div>
+					<div id="4" name="message" class="message incomingMessage">I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks.
+						<div name="message" class="leftMessageTime">12:33</div>
+					</div>
+					<div id="1" name="messagesDate" class="message messagesDate">Saturday</div>
+					<div id="1" name="message" class="message outgoingMessage">Hello!
+						<div name="message" class="rightMessageTime">12:30</div>
+					</div>
+					<div id="2" name="message" class="message incomingMessage">Hi!
+						<div name="message" class="leftMessageTime">12:31</div>
+					</div>
+					<div id="3" name="message" class="message outgoingMessage">How do you do?
+						<div name="message" class="rightMessageTime">12:32</div>
+					</div>
+					<div id="4" name="message" class="message incomingMessage">I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks. I'm fine. Thanks.
+						<div name="message" class="leftMessageTime">12:33</div>
+					</div>
 					<div id="1" name="messagesDate" class="message messagesDate">Saturday</div>
 					<div id="1" name="message" class="message outgoingMessage">Hello!
 						<div name="message" class="rightMessageTime">12:30</div>
@@ -294,21 +308,21 @@
 				</div>
 			</div>
 
-			<div id="blockCenterBottom" class="centerBottom">
+			<div id="blockCenterBottom" class="footer">
 				<div id="chatInputArea" class="chatInputArea">
 					<div id="messageInputLine" class="messageInputLine"><input id="messageInput" type="text" placeholder="Сообщение" onkeydown="{if(event.key=='Enter')sendMessageButton.click()}" class="selectable"></div>
-					<button id="sendMessageButton" class="fa fa-chevron-circle-right fa-2x square" style="border-radius:50%;" aria-hidden="true" onclick="chat.sendMessage()"></button>
+					<div id="sendMessageButton" class="btn-square" onclick="chat.sendMessage()">></div>
 				</div>
 			</div>
 
 		</div>
 
-		<div id="blockRight" class="right hide">
+		<div id="blockRight" class="right">
 
-			<div id="blockRightTop" class="rightTop">
+			<div id="rightHeader" class="header">
 			</div>
 
-			<div id="blockRightCenter" class="rightCenter">
+			<div id="rightContent" class="content">
 				<h2>Lorem Ipsum</h2>
 				<quotes>"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."</quotes>
 				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula consequat nulla eu elementum. Nunc mauris quam, sollicitudin sed dapibus ac, sodales nec enim. Pellentesque ac tincidunt nunc. Maecenas erat diam, volutpat nec nunc non, dapibus tincidunt elit. Curabitur blandit, justo sit amet elementum imperdiet, tortor turpis sodales lacus, imperdiet finibus mauris lacus at leo. Mauris vestibulum elementum sem, nec elementum elit consectetur at. Nunc tristique facilisis tellus, at lobortis purus bibendum ac. Nulla congue sem metus, id malesuada dolor dictum sit amet. Praesent sagittis condimentum libero facilisis facilisis. Duis dapibus non odio pretium rutrum.</p>
@@ -317,9 +331,6 @@
 				<p>Morbi sed tincidunt urna. Nam vitae lectus vel est consectetur efficitur. In fermentum tristique lorem eu blandit. Proin pharetra fermentum leo non faucibus. Suspendisse eleifend faucibus dui non viverra. Pellentesque porttitor, urna a imperdiet mollis, erat quam pharetra felis, vel laoreet mauris urna nec orci. Donec eget libero eget nibh vestibulum faucibus. Phasellus viverra libero erat, nec mattis elit rutrum et. Nunc sollicitudin purus id sagittis luctus. Sed elit lorem, ultricies at euismod ut, consectetur vel arcu. Cras et dolor nec enim fermentum maximus nec id lacus. Donec non ante tempor, tincidunt tellus ultrices, gravida dui.</p>
 				<p>Nullam at faucibus erat, in vehicula massa. Mauris quis eleifend diam, varius laoreet lectus. Donec ultrices hendrerit fringilla. Aliquam interdum placerat nisi, nec scelerisque eros auctor blandit. Morbi non interdum ligula. Nullam semper, arcu vel faucibus pharetra, diam quam varius orci, quis facilisis lacus risus et erat. Duis tempor sit amet massa sollicitudin porttitor. In porttitor orci vel dolor facilisis blandit. Integer sodales lobortis mi, sed sagittis ipsum pretium id. Pellentesque vitae malesuada purus. Nulla vel fringilla lacus, eu ultrices justo. Morbi fermentum commodo ipsum sit amet volutpat. Donec gravida dolor a suscipit placerat. Aliquam laoreet odio sapien, a volutpat odio faucibus sit amet.</p>
 				<p>Nullam at faucibus erat, in vehicula massa. Mauris quis eleifend diam, varius laoreet lectus. Donec ultrices hendrerit fringilla. Aliquam interdum placerat nisi, nec scelerisque eros auctor blandit. Morbi non interdum ligula. Nullam semper, arcu vel faucibus pharetra, diam quam varius orci, quis facilisis lacus risus et erat. Duis tempor sit amet massa sollicitudin porttitor. In porttitor orci vel dolor facilisis blandit. Integer sodales lobortis mi, sed sagittis ipsum pretium id. Pellentesque vitae malesuada purus. Nulla vel fringilla lacus, eu ultrices justo. Morbi fermentum commodo ipsum sit amet volutpat. Donec gravida dolor a suscipit placerat. Aliquam laoreet odio sapien, a volutpat odio faucibus sit amet.</p>
-			</div>
-
-			<div id="blockRightBottom" class="rightBottom hide">
 			</div>
 
 		</div>
