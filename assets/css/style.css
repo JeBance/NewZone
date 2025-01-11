@@ -30,7 +30,7 @@ html, body {
 a {
 	cursor: pointer;
 	text-decoration: none;
-	color: var(--color-content);
+	color: var(--color-light-1);
 }
 
 h1 {
@@ -78,8 +78,8 @@ hr {
 	flex-wrap: nowrap;
 	flex-direction: row;
 	overflow: hidden;
-	color: var(--color-content);
-	background: var(--color-background);
+	color: var(--color-light-1);
+	background: var(--color-dark-2);
 }
 
 .content {
@@ -94,9 +94,8 @@ hr {
 	justify-content: flex-start;
 	flex-wrap: nowrap;
 	align-items: center;
-	color: var(--color-content);
-	background-color: var(--color-background);
-/*	word-break: break-all;	*/
+	color: var(--color-light-2);
+	background: var(--color-black);
 }
 
 .footer {
@@ -109,8 +108,43 @@ hr {
 	overflow-y: hidden;
 	flex-direction: row;
 	align-items: center;
-	color: var(--color-content);
-	background-color: var(--color-background);
+	color: var(--color-light-1);
+	background-color: var(--color-black);
+}
+
+.info {
+	width: 100%;
+	margin: 2em 0 1em 0;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.desc {
+	min-width: 30%;
+	max-width: 30%;
+	margin: 0.1em;
+	padding: 0.5em;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	justify-content: flex-end;
+	color: var(--color-light-2);
+	background-color: var(--color-dark-3);
+}
+
+.val {
+	min-width: 60%;
+	max-width: 60%;
+	margin: 0.1em;
+	padding: 0.5em;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	justify-content: flex-start;
+	color: var(--color-light-1);
+	background-color: var(--color-dark-1);
+	word-break: break-all;
 }
 
 .hide {
@@ -131,7 +165,7 @@ hr {
 	-ms-overflow-style: none;
 	scrollbar-width: none;
 	transform: translateX(-300px);
-	color: var(--color-content);
+	color: var(--color-light-1);
 	background-color: var(--color-menu-background);
 	z-index: 100;
 }
@@ -243,7 +277,7 @@ hr {
 	flex-direction: column;
 	-ms-overflow-style: none;
 	scrollbar-width: none;
-	color: var(--color-content);
+	color: var(--color-light-1);
 	background-color: var(--color-background);
 }
 
@@ -652,7 +686,7 @@ hr {
 }
 
 .item h3 {
-	color: var(--color-content);
+	color: var(--color-light-1);
 }
 /*
 input {
@@ -660,12 +694,12 @@ input {
 	border: none;
 	outline: none;
 	font-size: 1em;
-	color: var(--color-content);
+	color: var(--color-light-1);
 	background: var(--color-background);
 }
 
 input:focus {
-	color: var(--color-content);
+	color: var(--color-light-1);
 }
 */
 .switch {

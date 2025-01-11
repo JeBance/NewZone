@@ -46,7 +46,7 @@
 
 .btn-square {
 	min-width: 1em;
-	min-height: 1em;
+	min-height: 4em;
 	font-size: 3em;
 	display: flex;
 	align-items: center;
@@ -54,7 +54,15 @@
 	flex-wrap: nowrap;
 	flex-direction: column;
 	cursor: pointer;
-	color: var(--color-content);
+	color: var(--color-white);
+}
+
+.btn-square:hover {
+	background-color: var(--color-dark-3);
+}
+
+.btn-square:active {
+	background-color: var(--color-dark-5);
 }
 
 .btn-settings {
@@ -68,14 +76,14 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
-    color: var(--color-content);
+    color: var(--color-light-1);
 }
 
 .btn-settings:hover {
-	background-color: var(--color-link-hover-background);
+	background-color: var(--color-dark-3);
 }
 
 .btn-settings:active {
-	background-color: var(--color-link-active-background);
+	background-color: var(--color-dark-1);
 }
 

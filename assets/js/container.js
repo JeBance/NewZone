@@ -106,6 +106,7 @@ container.choice = function()
 	container.clearInputs();
 	UI.hideAll('container');
 	containerInfo.innerHTML = 'Все данные передаются через сервера в зашифрованном виде. Подключите свой ранее созданный PGP контейнер, или создайте новый.';
+	UI.show(containerInfo, 'show');
 	UI.show(containerBrowse, 'btn btn-start');
 	UI.show(containerCreate, 'btn btn-start');
 }
@@ -117,11 +118,11 @@ container.generate = async function()
 	let fileHref = await secureStorage.generateSecureFile();
 	downloadNZPGPhref.setAttribute('href', fileHref);
 	downloadNZPGPhref.setAttribute('download', secureStorage.fingerprint + '.nz');
-	containerInfo.innerHTML = secureStorage.fingerprint;
-	containerNickname.innerHTML = '<b>Никнейм:</b> ' + secureStorage.nickname;
-	containerEmail.innerHTML = '<b>E-mail:</b> ' + secureStorage.email;
-	UI.show(containerNickname, 'show');
-	UI.show(containerEmail, 'show');
+	containerFingerprint.innerHTML = secureStorage.fingerprint;
+	UI.hide(containerInfo);
+	containerNickname.innerHTML = secureStorage.nickname;
+	containerEmail.innerHTML = secureStorage.email;
+	UI.show(containerInfoArea, 'info');
 	UI.show(containerSave, 'btn btn-start');
 	UI.show(containerOff, 'btn btn-start');
 	UI.show(menuButtonContacts, 'button');
