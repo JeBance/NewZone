@@ -22,8 +22,8 @@
 	flex-direction: column;
 	position: absolute;
 	z-index: 101;
-	color: var(--color-light-1);
-	background: var(--color-black);
+	color: var(--color-content-2);
+	background: var(--color-background-1);
 }
 
 .modal h1 {

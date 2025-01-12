@@ -67,7 +67,7 @@
 		<div id="startBoardFooter" class="flex flex-end">
 			<p>web application is under development</p>
 			<a href="https://github.com/JeBance/NewZone/" target="_blank">
-			<svg id="github" height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" data-view-component="true" style="fill:#e2e0e5;margin:1em;">
+			<svg id="github" height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" data-view-component="true" style="fill:var(--color-content-2);margin:1em;">
 			<path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
 			</svg></a>
 			<div id="a2hs" class="btn btn-start">Install</div>
@@ -76,23 +76,27 @@
 
 	<div id="listSettings" class="hide" name="modal">
 		<div class="header">
-			<div class="btn-square" name="modalBack" onclick="wrap(this)"><</div>
+			<div class="btn-circle" name="modalBack" onclick="wrap(this)"><</div>
 			<h1>Настройки</h1>
 		</div>
 
 		<div class="content">
+			<div id="setContainer" class="btn-settings" onclick="wrap(this)">Контейнер</div>
+			<div id="setContainer" class="btn-settings" onclick="wrap(this)">Контейнер</div>
+			<div id="setContainer" class="btn-settings" onclick="wrap(this)">Контейнер</div>
+			<div id="setContainer" class="btn-settings" onclick="wrap(this)">Контейнер</div>
 			<div id="setContainer" class="btn-settings" onclick="wrap(this)">Контейнер</div>
 		</div>
 	</div>
 
 	<div id="container" class="hide" name="subModal">
 		<div id="containerHeader" class="header">
-			<div class="btn-square" name="modalSubBack" onclick="wrap(this)"><</div>
+			<div class="btn-circle" name="modalSubBack" onclick="wrap(this)"><</div>
 			<h1>Контейнер</h1>
 		</div>
 
 		<div id="containerContent" class="content">
-			<p id="containerInfo" style="width: 300px; margin: 2em 1em 1em 1em;">Все данные передаются через сервера в зашифрованном виде. Подключите свой ранее созданный PGP контейнер, или создайте новый.</p>
+			<p id="containerInfo" style="margin: 2em 1em 1em 1em;">Все данные передаются через сервера в зашифрованном виде. Подключите свой ранее созданный PGP контейнер, или создайте новый.</p>
 			<div id="containerInfoArea" class="hide" name="container">
 				<div class="desc"><p id="descNickname">Никнейм</p></div>
 				<div class="val"><p id="containerNickname"></p></div>
@@ -170,7 +174,7 @@
 		<div id="blockLeft" class="left">
 
 			<div id="blockLeftTop" class="header">
-				<div class="btn-square" onclick="menu.animation()">≡</div>
+				<div class="btn-circle" onclick="menu.animation()">≡</div>
 			</div>
 
 			<div id="blockLeftCenter" class="content">
@@ -260,7 +264,7 @@
 
 			<div id="blockCenterTop" class="header">
 				<div class="tools">
-					<div id="backCenterTopButton" class="btn-square" onclick="backWrap(this)"></div>
+					<div id="backCenterTopButton" class="btn-circle" onclick="backWrap(this)"></div>
 					<div class="topChat">
 						<div class="avatarChat">👾</div>
 						<div class="topChatInfo">
@@ -318,7 +322,7 @@
 			<div id="blockCenterBottom" class="footer">
 				<div id="chatInputArea" class="chatInputArea">
 					<div id="messageInputLine" class="messageInputLine"><input id="messageInput" type="text" placeholder="Сообщение" onkeydown="{if(event.key=='Enter')sendMessageButton.click()}" class="selectable"></div>
-					<div id="sendMessageButton" class="btn-square" onclick="chat.sendMessage()">></div>
+					<div id="sendMessageButton" class="btn-circle" onclick="chat.sendMessage()">></div>
 				</div>
 			</div>
 
@@ -330,6 +334,16 @@
 			</div>
 
 			<div id="rightContent" class="content">
+<div class="flex" style="background: var(--color-content-1);"><span>color</span></div>
+<div class="flex" style="background: var(--color-content-2);"><span>color</span></div>
+<div class="flex" style="background: var(--color-content-3);"><span>color</span></div>
+<div class="flex" style="background: var(--color-background-1);"><span>color</span></div>
+<div class="flex" style="background: var(--color-background-2);"><span>color</span></div>
+<div class="flex" style="background: var(--color-background-3);"><span>color</span></div>
+<div class="flex" style="background: var(--color-background-4);"><span>color</span></div>
+<div class="flex" style="background: var(--color-background-5);"><span>color</span></div>
+<div class="flex" style="background: var(--color-background-6);"><span>color</span></div>
+<div class="flex" style="background: var(--color-background-7);"><span>color</span></div>
 				<h2>Lorem Ipsum</h2>
 				<quotes>"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."</quotes>
 				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula consequat nulla eu elementum. Nunc mauris quam, sollicitudin sed dapibus ac, sodales nec enim. Pellentesque ac tincidunt nunc. Maecenas erat diam, volutpat nec nunc non, dapibus tincidunt elit. Curabitur blandit, justo sit amet elementum imperdiet, tortor turpis sodales lacus, imperdiet finibus mauris lacus at leo. Mauris vestibulum elementum sem, nec elementum elit consectetur at. Nunc tristique facilisis tellus, at lobortis purus bibendum ac. Nulla congue sem metus, id malesuada dolor dictum sit amet. Praesent sagittis condimentum libero facilisis facilisis. Duis dapibus non odio pretium rutrum.</p>

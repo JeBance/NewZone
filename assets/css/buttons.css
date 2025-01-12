@@ -54,36 +54,65 @@
 	flex-wrap: nowrap;
 	flex-direction: column;
 	cursor: pointer;
-	color: var(--color-white);
+	color: var(--color-content-1);
 }
 
 .btn-square:hover {
-	background-color: var(--color-dark-3);
+	background: var(--color-background-2);
 }
 
 .btn-square:active {
-	background-color: var(--color-dark-5);
+	background: var(--color-background-6);
+}
+
+.btn-circle {
+	padding: 0.5em;
+	min-width: 1em;
+	max-width: 1em;
+	min-height: 1em;
+	max-height: 1em;
+	font-size: 3em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: nowrap;
+	flex-direction: column;
+	cursor: pointer;
+	color: var(--color-content-1);
+	border-radius: 100%;
+/*	border: 1px solid white;	*/
+}
+
+.btn-circle:hover {
+	background: var(--color-background-2);
+}
+
+.btn-circle:active {
+	background: var(--color-background-6);
 }
 
 .btn-settings {
     width: inherit;
     height: 2em;
-    padding: 0.5em;
-    font-size: 1.5em;
+    padding: 1.6em;
+    font-size: 1.1em;
+    margin: 0.2em 0 0 0;
     display: flex;
     cursor: pointer;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
-    color: var(--color-light-1);
+    color: var(--color-content-2);
+	background: var(--color-background-2);
 }
 
 .btn-settings:hover {
-	background-color: var(--color-dark-3);
+	background: var(--color-background-4);
 }
 
 .btn-settings:active {
-	background-color: var(--color-dark-1);
+    color: var(--color-content-1);
+	background: var(--color-background-6);
 }
 

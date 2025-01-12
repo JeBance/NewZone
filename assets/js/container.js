@@ -127,5 +127,5 @@ container.generate = async function()
 	UI.show(containerOff, 'btn btn-start');
 	UI.show(menuButtonContacts, 'button');
 	UI.show(menuButtonChats, 'button');
-	UI.showAll('modalSubBack', 'btn-square');
+	UI.showAll('modalSubBack', 'btn-circle');
 }
