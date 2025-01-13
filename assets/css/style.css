@@ -789,18 +789,18 @@ input:checked + .slider:before {
 	font-style: normal;
 	font-weight: normal;
 	font-family: "Neuropol";
-	src:	url("../assets/fonts/Neuropol.otf");
-	src:	url("../assets/fonts/Neuropol.woff") format("woff"),
-			url("../assets/fonts/Neuropol.ttf") format("truetype");
+	src:	url("assets/fonts/Neuropol.otf");
+	src:	url("assets/fonts/Neuropol.woff") format("woff"),
+			url("assets/fonts/Neuropol.ttf") format("truetype");
 }
 
 @font-face {
 	font-style: normal;
 	font-weight: normal;
 	font-family: "Cyberpunk";
-	src:	url("../assets/fonts/Cyberpunk.otf");
-	src:	url("../assets/fonts/Cyberpunk.woff") format("woff"),
-			url("../assets/fonts/Cyberpunk.ttf") format("truetype");
+	src:	url("assets/fonts/Cyberpunk.otf");
+	src:	url("assets/fonts/Cyberpunk.woff") format("woff"),
+			url("assets/fonts/Cyberpunk.ttf") format("truetype");
 }
 
 @media screen and (max-width: 799px) {
