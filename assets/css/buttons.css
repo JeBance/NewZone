@@ -45,15 +45,15 @@
 }
 
 .btn-square {
-	min-width: 1em;
-	min-height: 4em;
-	font-size: 3em;
+	min-width: 40px;
+	min-height: 40px;
+	margin: 5px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	flex-wrap: nowrap;
-	flex-direction: column;
 	cursor: pointer;
+	border: none;
+	border-radius: 3px;
 	color: var(--color-content-1);
 }
 
@@ -66,21 +66,16 @@
 }
 
 .btn-circle {
-	padding: 0.5em;
-	min-width: 1em;
-	max-width: 1em;
-	min-height: 1em;
-	max-height: 1em;
-	font-size: 3em;
+	min-width: 40px;
+	min-height: 40px;
+	margin: 5px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	flex-wrap: nowrap;
-	flex-direction: column;
 	cursor: pointer;
-	color: var(--color-content-1);
+	border: none;
 	border-radius: 100%;
-/*	border: 1px solid white;	*/
+	color: var(--color-content-1);
 }
 
 .btn-circle:hover {

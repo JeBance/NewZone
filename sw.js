@@ -1,4 +1,4 @@
-const cacheName = 'NewZone-v0.0.7';
+const cacheName = 'NewZone-v0.0.8';
 
 const addResourcesToCache = async (resources) => {
 	const cache = await caches.open(cacheName);

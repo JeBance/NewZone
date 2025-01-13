@@ -3,7 +3,6 @@
 * {
 	margin: 0;
 	padding: 0;
-	font-family: system-ui;
 	box-sizing: border-box;
 	user-select: none; 
 	-ms-user-select: none; 
@@ -23,6 +22,7 @@
 }
 
 html, body {
+	font-family: system-ui;
 	touch-action: none;
 	overflow: hidden;
 }
@@ -66,6 +66,18 @@ hr {
 
 .space-around {
 	justify-content: space-around;
+}
+
+.square {
+	min-width: 40px;
+	min-height: 40px;
+	margin: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	border-radius: 3px;
+	color: var(--color-content-2);
 }
 
 .header {
@@ -165,6 +177,7 @@ hr {
 	-ms-overflow-style: none;
 	scrollbar-width: none;
 	transform: translateX(-300px);
+	font-family: Consolas, Courier, sans-serif;
 	color: var(--color-content-2);
 	background: var(--color-background-1);
 	z-index: 100;
@@ -760,6 +773,34 @@ input:checked + .slider:before {
 
 .slider.round:before {
 	border-radius: 50%;
+}
+
+.cyberpunk {
+	font-family: "Cyberpunk";
+	font-size: 1.4em;
+	color: var(--color-content-1);
+}
+
+.neuropol {
+	font-family: "Neuropol";
+}
+
+@font-face {
+	font-style: normal;
+	font-weight: normal;
+	font-family: "Neuropol";
+	src:	url("/home/jebance/git/NewZone/assets/fonts/Neuropol.otf");
+	src:	url("/home/jebance/git/NewZone/assets/fonts/Neuropol.woff") format("woff"),
+			url("/home/jebance/git/NewZone/assets/fonts/Neuropol.ttf") format("truetype");
+}
+
+@font-face {
+	font-style: normal;
+	font-weight: normal;
+	font-family: "Cyberpunk";
+	src:	url("/home/jebance/git/NewZone/assets/fonts/Cyberpunk.otf");
+	src:	url("/home/jebance/git/NewZone/assets/fonts/Cyberpunk.woff") format("woff"),
+			url("/home/jebance/git/NewZone/assets/fonts/Cyberpunk.ttf") format("truetype");
 }
 
 @media screen and (max-width: 799px) {

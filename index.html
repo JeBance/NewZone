@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="assets/css/loader.css">
 	<link rel="stylesheet" href="assets/css/modal.css">
 	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/fa/css/font-awesome.min.css">
 	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="apple-touch-icon" href="assets/img/icon-192.png">
 	<meta property="og:image" content="assets/img/icon-512.png">
@@ -39,10 +40,10 @@
 			<h1>QR-code</h1>
 		</div>
 		<ul class="nav">
-			<a id="menuButtonMain" class="button" onclick="wrap(this)"><li>☸ Главная</li></a>
-			<a id="menuButtonContacts" class="button" onclick="wrap(this)"><li>🗝 Контакты</li></a>
-			<a id="menuButtonChats" class="button" onclick="wrap(this)"><li>✉ Сообщения</li></a>
-			<a id="menuButtonSettings" onclick="wrap(this)"><li>⚙ Настройки</li></a>
+			<a id="menuButtonMain" class="button" onclick="wrap(this)"><li><i class="fa fa-home fa-fw" aria-hidden="true"></i>Главная</li></a>
+			<a id="menuButtonContacts" class="button" onclick="wrap(this)"><li><i class="fa fa-address-book-o fa-fw" aria-hidden="true"></i>Контакты</li></a>
+			<a id="menuButtonChats" class="button" onclick="wrap(this)"><li><i class="fa fa-comments-o fa-fw" aria-hidden="true"></i>Сообщения</li></a>
+			<a id="menuButtonSettings" onclick="wrap(this)"><li><i class="fa fa-cogs fa-fw" aria-hidden="true"></i>Настройки</li></a>
 		</ul>
 	</div>
 
@@ -76,7 +77,9 @@
 
 	<div id="listSettings" class="hide" name="modal">
 		<div class="header">
-			<div class="btn-circle" name="modalBack" onclick="wrap(this)"><</div>
+			<div class="btn-circle" name="modalBack" onclick="wrap(this)">
+				<span class="fa fa-chevron-left fa-2x" aria-hidden="true"></span>
+			</div>
 			<h1>Настройки</h1>
 		</div>
 
@@ -91,7 +94,9 @@
 
 	<div id="container" class="hide" name="subModal">
 		<div id="containerHeader" class="header">
-			<div class="btn-circle" name="modalSubBack" onclick="wrap(this)"><</div>
+			<div class="btn-circle" name="modalSubBack" onclick="wrap(this)">
+				<span class="fa fa-chevron-left fa-2x" aria-hidden="true"></span>
+			</div>
 			<h1>Контейнер</h1>
 		</div>
 
@@ -116,17 +121,17 @@
 			</div>
 
 			<div id="containerNameArea" class="hide" name="container">
-				<input id="containerNameInput" onkeydown="{if(event.key=='Enter')container.click(containerPasswordAccept)}" type="text" required=""/>
+				<input id="containerNameInput" onkeydown="{if(event.key=='Enter')container.click(containerPasswordAccept)}" type="text" required="" class="selectable"/>
 				<label>Имя</label>
 			</div>
 
 			<div id="containerEmailArea" class="hide" name="container">
-				<input id="containerEmailInput" onkeydown="{if(event.key=='Enter')container.click(containerPasswordAccept)}" type="email" required=""/>
+				<input id="containerEmailInput" onkeydown="{if(event.key=='Enter')container.click(containerPasswordAccept)}" type="email" required="" class="selectable"/>
 				<label>Email</label>
 			</div>
 
 			<div id="containerPasswordArea" class="hide" name="container">
-				<input id="containerPasswordInput" onkeydown="{if(event.key=='Enter')container.click(containerPasswordAccept)}" type="password" required=""/>
+				<input id="containerPasswordInput" onkeydown="{if(event.key=='Enter')container.click(containerPasswordAccept)}" type="password" required="" class="selectable"/>
 				<label>Пароль</label>	
 			</div>
 
@@ -173,8 +178,10 @@
 
 		<div id="blockLeft" class="left">
 
-			<div id="blockLeftTop" class="header">
-				<div class="btn-circle" onclick="menu.animation()">≡</div>
+			<div id="blockLeftTop" class="header" style="justify-content: space-between;">
+				<div class="btn-square"><span class="fa fa-bars fa-2x" aria-hidden="true" onclick="menu.animation()"></span></div>
+				<div class="cyberpunk"><span style="color:red;">New</span> Zone</div>
+				<div class="square"><span aria-hidden="true"></span></div>
 			</div>
 
 			<div id="blockLeftCenter" class="content">
@@ -264,7 +271,9 @@
 
 			<div id="blockCenterTop" class="header">
 				<div class="tools">
-					<div id="backCenterTopButton" class="btn-circle" onclick="backWrap(this)"></div>
+					<div id="backCenterTopButton" class="btn-circle" onclick="backWrap(this)">
+						<span class="fa fa-chevron-left fa-2x" aria-hidden="true"></span>
+					</div>
 					<div class="topChat">
 						<div class="avatarChat">👾</div>
 						<div class="topChatInfo">
@@ -322,7 +331,9 @@
 			<div id="blockCenterBottom" class="footer">
 				<div id="chatInputArea" class="chatInputArea">
 					<div id="messageInputLine" class="messageInputLine"><input id="messageInput" type="text" placeholder="Сообщение" onkeydown="{if(event.key=='Enter')sendMessageButton.click()}" class="selectable"></div>
-					<div id="sendMessageButton" class="btn-circle" onclick="chat.sendMessage()">></div>
+					<div id="sendMessageButton" class="btn-circle" aria-hidden="true" onclick="chat.sendMessage()">
+						<span class="fa fa-chevron-circle-right fa-2x"></span>
+					</div>
 				</div>
 			</div>
 
