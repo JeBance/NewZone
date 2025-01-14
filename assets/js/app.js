@@ -1,9 +1,11 @@
-const config = {};
+const config = {
+	dbName: null
+};
 const UI = new ui();
 const NODES = new nodes();
 const MESSAGES = new messages();
+let cyclicMessagesCheck;
 let secureStorage = new SecureStorage();
-//MESSAGES.cyclicMessagesCheck();
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 const modal = {};
 const hide = {};

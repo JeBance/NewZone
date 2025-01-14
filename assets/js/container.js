@@ -103,6 +103,8 @@ container.clearInputs = function()
 
 container.choice = function()
 {
+	clearInterval(cyclicMessagesCheck);
+	config.dbName = false;
 	container.clearInputs();
 	UI.hideAll('container');
 	containerInfo.innerHTML = 'Все данные передаются через сервера в зашифрованном виде. Подключите свой ранее созданный PGP контейнер, или создайте новый.';
@@ -128,4 +130,6 @@ container.generate = async function()
 	UI.show(menuButtonContacts, 'button');
 	UI.show(menuButtonChats, 'button');
 	UI.showAll('modalSubBack', 'btn-circle');
+	config.dbName = config.net + '-' + secureStorage.fingerprint;
+	cyclicMessagesCheck = MESSAGES.cyclicMessagesCheck();
 }

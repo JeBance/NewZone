@@ -1,22 +1,51 @@
 class messages {
+	db;
 	list;
 	messages;
 	monitor;
+	transaction;
 
 	constructor() {
 		this.list = {};
-		this.messages = [];
 		this.monitor = {
 			firstMessage: { hash: null, timestamp: new Date().getTime() },
 			lastMessage: { hash: null, timestamp: 0 }
 		};
 	}
 
-	async add(message = { hash: 'somehash', timestamp: '1731683656118', message: 'PGP message' } ) {
+	async initDB() {
+		this.db = await dbInit(config.dbName).then((db) => { return db; });
+		this.transaction = this.db.transaction("messages", "readwrite");
+		this.messages = this.transaction.objectStore("messages");
+	}
+
+	async checkMessage(message) {
+		// чтение и попытка расшифровать сообщение
+		// если удалось, то true
+		return true;
+	}
+
+	async add(message = { hash: 'somehash', timestamp: '1731683656118', chat: 'chatID', from: 'fingerprint', message: 'PGP message', wasRead: true } ) {
 		try {
+			if (this.checkMessage(message) === false)
+			message = {
+				hash: message.hash,
+				timestamp: message.timestamp,
+				chat: false,
+				from: false,
+				message: false,
+				wasRead: true
+			};
 			this.list[message.hash] = message.timestamp;
-			this.messages.push(message);
-			console.log('\x1b[1m%s\x1b[0m', 'New message:', message.hash);
+			await this.initDB();
+			let request = this.messages.put(message);
+			let x = new Promise((resolve, reject) => {
+				request.onsuccess = function() { resolve(request.result); }
+			});
+			await x.then((value) => {
+				console.log('\x1b[1m%s\x1b[0m', 'New message:', message.hash);
+				return value;
+			});
 		} catch(e) {
 			console.log(e);
 		}
@@ -65,14 +94,14 @@ class messages {
 						if (message) await this.add(message);
 					}
 				}
-				this.messages = this.messages.unique();
-				await this.messages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
-				if (this.messages[0].timestamp < this.monitor.firstMessage.timestamp) {
-					this.monitor.firstMessage.hash = this.messages[0].hash;
-					this.monitor.firstMessage.timestamp = this.messages[0].timestamp;
+				let messages = this.getAllMessages();
+				await messages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
+				if (messages[0].timestamp < this.monitor.firstMessage.timestamp) {
+					this.monitor.firstMessage.hash = messages[0].hash;
+					this.monitor.firstMessage.timestamp = messages[0].timestamp;
 				}
-				this.monitor.lastMessage.hash = this.messages[this.messages.length - 1].hash;
-				this.monitor.lastMessage.timestamp = this.messages[this.messages.length - 1].timestamp;
+				this.monitor.lastMessage.hash = messages[messages.length - 1].hash;
+				this.monitor.lastMessage.timestamp = messages[messages.length - 1].timestamp;
 			}
 		}
 	}
@@ -93,4 +122,33 @@ class messages {
 		}, 1000);
 	}
 
+	async getAllMessages() {
+		await this.initDB();
+		let request = this.messages.getAll();
+		let x = new Promise((resolve, reject) => {
+			request.onsuccess = function() { resolve(request.result); }
+			request.onerror = function() { reject('Error: ' + openRequest.error); }
+		});
+		let allMessages = await x.then((value) => { return value; }).catch((error) => console.log(`${error}`));
+		return allMessages;
+	}
+
+	async getAllMessagesFromChat(chat_id) {
+		await this.initDB();
+		let chatIndex = this.messages.index("chat_id");
+		let request = chatIndex.getAll(chat_id);
+		let x = new Promise((resolve, reject) => {
+			request.onsuccess = function() { resolve(request.result); }
+			request.onerror = function() { reject('Error: ' + openRequest.error); }
+		});
+		let allMessages = await x.then((value) => { return value; }).catch((error) => console.log(`${error}`));
+		return allMessages;
+	}
+/*
+(async () => {
+	let messages = await MESSAGES.getAllMessages();
+	await messages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
+	console.log(messages);
+})();
+*/
 }
