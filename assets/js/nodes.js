@@ -124,7 +124,7 @@ class nodes {
 			} else {
 				await this.firstNodesSearch();
 			}
-		}, 1000);
+		}, 3000);
 	}
 
 	async getFastNodes() {

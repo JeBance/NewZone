@@ -2,18 +2,6 @@ Array.prototype.unique = function () {
 	return Array.from(new Set(this));
 };
 
-//Object.prototype.hide = function() {
-//	this.className = 'hide';
-//};
-
-//Object.prototype.show = function(attribute = null) {
-//	if (attribute == null) {
-//		this.className = 'show';
-//	} else {
-//		this.setAttribute('class', attribute);
-//	}
-//};
-
 String.prototype.isJsonString = function() {
 	try {
 		JSON.parse(this);
@@ -34,17 +22,4 @@ String.prototype.hasPGPstructure = function () {
 		console.log(e);
 	}
 	return false;
-};
-
-Object.prototype.incorrect = async function() {
-	this.classList.toggle('red');
-	await sleep(100);
-	this.classList.toggle('red');
-	this.value = "";
-};
-
-Object.prototype.correct = async function() {
-	this.classList.toggle('green');
-	await sleep(100);
-	this.classList.toggle('green');
 };

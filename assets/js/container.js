@@ -1,5 +1,4 @@
-container.click = async function(elem)
-{
+container.click = async (elem) => {
 	switch(elem.id) {
 		case 'containerBrowse':
 			file.click();
@@ -37,15 +36,16 @@ container.click = async function(elem)
 				if ((x.name.substring(x.name.length - 3) == '.nz')
 				|| (x.name.substring(x.name.length - 4) == '.pgp')) {
 					file.data = reader.result;
-					secureStorage.checkStorage(file.data).then((value) => {
-						if (value == true) {
+					(async () => {
+						let value = await secureStorage.checkStorage(file.data);
+						if (value === true) {
 							UI.hideAll('container');
 							containerInfo.innerHTML = 'Введите пароль для дешифровки контейнера.';
 							UI.show(containerPasswordArea, 'input-container');
 							containerPasswordInput.focus();
 							UI.show(containerPasswordAccept, 'btn btn-start');
 						}
-					})
+					})();
 				} else {
 					alert(`Некорректный файл!\nВыберите файл контейнера с расширением .nz`);
 				}
@@ -131,5 +131,6 @@ container.generate = async function()
 	UI.show(menuButtonChats, 'button');
 	UI.showAll('modalSubBack', 'btn-circle');
 	config.dbName = config.net + '-' + secureStorage.fingerprint;
+//	await MESSAGES.updateMonitor();
 	cyclicMessagesCheck = MESSAGES.cyclicMessagesCheck();
 }

@@ -19,15 +19,23 @@ class messages {
 		this.messages = this.transaction.objectStore("messages");
 	}
 
-	async checkMessage(message) {
-		// чтение и попытка расшифровать сообщение
-		// если удалось, то true
-		return true;
+	async checkMessage(armoredMessage) {
+		try {
+			let message = await secureStorage.readMessage(armoredMessage);
+			if (!message) throw new Error("Can't read message");
+			let decrypted = await secureStorage.decryptMessage(armoredMessage);
+			if (!decrypted) throw new Error("Can't decrypt message");
+			return true;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
 	}
 
 	async add(message = { hash: 'somehash', timestamp: '1731683656118', chat: 'chatID', from: 'fingerprint', message: 'PGP message', wasRead: true } ) {
 		try {
-			if (this.checkMessage(message) === false)
+			console.log(message.message);
+			if (this.checkMessage(message.message) === false)
 			message = {
 				hash: message.hash,
 				timestamp: message.timestamp,
@@ -94,7 +102,7 @@ class messages {
 						if (message) await this.add(message);
 					}
 				}
-				let messages = this.getAllMessages();
+				let messages = await this.getAllMessages();
 				await messages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 				if (messages[0].timestamp < this.monitor.firstMessage.timestamp) {
 					this.monitor.firstMessage.hash = messages[0].hash;
@@ -103,6 +111,21 @@ class messages {
 				this.monitor.lastMessage.hash = messages[messages.length - 1].hash;
 				this.monitor.lastMessage.timestamp = messages[messages.length - 1].timestamp;
 			}
+		}
+	}
+
+	async updateMonitor() {
+		try {
+			let messages = await this.getAllMessages();
+			await messages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
+			if (messages[0].timestamp < this.monitor.firstMessage.timestamp) {
+				this.monitor.firstMessage.hash = messages[0].hash;
+				this.monitor.firstMessage.timestamp = messages[0].timestamp;
+			}
+			this.monitor.lastMessage.hash = messages[messages.length - 1].hash;
+			this.monitor.lastMessage.timestamp = messages[messages.length - 1].timestamp;
+		} catch(e) {
+			console.log(e);
 		}
 	}
 
@@ -119,7 +142,7 @@ class messages {
 					if (i == 9) break;
 				}
 			}
-		}, 1000);
+		}, 3000);
 	}
 
 	async getAllMessages() {

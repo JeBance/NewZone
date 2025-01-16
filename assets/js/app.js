@@ -5,7 +5,7 @@ const UI = new ui();
 const NODES = new nodes();
 const MESSAGES = new messages();
 let cyclicMessagesCheck;
-let secureStorage = new SecureStorage();
+const secureStorage = new SecureStorage();
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 const modal = {};
 const hide = {};
@@ -78,6 +78,14 @@ hide.pages = () => {
 hide.tempDataInLocalStorage = () => {
 	localStorage.recipientFingerprint = '';
 	localStorage.recipientPublicKey = '';
+}
+
+timestampToTime = (unix_timestamp) => {
+	let date = new Date(unix_timestamp * 1000);
+	let hours = date.getHours();
+	let minutes = "0" + date.getMinutes();
+	let formattedTime = hours + ':' + minutes.substr(-2);
+	return formattedTime;
 }
 
 async function wrap(elem) {
