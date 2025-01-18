@@ -29,20 +29,11 @@ class SecureStorage {
 			this.nickname = this.#publicKey.users[0].userID.name;
 			this.email = this.#publicKey.users[0].userID.email;
 			this.fingerprint = await this.#publicKey.getFingerprint();
+			return true;
 		} catch(e) {
 			console.log(e);
-			alert('Не удалось сгенерировать контейнер!');
-		}
-	}
-
-	async checkStorage(data) {
-		try {
-			await openpgp.readMessage({ armoredMessage: data });
-		} catch(e) {
-			alert('Файл не является защищённым хранилищем ключей!');
 			return false;
 		}
-		return true;
 	}
 
 	async openStorage(data, passphrase) {
@@ -168,27 +159,27 @@ class SecureStorage {
 			if (!message) throw new Error("Can't read message");
 			const { data: decrypted, signatures } = await openpgp.decrypt({
 				message,
-//				verificationKeys: this.#publicKey,
 				decryptionKeys: this.#privateKey
 			});
-			console.log(decrypted);
-//			console.log(signatures);
-			return true;
-//			let obj.
-//			return 
-/*
-//			console.log('decrypted' + decrypted);
-//			console.log('signatures' + signatures);
-			try {
-//				await signatures[0].verified;
-				let decodedJSON = JSON.parse(decrypted);
-				return decodedJSON;
-			} catch(e) {
-				//throw new Error('Signature could not be verified: ' + e.message);
-				console.error('Signature could not be verified: ' + e.message);
-				return false;
-			}
-*/
+			return decrypted;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+	}
+
+	async decryptMessageWithVerificationKey(encrypted, verificationKeyArmored) {
+		try {
+			let message = await this.readMessage(encrypted);
+			if (!message) throw new Error("Can't read message");
+			let verificationKey = await openpgp.readKey({ armoredKey: verificationKeyArmored });
+			const { data: decrypted, signatures } = await openpgp.decrypt({
+				message,
+				verificationKeys: verificationKey,
+				decryptionKeys: this.#privateKey
+			});
+			await signatures[0].verified;
+			return decrypted;
 		} catch(e) {
 			console.log(e);
 			return false;
@@ -209,25 +200,18 @@ class SecureStorage {
 		}
 	}
 
-	async decryptMessageSymmetricallyWithCompression(data, passphrase) {
+	async decryptMessageSymmetricallyWithCompression(encrypted, passphrase) {
 		try {
-			let message = await openpgp.readMessage({ armoredMessage: data });
-			try {
-				const { data: decrypted } = await openpgp.decrypt({
-					message: message,
-					passwords: [ passphrase ],
-				});
-				if (decrypted.isJsonString()) {
-					let parseData = JSON.parse(decrypted);
-					return parseData;
-				} else {
-					alert('decrypted no JSON');
-				}
-			} catch(e) {
-				alert('Неверный пароль!');
-			}
+			let message = await this.readMessage(encrypted);
+			if (!message) throw new Error("Can't read message");
+			const { data: decrypted } = await openpgp.decrypt({
+				message: message,
+				passwords: [ passphrase ],
+			});
+			return decrypted;
 		} catch(e) {
-			alert('Данные не являются сообщением с симметричным шифрованием!');
+			console.log(e);
+			return false;
 		}
 	}
 
@@ -265,9 +249,8 @@ class SecureStorage {
 			if (response.ok) console.log(await response.json());
 
 
-			const message = await openpgp.readMessage({
-				armoredMessage: encrypted
-			});
+			let message = await this.readMessage(encrypted);
+			if (!message) throw new Error("Can't read message");
 
 			const { data: decrypted, signatures } = await openpgp.decrypt({
 				message,

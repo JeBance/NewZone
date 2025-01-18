@@ -21,9 +21,9 @@ class messages {
 
 	async checkMessage(armoredMessage) {
 		try {
-			let message = await secureStorage.readMessage(armoredMessage);
+			let message = await PGP.readMessage(armoredMessage);
 			if (!message) throw new Error("Can't read message");
-			let decrypted = await secureStorage.decryptMessage(armoredMessage);
+			let decrypted = await PGP.decryptMessage(armoredMessage);
 			if (!decrypted) throw new Error("Can't decrypt message");
 			return true;
 		} catch(e) {

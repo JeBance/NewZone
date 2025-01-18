@@ -5,7 +5,7 @@ const UI = new ui();
 const NODES = new nodes();
 const MESSAGES = new messages();
 let cyclicMessagesCheck;
-const secureStorage = new SecureStorage();
+const PGP = new SecureStorage();
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 const modal = {};
 const hide = {};
@@ -93,7 +93,7 @@ async function wrap(elem) {
 
 		switch(elem.id) {
 			case 'modalBackground':
-				if (secureStorage.activeAllSecureData() !== true)
+				if (PGP.activeAllSecureData() !== true)
 				throw new Error('Container not connected');
 				UI.hideAll('modal');
 				UI.hideAll('subModal');
@@ -114,7 +114,7 @@ async function wrap(elem) {
 				UI.hide(modalStart);
 				UI.hideAll('modalSubBack');
 				UI.show(containerHeader, 'header');
-				if (secureStorage.activeAllSecureData() === true) {
+				if (PGP.activeAllSecureData() === true) {
 					await container.generate();
 				} else {
 					container.choice();

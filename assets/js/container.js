@@ -19,7 +19,7 @@ container.click = async (elem) => {
 			break;
 
 		case 'containerOff':
-			secureStorage.eraseAllSecureData();
+			PGP.eraseAllSecureData();
 			downloadNZPGPhref.removeAttribute('href');
 			downloadNZPGPhref.removeAttribute('download');
 			UI.hide(menuButtonContacts);
@@ -33,17 +33,20 @@ container.click = async (elem) => {
 			let reader = new FileReader();
 			reader.readAsText(x);
 			reader.onload = function() {
-				if ((x.name.substring(x.name.length - 3) == '.nz')
-				|| (x.name.substring(x.name.length - 4) == '.pgp')) {
+				if ((x.name.substring(x.name.length - 3) === '.nz')
+				|| (x.name.substring(x.name.length - 4) === '.pgp')) {
 					file.data = reader.result;
 					(async () => {
-						let value = await secureStorage.checkStorage(file.data);
-						if (value === true) {
+						try {
+							let message = await PGP.readMessage(file.data);
+							if (!message) throw new Error('The file is not a secure keystore!');
 							UI.hideAll('container');
 							containerInfo.innerHTML = 'Введите пароль для дешифровки контейнера.';
 							UI.show(containerPasswordArea, 'input-container');
 							containerPasswordInput.focus();
 							UI.show(containerPasswordAccept, 'btn btn-start');
+						} catch(e) {
+							alert(e);
 						}
 					})();
 				} else {
@@ -60,11 +63,11 @@ container.click = async (elem) => {
 				alert('Короткий пароль!');
 			} else {
 				if (file.data) {
-					await secureStorage.openStorage(file.data, containerPasswordInput.value);
-					if (secureStorage.activeAllSecureData() == true) await container.generate();
+					await PGP.openStorage(file.data, containerPasswordInput.value);
+					if (PGP.activeAllSecureData() === true) await container.generate();
 				} else {
-					if (containerNameInput.value.length == 0) alert('Введите никнейм!');
-					if (containerEmailInput.value.length == 0) alert('Введите email!');
+					if (containerNameInput.value.length === 0) alert('Введите никнейм!');
+					if (containerEmailInput.value.length === 0) alert('Введите email!');
 					if ((containerPasswordInput.value.length > 7)
 					&& (containerNameInput.value.length > 0)
 					&& (containerEmailInput.value.length > 0)) {
@@ -73,10 +76,11 @@ container.click = async (elem) => {
 								UI.hideAll('container');
 								containerInfo.innerHTML = 'Генерация контейнера ...';
 								loader.show(container, containerContent);
-								await secureStorage.createStorage(containerNameInput.value, containerEmailInput.value, containerPasswordInput.value);
-								if (secureStorage.activeAllSecureData() == true) await container.generate();
+								let storage = await PGP.createStorage(containerNameInput.value, containerEmailInput.value, containerPasswordInput.value);
+								if (!storage) throw new Error('Failed to generate container!');
+								if (PGP.activeAllSecureData() === true) await container.generate();
 							} catch(e) {
-								console.error(e);
+								alert(e);
 							}
 							UI.hide(loader);
 						} else {
@@ -117,20 +121,20 @@ container.generate = async function()
 {
 	container.clearInputs();
 	UI.hideAll('container');
-	let fileHref = await secureStorage.generateSecureFile();
+	let fileHref = await PGP.generateSecureFile();
 	downloadNZPGPhref.setAttribute('href', fileHref);
-	downloadNZPGPhref.setAttribute('download', secureStorage.fingerprint + '.nz');
-	containerFingerprint.innerHTML = secureStorage.fingerprint;
+	downloadNZPGPhref.setAttribute('download', PGP.fingerprint + '.nz');
+	containerFingerprint.innerHTML = PGP.fingerprint;
 	UI.hide(containerInfo);
-	containerNickname.innerHTML = secureStorage.nickname;
-	containerEmail.innerHTML = secureStorage.email;
+	containerNickname.innerHTML = PGP.nickname;
+	containerEmail.innerHTML = PGP.email;
 	UI.show(containerInfoArea, 'info');
 	UI.show(containerSave, 'btn btn-start');
 	UI.show(containerOff, 'btn btn-start');
 	UI.show(menuButtonContacts, 'button');
 	UI.show(menuButtonChats, 'button');
 	UI.showAll('modalSubBack', 'btn-circle');
-	config.dbName = config.net + '-' + secureStorage.fingerprint;
+	config.dbName = config.net + '-' + PGP.fingerprint;
 //	await MESSAGES.updateMonitor();
 	cyclicMessagesCheck = MESSAGES.cyclicMessagesCheck();
 }
