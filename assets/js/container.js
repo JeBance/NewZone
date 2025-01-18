@@ -59,12 +59,12 @@ container.click = async (elem) => {
 			break;
 
 		case 'containerPasswordAccept':
-			if (containerPasswordInput.value.length < 8) {
-				alert('Короткий пароль!');
-			} else {
+			try {
+				if (containerPasswordInput.value.length < 8) throw new Error('Short password! Password must be at least 8 characters.');
 				if (file.data) {
-					await PGP.openStorage(file.data, containerPasswordInput.value);
-					if (PGP.activeAllSecureData() === true) await container.generate();
+					let storage = await PGP.openStorage(file.data, containerPasswordInput.value);
+					if (storage !== true) throw new Error(storage);
+					if (PGP.active) await container.generate();
 				} else {
 					if (containerNameInput.value.length === 0) alert('Введите никнейм!');
 					if (containerEmailInput.value.length === 0) alert('Введите email!');
@@ -78,7 +78,7 @@ container.click = async (elem) => {
 								loader.show(container, containerContent);
 								let storage = await PGP.createStorage(containerNameInput.value, containerEmailInput.value, containerPasswordInput.value);
 								if (!storage) throw new Error('Failed to generate container!');
-								if (PGP.activeAllSecureData() === true) await container.generate();
+								if (PGP.active) await container.generate();
 							} catch(e) {
 								alert(e);
 							}
@@ -88,6 +88,8 @@ container.click = async (elem) => {
 						}
 					}
 				}
+			} catch(e) {
+				alert(e);
 			}
 			break;
 

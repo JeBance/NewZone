@@ -1,4 +1,5 @@
 class SecureStorage {
+	active;
 	nickname;
 	email;
 	fingerprint;
@@ -7,6 +8,10 @@ class SecureStorage {
 	#publicKey;
 	#privateKey;
 	#passphrase;
+
+	constructor() {
+		this.active = false;
+	}
 
 	async createStorage(name, email, passphrase) {
 		try {
@@ -20,15 +25,14 @@ class SecureStorage {
 
 			this.publicKeyArmored = publicKey;
 			this.#privateKeyArmored = privateKey;
-			this.#publicKey = await openpgp.readKey({ armoredKey: publicKey });
-			this.#privateKey = await openpgp.decryptKey({
-				privateKey: await openpgp.readPrivateKey({ armoredKey: privateKey }),
-				passphrase
-			});
+			this.#publicKey = await this.readKey(publicKey);
+			this.#privateKey = await this.decryptKey(privateKey, passphrase);
 			this.#passphrase = passphrase;
 			this.nickname = this.#publicKey.users[0].userID.name;
 			this.email = this.#publicKey.users[0].userID.email;
 			this.fingerprint = await this.#publicKey.getFingerprint();
+			this.active = true;
+
 			return true;
 		} catch(e) {
 			console.log(e);
@@ -36,57 +40,36 @@ class SecureStorage {
 		}
 	}
 
-	async openStorage(data, passphrase) {
+	async openStorage(encrypted, passphrase) {
 		try {
-			let message = await openpgp.readMessage({
-				armoredMessage: data
-			});
-			try {
-				const { data: decrypted } = await openpgp.decrypt({
-					message: message,
-					passwords: [ passphrase ],
-				});
-				if (decrypted.isJsonString() !== false) {
-					let parseData = JSON.parse(decrypted);
-					try {
-						this.#publicKey = await openpgp.readKey({ armoredKey: parseData.publicKey });
-						this.fingerprint = (this.#publicKey.getFingerprint()).toUpperCase();
-						this.nickname = this.#publicKey.users[0].userID.name;
-						this.email = this.#publicKey.users[0].userID.email;
-						try {
-							this.#privateKey = await openpgp.decryptKey({
-								privateKey: await openpgp.readPrivateKey({ armoredKey: parseData.privateKey }),
-								passphrase
-							});
-						} catch(e) {
-							alert('Не удалось прочитать приватный ключ из хранилища ключей!');
-						}
-					} catch(e) {
-						alert('Не удалось прочитать публичный ключ из хранилища ключей!');
-					}
-					this.publicKeyArmored = parseData.publicKey;
-					this.#privateKeyArmored = parseData.privateKey;
-					this.#passphrase = passphrase;
-				} else {
-					console.log(decrypted.isJsonString());
-					alert('Контейнер повреждён!');
-				}
-			} catch(e) {
-				alert('Неверный пароль!');
-			}
-		} catch(e) {
-			alert('Файл не является защищённым хранилищем ключей!');
-		}
-	}
+			let message = await this.readMessage(encrypted);
+			if (!message) throw new Error('The file is not a secure keystore');
 
-	activeAllSecureData() {
-		let check = false;
-		((this.#publicKey)
-		&& (this.#privateKey)
-		&& (this.publicKeyArmored)
-		&& (this.#privateKeyArmored)
-		&& (this.#passphrase)) ? check = true : check = false;
-		return check;
+			const decrypted = await this.decryptMessageSymmetricallyWithCompression(encrypted, passphrase);
+			if (!decrypted) throw new Error('Incorrect password');
+
+			if (!decrypted.isJsonString()) throw new Error('Container damaged');
+			let parsed = JSON.parse(decrypted);
+
+			this.publicKeyArmored = parsed.publicKey;
+			this.#privateKeyArmored = parsed.privateKey;
+
+			this.#publicKey = await this.readKey(this.publicKeyArmored);
+			if (!this.#publicKey) throw new Error('Failed to read public key from keystore');
+			
+			this.#privateKey = await this.decryptKey(this.#privateKeyArmored, passphrase);
+			if (!this.#privateKey) throw new Error('Failed to read private key from keystore');
+
+			this.#passphrase = passphrase;
+			this.nickname = this.#publicKey.users[0].userID.name;
+			this.email = this.#publicKey.users[0].userID.email;
+			this.fingerprint = this.#publicKey.getFingerprint();
+			this.active = true;
+
+			return true;
+		} catch(e) {
+			return e;
+		}
 	}
 
 	eraseAllSecureData() {
@@ -96,6 +79,7 @@ class SecureStorage {
 		this.#privateKey = {};
 		this.#passphrase = '';
 		this.fingerprint = '';
+		this.active = false;
 	}
 
 	async generateSecureFile() {
@@ -115,6 +99,20 @@ class SecureStorage {
 	async readKey(publicKeyArmored) {
 		try {
 			let key = await openpgp.readKey({ armoredKey: publicKeyArmored });
+			return key;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+	}
+
+	async decryptKey(privateKeyArmored, passphrase) {
+		try {
+			let privateKey = await openpgp.readPrivateKey({ armoredKey: privateKeyArmored });
+			let key = await openpgp.decryptKey({
+				privateKey: privateKey,
+				passphrase
+			});
 			return key;
 		} catch(e) {
 			console.log(e);

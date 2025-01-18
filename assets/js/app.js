@@ -93,7 +93,7 @@ async function wrap(elem) {
 
 		switch(elem.id) {
 			case 'modalBackground':
-				if (PGP.activeAllSecureData() !== true)
+				if (!PGP.active)
 				throw new Error('Container not connected');
 				UI.hideAll('modal');
 				UI.hideAll('subModal');
@@ -114,7 +114,7 @@ async function wrap(elem) {
 				UI.hide(modalStart);
 				UI.hideAll('modalSubBack');
 				UI.show(containerHeader, 'header');
-				if (PGP.activeAllSecureData() === true) {
+				if (PGP.active) {
 					await container.generate();
 				} else {
 					container.choice();
