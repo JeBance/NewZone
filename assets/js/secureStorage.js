@@ -78,22 +78,26 @@ class SecureStorage {
 		this.#publicKey = {};
 		this.#privateKey = {};
 		this.#passphrase = '';
+		this.nickname = '';
+		this.email = '';
 		this.fingerprint = '';
 		this.active = false;
 	}
 
 	async generateSecureFile() {
-		let string = JSON.stringify({
-			publicKey: this.publicKeyArmored,
-			privateKey: this.#privateKeyArmored
-		});
-		let encrypted = await openpgp.encrypt({
-			message: await openpgp.createMessage({ text: string }),
-			passwords: [ this.#passphrase ],
-			config: { preferredCompressionAlgorithm: openpgp.enums.compression.zlib }
-		});
-		let fileHref = 'data:application/pgp-encrypted,' + encodeURIComponent(encrypted);
-		return fileHref;
+		try {
+			let string = JSON.stringify({
+				publicKey: this.publicKeyArmored,
+				privateKey: this.#privateKeyArmored
+			});
+			let encrypted = await this.encryptMessageSymmetricallyWithCompression(string, this.#passphrase);
+			if (!encrypted) throw new Error('Failed to generate secure container');
+			let fileHref = 'data:application/pgp-encrypted,' + encodeURIComponent(encrypted);
+			return fileHref;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
 	}
 	
 	async readKey(publicKeyArmored) {
@@ -130,35 +134,45 @@ class SecureStorage {
 		}
 	}
 
-	async encryptMessage(recipientPublicKey, message) {
-		let passphrase = this.#passphrase;
+	async encrypt(publicKey, privateKey, message) {
 		try {
-			const publicKey = await openpgp.readKey({ armoredKey: recipientPublicKey });
-			const privateKey = this.#privateKey;
-			try {
-				const encrypted = await openpgp.encrypt({
-					message: await openpgp.createMessage({ text: message }),
-					encryptionKeys: publicKey,
-					signingKeys: privateKey
-				});
-				return encrypted;
-			} catch(e) {
-				alert('Не удалось зашифровать сообщение!');
-			}
+			const encrypted = await openpgp.encrypt({
+				message: await openpgp.createMessage({ text: message }),
+				encryptionKeys: publicKey,
+				signingKeys: privateKey
+			});
+			return encrypted;
 		} catch(e) {
-			alert('Не удалось прочитать публичный ключ получателя!');
+			console.log(e);
+			return false;
 		}
-		return false;
+	}
+
+	async encryptMessage(recipientPublicKey, message) {
+		try {
+			let publicKey = await this.readKey(recipientPublicKey);
+			if (!publicKey) throw new Error("Failed to read recipient's public key");
+
+			let encrypted = await this.encrypt(publicKey, this.#privateKey, message);
+			if (!encrypted) throw new Error('Failed to encrypt message');
+
+			return encrypted;
+		} catch(e) {
+			alert(e);
+			return false;
+		}
 	}
 
 	async decryptMessage(encrypted) {
 		try {
 			let message = await this.readMessage(encrypted);
 			if (!message) throw new Error("Can't read message");
+
 			const { data: decrypted, signatures } = await openpgp.decrypt({
 				message,
 				decryptionKeys: this.#privateKey
 			});
+
 			return decrypted;
 		} catch(e) {
 			console.log(e);
@@ -170,13 +184,18 @@ class SecureStorage {
 		try {
 			let message = await this.readMessage(encrypted);
 			if (!message) throw new Error("Can't read message");
-			let verificationKey = await openpgp.readKey({ armoredKey: verificationKeyArmored });
+
+			let verificationKey = await this.readKey(verificationKeyArmored);
+			if (!verificationKey) throw new Error("Failed to read verification key");
+
 			const { data: decrypted, signatures } = await openpgp.decrypt({
 				message,
 				verificationKeys: verificationKey,
 				decryptionKeys: this.#privateKey
 			});
+
 			await signatures[0].verified;
+
 			return decrypted;
 		} catch(e) {
 			console.log(e);
@@ -202,10 +221,12 @@ class SecureStorage {
 		try {
 			let message = await this.readMessage(encrypted);
 			if (!message) throw new Error("Can't read message");
+
 			const { data: decrypted } = await openpgp.decrypt({
 				message: message,
 				passwords: [ passphrase ],
 			});
+
 			return decrypted;
 		} catch(e) {
 			console.log(e);
@@ -215,23 +236,9 @@ class SecureStorage {
 
 	async sendTestMessage(string = 'Hello New Zone!') {
 		try {
-			const publicKeyArmored = this.publicKeyArmored;
-			const privateKeyArmored = this.#privateKeyArmored;
-			const passphrase = this.#passphrase;
-
-			const publicKey = await openpgp.readKey({ armoredKey: publicKeyArmored });
-			const privateKey = await openpgp.decryptKey({
-				privateKey: await openpgp.readPrivateKey({ armoredKey: privateKeyArmored }),
-				passphrase
-			});
-
-			const encrypted = await openpgp.encrypt({
-				message: await openpgp.createMessage({ text: string }),
-				encryptionKeys: publicKey,
-				signingKeys: privateKey
-			});
-			console.log(encrypted);
-
+			let encrypted = await this.encryptMessage(this.publicKeyArmored, string);
+			if (!encrypted) throw new Error("Can't encrypt message");
+			console.log(encrypted.length + ': ' + encrypted);
 
 			let url = 'https://jebance.ru:28262/';
 			let response = await fetch(url, {
@@ -242,27 +249,14 @@ class SecureStorage {
 				},
 				body: encrypted
 			});
-			console.log(encrypted.length);
 			console.log(response);
 			if (response.ok) console.log(await response.json());
-
 
 			let message = await this.readMessage(encrypted);
 			if (!message) throw new Error("Can't read message");
 
-			const { data: decrypted, signatures } = await openpgp.decrypt({
-				message,
-				verificationKeys: publicKey,
-				decryptionKeys: privateKey
-			});
+			let decrypted = await this.decryptMessageWithVerificationKey(encrypted, this.publicKeyArmored);
 			console.log(decrypted);
-
-			try {
-				await signatures[0].verified;
-				console.log('Signature is valid');
-			} catch(e) {
-				throw new Error('Signature could not be verified: ' + e.message);
-			}
 		} catch(e) {
 			console.log(e);
 		}
