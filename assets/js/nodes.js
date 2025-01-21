@@ -35,13 +35,10 @@ class nodes {
 			let response = await fetch(url);
 			let pingFinish = new Date().getTime();
 			let ping = pingFinish - pingStart;
-			if (response.ok) {
-				let info = await response.json();
-				info.ping = ping;
-				return info;
-			} else {
-				return false;
-			}
+			if (!response.ok) throw new Error('Request failed');
+			let info = await response.json();
+			info.ping = ping;
+			return info;
 		} catch(e) {
 			console.log(e);
 			return false;
@@ -52,20 +49,19 @@ class nodes {
 		try {
 			let url = address.prot + '://' + address.host + ':' + address.port + '/getNodes';
 			let response = await fetch(url);
-			if (response.ok) {
-				let list = await response.json();
-				let keys = Object.keys(list);
-				for (let i = 0, l = keys.length; i < l; i++) {
-					if (this.list[keys[i]] === undefined)
-					this.add({
-						keyID: keys[i],
-						net: list[keys[i]].net,
-						prot: list[keys[i]].prot,
-						host: list[keys[i]].host,
-						port: list[keys[i]].port,
-						ping: 10
-					});
-				}
+			if (!response.ok) throw new Error('Request failed');
+			let list = await response.json();
+			let keys = Object.keys(list);
+			for (let i = 0, l = keys.length; i < l; i++) {
+				if (this.list[keys[i]] === undefined)
+				this.add({
+					keyID: keys[i],
+					net: list[keys[i]].net,
+					prot: list[keys[i]].prot,
+					host: list[keys[i]].host,
+					port: list[keys[i]].port,
+					ping: 10
+				});
 			}
 		} catch(e) {
 			console.log(e);
@@ -75,26 +71,23 @@ class nodes {
 	async firstNodesSearch() {
 		try {
 			let response = await fetch('https://raw.githubusercontent.com/JeBance/nzserver/refs/heads/gh-pages/hosts.json');
-			if (response.ok) {
-				let list = await response.json();
-				let nets = new Set();
-				let keys = Object.keys(list);
-				for (let i = 0, l = keys.length; i < l; i++) {
-					if (this.list[keys[i]] === undefined)
-					await this.add({
-						keyID: keys[i],
-						net: list[keys[i]].net,
-						prot: list[keys[i]].prot,
-						host: list[keys[i]].host,
-						port: list[keys[i]].port,
-						ping: 10
-					});
-					nets.add(list[keys[i]].net);
-				}
-				this.nets = new Set([...nets]);
-			} else {
-				console.log(response.status);
+			if (!response.ok) throw new Error('Request failed');
+			let list = await response.json();
+			let nets = new Set();
+			let keys = Object.keys(list);
+			for (let i = 0, l = keys.length; i < l; i++) {
+				if (this.list[keys[i]] === undefined)
+				await this.add({
+					keyID: keys[i],
+					net: list[keys[i]].net,
+					prot: list[keys[i]].prot,
+					host: list[keys[i]].host,
+					port: list[keys[i]].port,
+					ping: 10
+				});
+				nets.add(list[keys[i]].net);
 			}
+			this.nets = new Set([...nets]);
 		} catch(e) {
 			console.log(e);
 		}
@@ -128,18 +121,23 @@ class nodes {
 	}
 
 	async getFastNodes() {
-		let result = [];
-		let keys = Object.keys(this.list);
-		if (keys.length > 0) {
+		try {
+			let result = [];
+			let keys = Object.keys(this.list);
+			if (keys.length <= 0) throw new Error('Node list is empty');
+
 			for (let i = 0, l = keys.length; i < l; i++) {
 				if (NODES.list[keys[i]].net === config.net
+				&& NODES.list[keys[i]].prot === 'https'
 				&& NODES.list[keys[i]].status !== 'blocked') {
 					result.push(NODES.list[keys[i]]);
 				}
 			}
 			result.sort((a, b) => a.ping > b.ping ? 1 : -1);
+
 			return result;
-		} else {
+		} catch(e) {
+			console.log(e);
 			return false;
 		}
 	}

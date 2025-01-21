@@ -212,7 +212,7 @@ class SecureStorage {
 			});
 			return encrypted;
 		} catch(e) {
-			console.error('Симметричное шифрование не выполнено! Ошибка: ' + e.message);
+			console.log(e);
 			return false;
 		}
 	}
