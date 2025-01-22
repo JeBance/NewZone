@@ -179,7 +179,7 @@ hr {
 	transform: translateX(-300px);
 	font-family: Consolas, Courier, sans-serif;
 	color: var(--color-content-2);
-	background: var(--color-background-1);
+	background: var(--color-background-2);
 	z-index: 100;
 }
 

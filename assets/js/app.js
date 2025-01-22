@@ -163,3 +163,21 @@ async function wrap(elem) {
 UI.hide(menuButtonContacts);
 UI.hide(menuButtonChats);
 
+/*
+const addQRcode = (qrcode) => {
+	return qrcode.error ? `Недопустимые исходные данные: ${qrcode.error}`: qrcode.result;
+};
+
+publicKeyQR = QRCreator("https://jebance.github.io/NewZone/");
+document.getElementById('publicKeyQR').innerHTML = '';
+document.getElementById('publicKeyQR').append(addQRcode(publicKeyQR));
+*/
+publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
+	text: "https://jebance.gihub.io/NewZone",
+	width: 280,
+	height: 280,
+	colorDark : "#000000",
+	colorLight : "#ffffff",
+	correctLevel : QRCode.CorrectLevel.H
+});
+

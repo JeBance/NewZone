@@ -139,4 +139,17 @@ container.generate = async function()
 	config.dbName = config.net + '-' + PGP.fingerprint;
 //	await MESSAGES.updateMonitor();
 	cyclicMessagesCheck = MESSAGES.cyclicMessagesCheck();
+
+	/*
+	let qrcode = QRCreator(PGP.publicKeyArmored, {
+		mask: -1,
+		image: 'svg',
+		modsize: -1,
+		margin: 4
+	});
+	document.getElementById('publicKeyQR').innerHTML = '';
+	document.getElementById('publicKeyQR').append(addQRcode(qrcode));
+	*/
+	publicKeyQR.clear();
+	publicKeyQR.makeCode(PGP.publicKeyArmored);
 }

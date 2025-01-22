@@ -25,6 +25,9 @@
 	<script src="assets/js/nodes.js" defer></script>
 	<script src="assets/js/messages.js" defer></script>
 	<script src="assets/js/prototypes.js" defer></script>
+	<script src="assets/js/qrcodeCreator.js" defer></script>
+	<script src="assets/js/qrcodeGenerator.js" defer></script>
+	<script src="assets/js/qrcodeScanner.js" defer></script>
 	<script src="assets/js/ui.js" defer></script>
 	<script src="assets/js/app.js" defer></script>
 </head>
@@ -37,9 +40,7 @@
 	<div id="shade" class="hide" onclick="menu.animation()"></div>
 
 	<div id="menu" class="menu">
-		<div id="pubkeyqr">
-			<h1>QR-code</h1>
-		</div>
+		<div id="publicKeyQR" class="flex" style="padding:10px;background:#ffffff;"></div>
 		<ul class="nav">
 			<a id="menuButtonMain" class="button" onclick="wrap(this)"><li><i class="fa fa-home fa-fw" aria-hidden="true"></i>Главная</li></a>
 			<a id="menuButtonContacts" class="button" onclick="wrap(this)"><li><i class="fa fa-address-book-o fa-fw" aria-hidden="true"></i>Контакты</li></a>
