@@ -49,7 +49,6 @@ self.addEventListener("install", (event) => {
       "/NewZone/assets/js/openpgp.min.js.map",
       "/NewZone/assets/js/prototypes.js",
       "/NewZone/assets/js/pwa.js",
-      "/NewZone/assets/js/qrcodeCreator.js",
       "/NewZone/assets/js/qrcodeGenerator.js",
       "/NewZone/assets/js/qrcodeScanner.js",
       "/NewZone/assets/js/secureStorage.js",
