@@ -1,5 +1,12 @@
 const config = {
-	dbName: null
+	dbName: null,
+	qrScan: {
+		fps: 10,
+		qrbox: {
+			width: 250,
+			height: 250
+		}
+	}
 };
 const UI = new ui();
 const NODES = new nodes();
@@ -136,7 +143,8 @@ async function wrap(elem) {
 			case 'qrScan':
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
-				html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+//				html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 				break;
 
 			default:
@@ -177,7 +185,7 @@ publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
 	colorLight : "#ffffff",
 	correctLevel : QRCode.CorrectLevel.H
 });
-
+/*
 function onScanSuccess(decodedText, decodedResult) {
 	html5QrcodeScanner.stop();
 	console.log(`Code matched = ${decodedText}`, decodedResult);
@@ -195,5 +203,14 @@ function onScanFailure(error) {
 let html5QrcodeScanner = new Html5QrcodeScanner(
 	"reader",
 	{ fps: 20, qrbox: {width: 350, height: 350} },
-	/* verbose= */ false);
+	false);
+*/
+const html5QrCode = new Html5Qrcode("reader");
+const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+	html5QrCode.stop();
+	console.log(`Code matched = ${decodedText}`, decodedResult);
+	let p = document.createElement('p');
+	p.textContent = `Code matched = ${decodedText}`, decodedResult;
+	qrScanInfo.append(p);
+};
 
