@@ -136,10 +136,6 @@ async function wrap(elem) {
 			case 'qrScan':
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
-				let html5QrcodeScanner = new Html5QrcodeScanner(
-					"reader",
-					{ fps: 20, qrbox: {width: 400, height: 400} },
-					/* verbose= */ false);
 				html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 				break;
 
@@ -183,13 +179,21 @@ publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
 });
 
 function onScanSuccess(decodedText, decodedResult) {
-  // handle the scanned code as you like, for example:
-  console.log(`Code matched = ${decodedText}`, decodedResult);
+	html5QrcodeScanner.stop();
+	console.log(`Code matched = ${decodedText}`, decodedResult);
+	let p = document.createElement('p');
+	p.textContent = `Code matched = ${decodedText}`, decodedResult;
+	qrScanInfo.append(p);
 }
 
 function onScanFailure(error) {
-  // handle scan failure, usually better to ignore and keep scanning.
-  // for example:
-  console.warn(`Code scan error = ${error}`);
+	// handle scan failure, usually better to ignore and keep scanning.
+	// for example:
+	//console.warn(`Code scan error = ${error}`);
 }
+
+let html5QrcodeScanner = new Html5QrcodeScanner(
+	"reader",
+	{ fps: 20, qrbox: {width: 350, height: 350} },
+	/* verbose= */ false);
 
