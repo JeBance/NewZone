@@ -205,7 +205,7 @@ let html5QrcodeScanner = new Html5QrcodeScanner(
 	{ fps: 20, qrbox: {width: 350, height: 350} },
 	false);
 */
-const html5QrCode = new Html5Qrcode("reader");
+const html5QrCode = new Html5Qrcode("qrReader");
 const qrCodeSuccessCallback = (decodedText, decodedResult) => {
 	html5QrCode.stop();
 	console.log(`Code matched = ${decodedText}`, decodedResult);
