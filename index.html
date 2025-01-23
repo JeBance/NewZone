@@ -154,6 +154,20 @@
 		</div>
 	</div>
 
+	<div id="qrScanner" class="hide" name="modal">
+		<div class="header">
+			<div class="btn-circle" name="modalBack" onclick="wrap(this)">
+				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
+			</div>
+			<h1>Сканер QR-кода</h1>
+		</div>
+
+		<div class="content">
+			<p style="margin: 2em 1em 1em 1em;">Наведите камеру на QR-код публичного ключа, чтобы начать чат с собеседником.</p>
+			<div id="reader" width="300px"></div>
+		</div>
+	</div>
+
 
 
 
@@ -181,9 +195,9 @@
 		<div id="blockLeft" class="left">
 
 			<div id="blockLeftTop" class="header" style="justify-content: space-between;">
-				<div class="btn-square"><span class="fa fa-bars fa-2x" aria-hidden="true" onclick="menu.animation()"></span></div>
+				<div class="btn-square" onclick="menu.animation()"><span class="fa fa-bars fa-2x" aria-hidden="true"></span></div>
 				<div class="cyberpunk"><span style="color:red;">New</span> Zone</div>
-				<div class="square"><span aria-hidden="true"></span></div>
+				<div id="qrScan" class="btn-square" onclick="wrap(this)"><span class="fa fa-qrcode fa-2x" aria-hidden="true"></span></div>
 			</div>
 
 			<div id="blockLeftCenter" class="content">

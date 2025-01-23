@@ -133,6 +133,16 @@ async function wrap(elem) {
 				UI.show(container, 'modal');
 				break;
 
+			case 'qrScan':
+				UI.show(modalBackground, 'modal-background');
+				UI.show(qrScanner, 'modal');
+				let html5QrcodeScanner = new Html5QrcodeScanner(
+					"reader",
+					{ fps: 20, qrbox: {width: 400, height: 400} },
+					/* verbose= */ false);
+				html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+				break;
+
 			default:
 				break;
 		}
@@ -163,15 +173,6 @@ async function wrap(elem) {
 UI.hide(menuButtonContacts);
 UI.hide(menuButtonChats);
 
-/*
-const addQRcode = (qrcode) => {
-	return qrcode.error ? `Недопустимые исходные данные: ${qrcode.error}`: qrcode.result;
-};
-
-publicKeyQR = QRCreator("https://jebance.github.io/NewZone/");
-document.getElementById('publicKeyQR').innerHTML = '';
-document.getElementById('publicKeyQR').append(addQRcode(publicKeyQR));
-*/
 publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
 	text: "https://jebance.gihub.io/NewZone",
 	width: 280,
@@ -180,4 +181,15 @@ publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
 	colorLight : "#ffffff",
 	correctLevel : QRCode.CorrectLevel.H
 });
+
+function onScanSuccess(decodedText, decodedResult) {
+  // handle the scanned code as you like, for example:
+  console.log(`Code matched = ${decodedText}`, decodedResult);
+}
+
+function onScanFailure(error) {
+  // handle scan failure, usually better to ignore and keep scanning.
+  // for example:
+  console.warn(`Code scan error = ${error}`);
+}
 

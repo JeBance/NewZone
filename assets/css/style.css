@@ -90,7 +90,7 @@ hr {
 	flex-wrap: nowrap;
 	flex-direction: row;
 	overflow: hidden;
-	color: var(--color-content-2);
+	color: var(--color-content-1);
 	background: var(--color-background-1);
 }
 
@@ -179,7 +179,7 @@ hr {
 	transform: translateX(-300px);
 	font-family: Consolas, Courier, sans-serif;
 	color: var(--color-content-2);
-	background: var(--color-background-2);
+	background: var(--color-background-3);
 	z-index: 100;
 }
 
@@ -777,8 +777,9 @@ input:checked + .slider:before {
 
 .cyberpunk {
 	font-family: "Cyberpunk";
-	font-size: 1.4em;
+	font-size: 1.6em;
 	color: var(--color-content-1);
+	margin-top: -7px;
 }
 
 .neuropol {
