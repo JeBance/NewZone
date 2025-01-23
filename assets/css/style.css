@@ -15,10 +15,10 @@
 }
 
 .selectable {
-	user-select: all;
 	-ms-user-select: all;
 	-moz-user-select: all;
 	-webkit-user-select: all;
+	user-select: all;
 }
 
 html, body {
