@@ -145,7 +145,13 @@ async function wrap(elem) {
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
 //				html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
+//				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
+				Html5Qrcode.getCameras().then(devices => {
+					if (devices && devices.length) {
+						var cameraId = devices[1].id;
+						html5QrCode.start({ deviceID: cameraId }, config.qrScan, qrCodeSuccessCallback);
+					}
+				});
 				break;
 
 			default:
