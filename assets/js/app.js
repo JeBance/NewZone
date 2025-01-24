@@ -144,7 +144,7 @@ async function wrap(elem) {
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
 //				html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
+				html5QrCode.start({ facingMode: { exact: "environment" } }, config.qrScan, qrCodeSuccessCallback);
 				break;
 
 			default:
