@@ -5,7 +5,8 @@ const config = {
 		qrbox: {
 			width: 250,
 			height: 250
-		}
+		},
+		supportedScanTypes: [ Html5QrcodeScanType.SCAN_TYPE_CAMERA ]
 	}
 };
 const UI = new ui();
@@ -144,7 +145,7 @@ async function wrap(elem) {
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
 //				html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-				html5QrCode.start({ facingMode: { exact: "environment" } }, config.qrScan, qrCodeSuccessCallback);
+				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 				break;
 
 			default:
@@ -213,4 +214,8 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
 	p.textContent = `Code matched = ${decodedText}`, decodedResult;
 	qrScanInfo.append(p);
 };
+
+Html5Qrcode.getCameras().then(devices => {
+	console.log(devices);
+});
 
