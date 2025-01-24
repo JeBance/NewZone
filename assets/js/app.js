@@ -183,7 +183,7 @@ publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
 	height: 280,
 	colorDark : "#000000",
 	colorLight : "#ffffff",
-	correctLevel : QRCode.CorrectLevel.H
+	correctLevel : QRCode.CorrectLevel.L
 });
 /*
 function onScanSuccess(decodedText, decodedResult) {
