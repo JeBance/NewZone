@@ -1,7 +1,7 @@
 const config = {
 	dbName: null,
 	qrScan: {
-		fps: 10,
+		fps: 24,
 		qrbox: {
 			width: 250,
 			height: 250
@@ -145,13 +145,7 @@ async function wrap(elem) {
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
 //				html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-//				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
-				Html5Qrcode.getCameras().then(devices => {
-					if (devices && devices.length) {
-						var cameraId = devices[1].id;
-						html5QrCode.start({ deviceID: cameraId }, config.qrScan, qrCodeSuccessCallback);
-					}
-				});
+				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 				break;
 
 			default:
@@ -220,8 +214,3 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
 	p.textContent = `Code matched = ${decodedText}`, decodedResult;
 	qrScanInfo.append(p);
 };
-
-Html5Qrcode.getCameras().then(devices => {
-	console.log(devices);
-});
-
