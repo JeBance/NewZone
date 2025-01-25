@@ -208,9 +208,9 @@ let html5QrcodeScanner = new Html5QrcodeScanner(
 */
 const html5QrCode = new Html5Qrcode("qrReader");
 const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-	html5QrCode.stop();
-	console.log(`Code matched = ${decodedText}`, decodedResult);
+	console.log(decodedResult);
 	let p = document.createElement('p');
-	p.textContent = `Code matched = ${decodedText}`, decodedResult;
+	p.textContent = 'Code matched: ' + decodedText;
 	qrScanInfo.append(p);
+	html5QrCode.stop();
 };
