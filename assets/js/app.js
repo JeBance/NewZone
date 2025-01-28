@@ -1,11 +1,7 @@
 const config = {
 	dbName: null,
 	qrScan: {
-		fps: 24,
-		qrbox: {
-			width: 250,
-			height: 250
-		},
+		fps: 30,
 		supportedScanTypes: [ Html5QrcodeScanType.SCAN_TYPE_CAMERA ]
 	}
 };
@@ -88,7 +84,7 @@ hide.tempDataInLocalStorage = () => {
 	localStorage.recipientPublicKey = '';
 }
 
-timestampToTime = (unix_timestamp) => {
+const timestampToTime = (unix_timestamp) => {
 	let date = new Date(unix_timestamp * 1000);
 	let hours = date.getHours();
 	let minutes = "0" + date.getMinutes();
@@ -96,16 +92,34 @@ timestampToTime = (unix_timestamp) => {
 	return formattedTime;
 }
 
+publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
+	text: "https://jebance.gihub.io/NewZone",
+	width: 280,
+	height: 280,
+	colorDark : "#000000",
+	colorLight : "#ffffff",
+	correctLevel : QRCode.CorrectLevel.L
+});
+
+const html5QrCode = new Html5Qrcode("qrReader");
+const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+	console.log(decodedResult);
+	let p = document.createElement('p');
+	p.textContent = 'Code matched: ' + decodedText;
+	qrReaderResult.append(p);
+	html5QrCode.stop();
+};
+
 async function wrap(elem) {
 	try {
 
 		switch(elem.id) {
 			case 'modalBackground':
-				if (!PGP.active)
-				throw new Error('Container not connected');
+				if (!PGP.active) throw new Error('Container not connected');
 				UI.hideAll('modal');
 				UI.hideAll('subModal');
 				UI.hide(modalBackground);
+				if (html5QrCode.isScanning === true) html5QrCode.stop();
 				break;
 
 			case 'buttonStart':
@@ -157,6 +171,7 @@ async function wrap(elem) {
 				UI.hideAll('modal');
 				UI.hideAll('subModal');
 				UI.hide(modalBackground);
+				if (html5QrCode.isScanning === true) html5QrCode.stop();
 				break;
 
 			case 'modalSubBack':
@@ -178,39 +193,3 @@ async function wrap(elem) {
 UI.hide(menuButtonContacts);
 UI.hide(menuButtonChats);
 
-publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
-	text: "https://jebance.gihub.io/NewZone",
-	width: 280,
-	height: 280,
-	colorDark : "#000000",
-	colorLight : "#ffffff",
-	correctLevel : QRCode.CorrectLevel.L
-});
-/*
-function onScanSuccess(decodedText, decodedResult) {
-	html5QrcodeScanner.stop();
-	console.log(`Code matched = ${decodedText}`, decodedResult);
-	let p = document.createElement('p');
-	p.textContent = `Code matched = ${decodedText}`, decodedResult;
-	qrScanInfo.append(p);
-}
-
-function onScanFailure(error) {
-	// handle scan failure, usually better to ignore and keep scanning.
-	// for example:
-	//console.warn(`Code scan error = ${error}`);
-}
-
-let html5QrcodeScanner = new Html5QrcodeScanner(
-	"reader",
-	{ fps: 20, qrbox: {width: 350, height: 350} },
-	false);
-*/
-const html5QrCode = new Html5Qrcode("qrReader");
-const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-	console.log(decodedResult);
-	let p = document.createElement('p');
-	p.textContent = 'Code matched: ' + decodedText;
-	qrScanInfo.append(p);
-	html5QrCode.stop();
-};
