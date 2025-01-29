@@ -129,7 +129,7 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		button.setAttribute('class', 'btn btn-start');
 		button.setAttribute('onclick', 'contact.click(this)');
 		button.innerHTML = '<span>ДОБАВИТЬ</span>';
-		qrReaderResult.append(p);
+		qrReaderResult.append(button);
 
 		html5QrCode.stop();
 		UI.hide(loader);
