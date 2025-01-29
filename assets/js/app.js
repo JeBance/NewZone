@@ -102,12 +102,29 @@ publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
 });
 
 const html5QrCode = new Html5Qrcode("qrReader");
-const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-	console.log(decodedResult);
-	let p = document.createElement('p');
-	p.textContent = 'Code matched: ' + decodedText;
-	qrReaderResult.append(p);
-	html5QrCode.stop();
+const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
+	try {
+		loader.show(qrScanner, qrContent);
+		html5QrCode.pause();
+		console.log(decodedResult);
+
+		let recipientPublicKey = await PGP.readKey(decodedText);
+		if (!recipientPublicKey) throw new Error('Invalid public key');
+		let nickname = recipientPublicKey.users[0].userID.name;
+		let email = recipientPublicKey.users[0].userID.email;
+		let fingerprint = await recipientPublicKey.getFingerprint();
+
+		UI.addKeyInfoBlock(qrReaderResult, {
+			nickname: nickname,
+			email: email,
+			fingerprint: fingerprint
+		});
+
+		html5QrCode.stop();
+	} catch(e) {
+		console.log(e);
+		html5QrCode.resume();
+	}
 };
 
 async function wrap(elem) {
@@ -158,7 +175,6 @@ async function wrap(elem) {
 			case 'qrScan':
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
-//				html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 				break;
 
