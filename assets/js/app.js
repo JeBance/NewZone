@@ -132,6 +132,7 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		qrReaderResult.append(button);
 
 		html5QrCode.stop();
+		UI.hide(qrInfo);
 		UI.hide(loader);
 	} catch(e) {
 		console.log(e);
@@ -187,6 +188,7 @@ async function wrap(elem) {
 			case 'qrScan':
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
+				UI.show(qrInfo, 'show');
 				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 				break;
 
