@@ -124,11 +124,18 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 
 		UI.addKeyInfoBlock(qrReaderResult, tmp.contact);
 
-		let button = document.createElement('div');
+		var button = document.createElement('div');
 		button.setAttribute('id', 'addContact');
 		button.setAttribute('class', 'btn btn-start');
 		button.setAttribute('onclick', 'contact.click(this)');
 		button.innerHTML = '<span>ДОБАВИТЬ</span>';
+		qrReaderResult.append(button);
+
+		var button = document.createElement('div');
+		button.setAttribute('id', 'initChat');
+		button.setAttribute('class', 'btn btn-start');
+		button.setAttribute('onclick', 'chat.click(this)');
+		button.innerHTML = '<span>НАПИСАТЬ</span>';
 		qrReaderResult.append(button);
 
 		html5QrCode.stop();
