@@ -5,6 +5,7 @@ const config = {
 		supportedScanTypes: [ Html5QrcodeScanType.SCAN_TYPE_CAMERA ]
 	}
 };
+const tmp = {};
 const UI = new ui();
 const NODES = new nodes();
 const MESSAGES = new messages();
@@ -114,13 +115,24 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		let email = recipientPublicKey.users[0].userID.email;
 		let fingerprint = await recipientPublicKey.getFingerprint();
 
-		UI.addKeyInfoBlock(qrReaderResult, {
+		tmp.contact = {
 			nickname: nickname,
 			email: email,
-			fingerprint: fingerprint
-		});
+			fingerprint: fingerprint,
+			publicKey: decodedText
+		};
+
+		UI.addKeyInfoBlock(qrReaderResult, tmp.contact);
+
+		let button = document.createElement('div');
+		button.setAttribute('id', 'addContact');
+		button.setAttribute('class', 'btn btn-start');
+		button.setAttribute('onclick', 'contact.click(this)');
+		button.innerHTML = '<span>ДОБАВИТЬ</span>';
+		qrReaderResult.append(p);
 
 		html5QrCode.stop();
+		UI.hide(loader);
 	} catch(e) {
 		console.log(e);
 		html5QrCode.resume();
