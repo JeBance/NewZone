@@ -126,10 +126,12 @@ container.generate = async function()
 	let fileHref = await PGP.generateSecureFile();
 	downloadNZPGPhref.setAttribute('href', fileHref);
 	downloadNZPGPhref.setAttribute('download', PGP.fingerprint + '.nz');
-	containerFingerprint.innerHTML = PGP.fingerprint;
 	UI.hide(containerInfo);
-	containerNickname.innerHTML = PGP.nickname;
-	containerEmail.innerHTML = PGP.email;
+	UI.addKeyInfoBlock(containerInfoArea, {
+		nickname: PGP.nickname,
+		email: PGP.email,
+		fingerprint: PGP.fingerprint
+	});
 	UI.show(containerInfoArea, 'info');
 	UI.show(containerSave, 'btn btn-start');
 	UI.show(containerOff, 'btn btn-start');
