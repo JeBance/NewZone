@@ -189,6 +189,7 @@ async function wrap(elem) {
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
 				UI.show(qrInfo, 'show');
+				qrReaderResult.innerHTML = '';
 				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 				break;
 
