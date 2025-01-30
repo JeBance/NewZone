@@ -8,6 +8,7 @@ const config = {
 const tmp = {};
 const UI = new Ui();
 const NODES = new Nodes();
+const CONTACT = new Contact();
 const MESSAGES = new Messages();
 let cyclicMessagesCheck;
 const PGP = new SecureStorage();
