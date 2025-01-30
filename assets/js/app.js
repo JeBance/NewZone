@@ -6,9 +6,9 @@ const config = {
 	}
 };
 const tmp = {};
-const UI = new ui();
-const NODES = new nodes();
-const MESSAGES = new messages();
+const UI = new Ui();
+const NODES = new Nodes();
+const MESSAGES = new Messages();
 let cyclicMessagesCheck;
 const PGP = new SecureStorage();
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;

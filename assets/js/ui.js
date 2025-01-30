@@ -1,4 +1,4 @@
-class ui {
+class Ui {
 
 	hide(elem) {
 		elem.setAttribute('class', 'hide');

@@ -1,4 +1,4 @@
-class messages {
+class Messages {
 	db;
 	list;
 	messages;

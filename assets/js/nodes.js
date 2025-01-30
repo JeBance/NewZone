@@ -1,4 +1,4 @@
-class nodes {
+class Nodes {
 	list;
 	nets;
 
