@@ -153,10 +153,64 @@
 		<div id="qrContent" class="content">
 			<p id="qrInfo" style="margin: 2em 1em 1em 1em;">Наведите камеру на QR-код публичного ключа, чтобы начать чат с собеседником.</p>
 			<div id="qrReader" class="flex"></div>
-			<div id="qrReaderResult" class="info"></div>
 		</div>
 	</div>
 
+	<div id="contacts" class="hide" name="modal">
+		<div class="header">
+			<div class="btn-circle" name="modalBack" onclick="wrap(this)">
+				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
+			</div>
+			<h1>Contacts</h1>
+		</div>
+
+		<div id="contactsList" class="content">
+		</div>
+	</div>
+
+	<div id="contact" class="hide" name="subModal">
+		<div class="header">
+			<div class="btn-circle" name="modalSubBack" onclick="wrap(this)">
+				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
+			</div>
+			<h1>Contact</h1>
+		</div>
+
+		<div id="contactContent" class="content">
+			<div id="contactNameArea" class="hide" name="contact">
+				<input id="contactNameInput" onkeydown="{if(event.key=='Enter')contact.click(this)}" type="text" required="" class="selectable"/>
+				<label>Имя</label>
+			</div>
+
+			<div id="contactEmailArea" class="hide" name="contact" readonly>
+				<input id="contactEmailInput" type="text">
+				<label>Email</label>
+			</div>
+
+			<div id="contactFingerprintdArea" class="hide" name="contact" readonly>
+				<input id="contactFingerprintInput" type="text">
+				<label>Отпечаток</label>	
+			</div>
+
+			<input id="contactPublicKeyInput" type="text" class="hide">
+
+			<div id="contactAdd" onclick="contact.click(this)" class="hide" name="contact">
+				<span>ДОБАВИТЬ</span>
+			</div>
+
+			<div id="contactEdit" onclick="contact.click(this)" class="hide" name="contact">
+				<span>ИЗМЕНИТЬ</span>
+			</div>
+
+			<div id="contactSave" onclick="contact.click(this)" class="hide" name="contact">
+				<span>СОХРАНИТЬ</span>
+			</div>
+
+			<div id="contactChat" onclick="contact.click(this)" class="hide" name="contact">
+				<span>НАПИСАТЬ</span>
+			</div>
+		</div>
+	</div>
 
 
 

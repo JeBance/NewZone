@@ -139,7 +139,7 @@ container.generate = async function()
 	UI.show(menuButtonChats, 'button');
 	UI.showAll('modalSubBack', 'btn-circle');
 	config.dbName = config.net + '-' + PGP.fingerprint;
-//	await MESSAGES.updateMonitor();
+	await MESSAGES.updateMonitor();
 	cyclicMessagesCheck = MESSAGES.cyclicMessagesCheck();
 	publicKeyQR.clear();
 	publicKeyQR.makeCode(PGP.publicKeyArmored);

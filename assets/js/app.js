@@ -105,6 +105,7 @@ publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
 
 const html5QrCode = new Html5Qrcode("qrReader");
 const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
+	let nickname, email, fingerprint, publicKey;
 	try {
 		loader.show(qrScanner, qrContent);
 		html5QrCode.pause();
@@ -112,38 +113,46 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 
 		let recipientPublicKey = await PGP.readKey(decodedText);
 		if (!recipientPublicKey) throw new Error('Invalid public key');
-		let nickname = recipientPublicKey.users[0].userID.name;
-		let email = recipientPublicKey.users[0].userID.email;
-		let fingerprint = await recipientPublicKey.getFingerprint();
 
-		tmp.contact = {
-			nickname: nickname,
-			email: email,
-			fingerprint: fingerprint,
-			publicKey: decodedText
-		};
+		fingerprint = await recipientPublicKey.getFingerprint();
+		if (!this.isValidFingerprint(contact.fingerprint)) throw new Error('Incorrect fingerprint entered');
 
-		UI.addKeyInfoBlock(qrReaderResult, tmp.contact);
+		let contact = await CONTACT.check(fingerprint);
+		if (!contact) {
+			nickname = recipientPublicKey.users[0].userID.name;
+			email = recipientPublicKey.users[0].userID.email;
+			publicKey = decodedText;
+			UI.show(contactAdd, 'btn btn-start');
+			UI.hide(contactEdit);
+			UI.hide(contactSave);
+			UI.show(contactChat, 'btn btn-start');
+		} else {
+			nickname = contact.nickname;
+			email = contact.email;
+			publicKey = contact.publicKey;
+			UI.hide(contactAdd);
+			UI.show(contactEdit, 'btn btn-start');
+			UI.hide(contactSave);
+			UI.show(contactChat, 'btn btn-start');
+		}
 
-		var button = document.createElement('div');
-		button.setAttribute('id', 'addContact');
-		button.setAttribute('class', 'btn btn-start');
-		button.setAttribute('onclick', 'contact.click(this)');
-		button.innerHTML = '<span>ДОБАВИТЬ</span>';
-		qrReaderResult.append(button);
+		contactNameInput.value = nickname;
+		contactEmailInput.value = email;
+		contactFingerprintInput.value = fingerprint;
+		contactPublicKeyInput.value = publicKey;
 
-		var button = document.createElement('div');
-		button.setAttribute('id', 'initChat');
-		button.setAttribute('class', 'btn btn-start');
-		button.setAttribute('onclick', 'chat.click(this)');
-		button.innerHTML = '<span>НАПИСАТЬ</span>';
-		qrReaderResult.append(button);
+		contactNameInput.readOnly = false;
+		UI.show(contactNicknameArea, 'input-container');
+		UI.show(contactEmailArea, 'input-container');
+		UI.show(contactFingerprintArea, 'input-container');
 
 		html5QrCode.stop();
-		UI.hide(qrInfo);
+		UI.hide(qrScanner);
+		UI.show(contactInfo, 'modal flex-start');
 		UI.hide(loader);
 	} catch(e) {
 		console.log(e);
+		UI.hide(loader);
 		html5QrCode.resume();
 	}
 };
