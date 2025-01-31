@@ -115,7 +115,7 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		if (!recipientPublicKey) throw new Error('Invalid public key');
 
 		fingerprint = await recipientPublicKey.getFingerprint();
-		if (!this.isValidFingerprint(contact.fingerprint)) throw new Error('Incorrect fingerprint entered');
+		if (!CONTACT.isValidFingerprint(fingerprint)) throw new Error('Incorrect fingerprint entered');
 
 		let contact = await CONTACT.check(fingerprint);
 		if (!contact) {
@@ -142,7 +142,7 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		contactPublicKeyInput.value = publicKey;
 
 		contactNameInput.readOnly = false;
-		UI.show(contactNicknameArea, 'input-container');
+		UI.show(contactNameArea, 'input-container');
 		UI.show(contactEmailArea, 'input-container');
 		UI.show(contactFingerprintArea, 'input-container');
 
@@ -206,7 +206,6 @@ async function wrap(elem) {
 				UI.show(modalBackground, 'modal-background');
 				UI.show(qrScanner, 'modal');
 				UI.show(qrInfo, 'show');
-				qrReaderResult.innerHTML = '';
 				html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 				break;
 
