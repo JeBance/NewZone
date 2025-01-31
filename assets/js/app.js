@@ -148,7 +148,7 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 
 		html5QrCode.stop();
 		UI.hide(qrScanner);
-		UI.show(contactInfo, 'modal flex-start');
+		UI.show(contact, 'modal flex-start');
 		UI.hide(loader);
 	} catch(e) {
 		console.log(e);
