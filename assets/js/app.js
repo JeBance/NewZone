@@ -117,8 +117,8 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		fingerprint = await recipientPublicKey.getFingerprint();
 		if (!CONTACT.isValidFingerprint(fingerprint)) throw new Error('Incorrect fingerprint entered');
 
-		let contact = await CONTACT.check(fingerprint);
-		if (!contact) {
+		let check = await CONTACT.check(fingerprint);
+		if (!check) {
 			nickname = recipientPublicKey.users[0].userID.name;
 			email = recipientPublicKey.users[0].userID.email;
 			publicKey = decodedText;
@@ -127,9 +127,9 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 			UI.hide(contactSave);
 			UI.show(contactChat, 'btn btn-start');
 		} else {
-			nickname = contact.nickname;
-			email = contact.email;
-			publicKey = contact.publicKey;
+			nickname = check.nickname;
+			email = check.email;
+			publicKey = check.publicKey;
 			UI.hide(contactAdd);
 			UI.show(contactEdit, 'btn btn-start');
 			UI.hide(contactSave);
