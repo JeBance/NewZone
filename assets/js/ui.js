@@ -33,6 +33,29 @@ class UserInterface {
 		`;
 	}
 
+	addContactButton(elem, obj = {
+		nickname: '',
+		email: '',
+		fingerprint: ''
+	}) {
+		let newContact = document.createElement('div');
+		newContact.id = obj.fingerprint;
+		newContact.name = 'contact';
+		newContact.className = 'leftItem';
+		newContact.setAttribute('onclick', 'UI.click(this)');
+		newContact.innerHTML = `
+			<div class="avatar">👾</div>
+			<div class="leftItemInfo">
+				<div class="leftItemInfoTop">
+					<div class="leftItemInfoName">` + obj.nickname + `</div>
+				</div>
+				<div class="leftItemInfoBottom">
+					<div class="leftItemInfoText">` + obj.email + `</div>
+				</div>
+			</div>`;
+		elem.append(newContact);
+	}
+
 	menuAnimation() {
 		if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
 			this.show(menu, 'showMenu menu');
@@ -44,7 +67,7 @@ class UserInterface {
 	}
 
 	async click(elem) {
-		let init, nickname, email, fingerprint, publicKey;
+		let init, check, nickname, email, fingerprint, publicKey;
 		try {
 
 			switch(elem.id) {
@@ -73,6 +96,10 @@ class UserInterface {
 				case 'buttonContacts':
 					this.menuAnimation();
 					this.hideAll('modal');
+					contactsList.innerHTML = '';
+					let allContacts = await CONTACT.getAllContacts();
+					for (let i = 0, l = allContacts.length; i < l; i++)
+					this.addContactButton(contactsList, allContacts[i]);
 					this.show(background, 'modal-background');
 					this.show(contacts, 'modal');
 					break;
@@ -105,15 +132,14 @@ class UserInterface {
 							publicKey: publicKey
 						});
 		
-						if (init) {
-							contactNameInput.readOnly = true;
-							this.hide(buttonContactAdd);
-							this.show(buttonContactEdit, 'btn btn-start');
-							this.hide(buttonContactSave);
-							this.show(buttonContactChat, 'btn btn-start');
-CONTACT.nickname = contactNameInput.value;
-							await CONTACT.save();
-						}
+						if (!init) throw new Error('Failed to initialize contact');
+						contactNameInput.readOnly = true;
+						this.hide(buttonContactAdd);
+						this.show(buttonContactEdit, 'btn btn-start');
+						this.hide(buttonContactSave);
+						this.show(buttonContactChat, 'btn btn-start');
+						CONTACT.nickname = contactNameInput.value;
+						await CONTACT.save();
 					} else {
 						alert('Введите имя контакта');
 					}
@@ -165,6 +191,25 @@ CONTACT.nickname = contactNameInput.value;
 					localStorage.recipientPublicKey = '';
 					this.hide(blockCenter);
 					this.show(blockLeft, 'left');
+					break;
+
+				case 'contact':
+					check = await CONTACT.check(elem.id);
+					if (!check) throw new Error('Contact not found');
+					
+					contactNameInput.value = check.nickname;
+					contactEmailInput.value = check.email;
+					contactFingerprintInput.value = check.fingerprint;
+					contactPublicKeyInput.value = check.publicKey;
+
+					this.hide(contacts);
+					this.show(background, 'modal-background');
+					this.show(contact, 'modal');
+					contactNameInput.readOnly = true;
+					this.hide(buttonContactAdd);
+					this.show(buttonContactEdit, 'btn btn-start');
+					this.hide(buttonContactSave);
+					this.show(buttonContactChat, 'btn btn-start');
 					break;
 
 				default:
