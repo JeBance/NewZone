@@ -91,6 +91,7 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 			UI.hide(buttonContactEdit);
 			UI.hide(buttonContactSave);
 			UI.show(buttonContactChat, 'btn btn-start');
+			contactNameInput.readOnly = false;
 		} else {
 			nickname = check.nickname;
 			email = check.email;
@@ -99,6 +100,7 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 			UI.show(buttonContactEdit, 'btn btn-start');
 			UI.hide(buttonContactSave);
 			UI.show(buttonContactChat, 'btn btn-start');
+			contactNameInput.readOnly = true;
 		}
 
 		contactNameInput.value = nickname;
@@ -106,7 +108,6 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		contactFingerprintInput.value = fingerprint;
 		contactPublicKeyInput.value = publicKey;
 
-		contactNameInput.readOnly = false;
 		UI.show(contactNameArea, 'input-container');
 		UI.show(contactEmailArea, 'input-container');
 		UI.show(contactFingerprintArea, 'input-container');
