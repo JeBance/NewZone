@@ -22,9 +22,7 @@ container.click = async (elem) => {
 			PGP.eraseAllSecureData();
 			downloadNZPGPhref.removeAttribute('href');
 			downloadNZPGPhref.removeAttribute('download');
-			UI.hide(menuButtonContacts);
-			UI.hide(menuButtonChats);
-			UI.hideAll('modalSubBack');
+			UI.hideAll('buttonToSettings');
 			container.choice();
 			break;
 
@@ -135,9 +133,7 @@ container.generate = async function()
 	UI.show(containerInfoArea, 'info');
 	UI.show(containerSave, 'btn btn-start');
 	UI.show(containerOff, 'btn btn-start');
-	UI.show(menuButtonContacts, 'button');
-	UI.show(menuButtonChats, 'button');
-	UI.showAll('modalSubBack', 'btn-circle');
+	UI.showAll('buttonToSettings', 'btn-circle');
 	config.dbName = config.net + '-' + PGP.fingerprint;
 	await MESSAGES.updateMonitor();
 	cyclicMessagesCheck = MESSAGES.cyclicMessagesCheck();
