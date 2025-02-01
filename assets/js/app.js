@@ -5,7 +5,7 @@ const config = {
 		supportedScanTypes: [ Html5QrcodeScanType.SCAN_TYPE_CAMERA ]
 	}
 };
-const UI = new Ui();
+const UI = new UserInterface();
 const NODES = new Nodes();
 const CONTACT = new Contact();
 const MESSAGES = new Messages();
