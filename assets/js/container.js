@@ -22,7 +22,7 @@ container.click = async (elem) => {
 			PGP.eraseAllSecureData();
 			downloadNZPGPhref.removeAttribute('href');
 			downloadNZPGPhref.removeAttribute('download');
-			UI.hideAll('buttonToSettings');
+			UI.hideAll('backToSettings');
 			UI.hide(wraper);
 			container.choice();
 			break;
