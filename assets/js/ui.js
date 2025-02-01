@@ -77,18 +77,28 @@ class UserInterface {
 					UI.show(container, 'modal');
 					break;
 
-				case 'qrScan':
+				default:
+					break;
+			}
+	
+			switch(elem.getAttribute("name")) {
+				case 'menu':
+					if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
+						UI.show(menu, 'showMenu menu');
+						UI.show(shade, 'shade');
+					} else {
+						UI.show(menu, 'hideMenu menu');
+						UI.hide(shade);
+					}
+					break;
+
+				case 'qrScanner':
 					UI.show(background, 'modal-background');
 					UI.show(qrScanner, 'modal');
 					UI.show(qrInfo, 'show');
 					html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 					break;
 
-				default:
-					break;
-			}
-	
-			switch(elem.getAttribute("name")) {
 				case 'backToMain':
 					if (!PGP.active) throw new Error('Container not connected');
 					UI.hideAll('modal');
