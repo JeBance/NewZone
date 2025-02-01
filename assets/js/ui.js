@@ -60,6 +60,7 @@ class UserInterface {
 					config.net = selectNode.value;
 					this.hide(selectNodeBlock);
 					this.hideAll('modal');
+					this.hideAll('backToSettings');
 					this.show(containerHeader, 'header');
 					if (PGP.active) {
 						await container.generate();
