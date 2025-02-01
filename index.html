@@ -42,27 +42,27 @@
 	<div id="menu" class="menu">
 		<div id="publicKeyQR" class="flex" style="padding:10px;background:#ffffff;"></div>
 		<ul class="nav">
-			<a id="menuButtonMain" class="button" onclick="wrap(this)"><li><i class="fa fa-home fa-fw" aria-hidden="true"></i>Главная</li></a>
-			<a id="menuButtonContacts" class="button" onclick="wrap(this)"><li><i class="fa fa-address-book-o fa-fw" aria-hidden="true"></i>Контакты</li></a>
-			<a id="menuButtonChats" class="button" onclick="wrap(this)"><li><i class="fa fa-comments-o fa-fw" aria-hidden="true"></i>Сообщения</li></a>
-			<a id="menuButtonSettings" onclick="wrap(this)"><li><i class="fa fa-cogs fa-fw" aria-hidden="true"></i>Настройки</li></a>
+			<a id="menuButtonMain" class="button" onclick="UI.click(this)"><li><i class="fa fa-home fa-fw" aria-hidden="true"></i>Главная</li></a>
+			<a id="menuButtonContacts" class="button" onclick="UI.click(this)"><li><i class="fa fa-address-book-o fa-fw" aria-hidden="true"></i>Контакты</li></a>
+			<a id="menuButtonChats" class="button" onclick="UI.click(this)"><li><i class="fa fa-comments-o fa-fw" aria-hidden="true"></i>Сообщения</li></a>
+			<a id="menuButtonSettings" onclick="UI.click(this)"><li><i class="fa fa-cogs fa-fw" aria-hidden="true"></i>Настройки</li></a>
 		</ul>
 	</div>
 
-	<div id="modalBackground" class="modal-background" onclick="wrap(this)"></div>
+	<div id="modalBackground" class="modal-background" onclick="UI.click(this)"></div>
 
 	<div id="modalStart" class="modal space-between" name="modal">
 		<img id="poster" style="width:250px; height:250px;" src="assets/img/poster.svg">
 		<p id="jsCheck">Please turn JavaScript on and reload the page</p>
 
-		<div id="buttonStart" class="btn btn-start" onclick="wrap(this)">
+		<div id="buttonStart" class="btn btn-start" onclick="UI.click(this)">
 			<span>START</span>
 		</div>
 
 		<div id="selectNodeBlock" class="hide">
 			<label for="selectNode" style="margin: 1em;">Select a network of nodes:</label>
 			<select id="selectNode" class="select"></select>
-			<div id="buttonSelectNode" class="btn btn-start" onclick="wrap(this)">
+			<div id="buttonSelectNode" class="btn btn-start" onclick="UI.click(this)">
 				<span>SELECT</span>
 			</div>
 		</div>
@@ -79,20 +79,20 @@
 
 	<div id="listSettings" class="hide" name="modal">
 		<div class="header">
-			<div class="btn-circle" name="modalBack" onclick="wrap(this)">
+			<div class="btn-circle" name="modalBack" onclick="UI.click(this)">
 				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
 			</div>
 			<h1>Настройки</h1>
 		</div>
 
 		<div class="content">
-			<div id="setContainer" class="btn-settings" onclick="wrap(this)">Контейнер</div>
+			<div id="setContainer" class="btn-settings" onclick="UI.click(this)">Контейнер</div>
 		</div>
 	</div>
 
 	<div id="container" class="hide" name="subModal">
 		<div id="containerHeader" class="header">
-			<div class="btn-circle" name="modalSubBack" onclick="wrap(this)">
+			<div class="btn-circle" name="modalSubBack" onclick="UI.click(this)">
 				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
 			</div>
 			<h1>Контейнер</h1>
@@ -145,7 +145,7 @@
 
 	<div id="qrScanner" class="hide" name="modal">
 		<div class="header">
-			<div class="btn-circle" name="modalBack" onclick="wrap(this)">
+			<div class="btn-circle" name="modalBack" onclick="UI.click(this)">
 				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
 			</div>
 			<h1>Сканер QR-кода</h1>
@@ -159,7 +159,7 @@
 
 	<div id="contacts" class="hide" name="modal">
 		<div class="header">
-			<div class="btn-circle" name="modalBack" onclick="wrap(this)">
+			<div class="btn-circle" name="modalBack" onclick="UI.click(this)">
 				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
 			</div>
 			<h1>Contacts</h1>
@@ -171,7 +171,7 @@
 
 	<div id="contact" class="hide" name="subModal">
 		<div class="header">
-			<div class="btn-circle" name="modalSubBack" onclick="wrap(this)">
+			<div class="btn-circle" name="modalSubBack" onclick="UI.click(this)">
 				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
 			</div>
 			<h1>Contact</h1>
@@ -241,7 +241,7 @@
 			<div id="blockLeftTop" class="header" style="justify-content: space-between;">
 				<div class="btn-square" onclick="menu.animation()"><span class="fa fa-bars fa-2x" aria-hidden="true"></span></div>
 				<div class="cyberpunk"><span style="color:red;">New</span> Zone</div>
-				<div id="qrScan" class="btn-square" onclick="wrap(this)"><span class="fa fa-qrcode fa-2x" aria-hidden="true"></span></div>
+				<div id="qrScan" class="btn-square" onclick="UI.click(this)"><span class="fa fa-qrcode fa-2x" aria-hidden="true"></span></div>
 			</div>
 
 			<div id="blockLeftCenter" class="content">
