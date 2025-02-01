@@ -44,6 +44,7 @@ class UserInterface {
 	}
 
 	async click(elem) {
+		let init, nickname, email, fingerprint, publicKey;
 		try {
 
 			switch(elem.id) {
@@ -85,6 +86,43 @@ class UserInterface {
 				case 'buttonSettingsContainer':
 					this.hideAll('modal');
 					this.show(container, 'modal');
+					break;
+
+				case 'buttonContactAdd':
+				case 'buttonContactSave':
+				case 'contactNameInput':
+					if (contactNameInput.value.length > 0) {
+						nickname = contactNameInput.value;
+						email = contactEmailInput.value;
+						fingerprint = contactFingerprintInput.value;
+						publicKey = contactPublicKeyInput.value;
+		
+						init = await CONTACT.init({
+							nickname: nickname,
+							email: email,
+							fingerprint: fingerprint,
+							publicKey: publicKey
+						});
+		
+						if (init) {
+							contactNameInput.readOnly = true;
+							this.hide(buttonContactAdd);
+							this.show(buttonContactEdit, 'btn btn-start');
+							this.hide(buttonContactSave);
+							this.show(buttonContactChat, 'btn btn-start');
+							await CONTACT.save();
+						}
+					} else {
+						alert('Введите имя контакта');
+					}
+					break;
+		
+				case 'buttonContactEdit':
+					contactNameInput.readOnly = false;
+					this.hide(buttonContactAdd);
+					this.hide(buttonContactEdit);
+					this.show(buttonContactSave, 'btn btn-start');
+					this.hide(buttonContactChat);
 					break;
 
 				default:
