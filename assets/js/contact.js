@@ -133,7 +133,7 @@ contact.click = async (elem) => {
 			UI.hide(contactChat);
 			break;
 
-		case 'contactNameInput':
+		case 'contactSave', 'contactNameInput':
 			if (contactNameInput.value.length > 0) {
 				nickname = contactNameInput.value;
 				email = contactEmailInput.value;
