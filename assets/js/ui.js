@@ -35,11 +35,11 @@ class UserInterface {
 
 	menuAnimation() {
 		if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
-			UI.show(menu, 'showMenu menu');
-			UI.show(shade, 'shade');
+			this.show(menu, 'showMenu menu');
+			this.show(shade, 'shade');
 		} else {
-			UI.show(menu, 'hideMenu menu');
-			UI.hide(shade);
+			this.show(menu, 'hideMenu menu');
+			this.hide(shade);
 		}
 	}
 
@@ -48,43 +48,43 @@ class UserInterface {
 
 			switch(elem.id) {
 				case 'buttonStart':
-					UI.hide(buttonStart);
+					this.hide(buttonStart);
 					NODES.cyclicNodesCheck();
-					UI.show(selectNodeBlock, 'flex');
+					this.show(selectNodeBlock, 'flex');
 					loader.show(start, selectNodeBlock);
 					fillingNodeNetsSelectionOtions;
 					break;
 
 				case 'buttonSelectNode':
 					config.net = selectNode.value;
-					UI.hide(selectNodeBlock);
-					UI.hideAll('modal');
-					UI.show(containerHeader, 'header');
+					this.hide(selectNodeBlock);
+					this.hideAll('modal');
+					this.show(containerHeader, 'header');
 					if (PGP.active) {
 						await container.generate();
 					} else {
 						container.choice();
 					}
-					UI.show(container, 'modal flex-start');
+					this.show(container, 'modal flex-start');
 					break;
 
 				case 'buttonContacts':
 					this.menuAnimation();
-					UI.hideAll('modal');
-					UI.show(background, 'modal-background');
-					UI.show(contacts, 'modal');
+					this.hideAll('modal');
+					this.show(background, 'modal-background');
+					this.show(contacts, 'modal');
 					break;
 
 				case 'buttonSettings':
 					this.menuAnimation();
-					UI.hideAll('modal');
-					UI.show(background, 'modal-background');
-					UI.show(settings, 'modal');
+					this.hideAll('modal');
+					this.show(background, 'modal-background');
+					this.show(settings, 'modal');
 					break;
 
 				case 'buttonSettingsContainer':
-					UI.hideAll('modal');
-					UI.show(container, 'modal');
+					this.hideAll('modal');
+					this.show(container, 'modal');
 					break;
 
 				default:
@@ -97,27 +97,27 @@ class UserInterface {
 					break;
 
 				case 'qrScanner':
-					UI.show(background, 'modal-background');
-					UI.show(qrScanner, 'modal');
-					UI.show(qrInfo, 'show');
+					this.show(background, 'modal-background');
+					this.show(qrScanner, 'modal');
+					this.show(qrInfo, 'show');
 					html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 					break;
 
 				case 'backToMain':
 					if (!PGP.active) throw new Error('Container not connected');
-					UI.hideAll('modal');
-					UI.hide(background);
+					this.hideAll('modal');
+					this.hide(background);
 					if (html5QrCode.isScanning === true) html5QrCode.stop();
 					break;
 	
 				case 'backToSettings':
-					UI.hideAll('modal');
-					UI.show(listSettings, 'modal');
+					this.hideAll('modal');
+					this.show(listSettings, 'modal');
 					break;
 
 				case 'backToContacts':
-					UI.hideAll('modal');
-					UI.show(contacts, 'modal');
+					this.hideAll('modal');
+					this.show(contacts, 'modal');
 					break;
 
 				default:
