@@ -40,7 +40,7 @@ window.onresize = () => {
 		UI.hide(backToChats);
 		UI.show(blockLeft, 'left');
 	} else {
-		UI.show(backTopChats, 'square');
+		UI.show(backToChats, 'square');
 		if ((localStorage.recipientFingerprint !== undefined)
 		&& (localStorage.recipientPublicKey !== undefined)
 		&& (localStorage.recipientFingerprint.length > 0)
@@ -87,18 +87,18 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 			nickname = recipientPublicKey.users[0].userID.name;
 			email = recipientPublicKey.users[0].userID.email;
 			publicKey = decodedText;
-			UI.show(contactAdd, 'btn btn-start');
-			UI.hide(contactEdit);
-			UI.hide(contactSave);
-			UI.show(contactChat, 'btn btn-start');
+			UI.show(buttonContactAdd, 'btn btn-start');
+			UI.hide(buttonContactEdit);
+			UI.hide(buttonContactSave);
+			UI.show(buttonContactChat, 'btn btn-start');
 		} else {
 			nickname = check.nickname;
 			email = check.email;
 			publicKey = check.publicKey;
-			UI.hide(contactAdd);
-			UI.show(contactEdit, 'btn btn-start');
-			UI.hide(contactSave);
-			UI.show(contactChat, 'btn btn-start');
+			UI.hide(buttonContactAdd);
+			UI.show(buttonContactEdit, 'btn btn-start');
+			UI.hide(buttonContactSave);
+			UI.show(buttonContactChat, 'btn btn-start');
 		}
 
 		contactNameInput.value = nickname;
