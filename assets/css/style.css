@@ -340,6 +340,7 @@ hr {
 }
 
 .leftItem {
+	width: 100%;
 	margin: 1px 0 1px 0;
 	padding: 10px 0 10px 0;
 	cursor: pointer;

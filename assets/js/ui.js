@@ -40,7 +40,7 @@ class UserInterface {
 	}) {
 		let newContact = document.createElement('div');
 		newContact.id = obj.fingerprint;
-		newContact.name = 'contact';
+		newContact.setAttribute('name', 'contact');
 		newContact.className = 'leftItem';
 		newContact.setAttribute('onclick', 'UI.click(this)');
 		newContact.innerHTML = `
@@ -54,6 +54,20 @@ class UserInterface {
 				</div>
 			</div>`;
 		elem.append(newContact);
+	}
+
+	async refreshContactsList() {
+		contactsList.innerHTML = '';
+		let allContacts = await CONTACT.getAllContacts();
+		for (let i = 0, l = allContacts.length; i < l; i++)
+		this.addContactButton(contactsList, allContacts[i]);
+	}
+
+	async showContacts() {
+		this.hideAll('modal');
+		await this.refreshContactsList();
+		this.show(background, 'modal-background');
+		this.show(contacts, 'modal');
 	}
 
 	menuAnimation() {
@@ -96,10 +110,7 @@ class UserInterface {
 				case 'buttonContacts':
 					this.menuAnimation();
 					this.hideAll('modal');
-					contactsList.innerHTML = '';
-					let allContacts = await CONTACT.getAllContacts();
-					for (let i = 0, l = allContacts.length; i < l; i++)
-					this.addContactButton(contactsList, allContacts[i]);
+					await this.refreshContactsList();
 					this.show(background, 'modal-background');
 					this.show(contacts, 'modal');
 					break;
@@ -182,8 +193,7 @@ class UserInterface {
 					break;
 
 				case 'backToContacts':
-					this.hideAll('modal');
-					this.show(contacts, 'modal');
+					this.showContacts();
 					break;
 
 				case 'backToChats':
