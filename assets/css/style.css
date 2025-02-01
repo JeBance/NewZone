@@ -25,6 +25,7 @@ html, body {
 	font-family: system-ui;
 	touch-action: none;
 	overflow: hidden;
+	background: var(--color-background-1);
 }
 
 a {
