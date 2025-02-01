@@ -33,34 +33,11 @@ let fillingNodeNetsSelectionOtions = setInterval(async () => {
 	}
 }, 1000);
 
-menu.animation = () => {
-	if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
-		menu.className = 'showMenu menu';
-		shade.className = 'shade';
-	} else {
-		menu.className = 'hideMenu menu';
-		shade.className = 'hide';
-	}
-}
-
-async function backWrap(elem)
-{
-	switch(elem.id) {
-		case 'backCenterTopButton':
-			hide.tempDataInLocalStorage();
-			UI.hide(blockCenter);
-			UI.show(blockLeft, 'left');
-
-		default:
-			break;
-	}
-}
-
 window.onresize = () => {
 	if (document.documentElement.clientWidth > 799) {
 		UI.show(menu, 'menu');
 		UI.hide(shade);
-		UI.hide(backCenterTopButton);
+		UI.hide(backToChats);
 		UI.show(blockLeft, 'left');
 	} else {
 		UI.show(backCenterTopButton, 'square');
@@ -72,19 +49,6 @@ window.onresize = () => {
 			UI.show(blockCenter, 'center');
 		}
 	}
-}
-
-hide.pages = () => {
-	UI.hide(contacts);
-	UI.hide(chats);
-	UI.hide(infoPage);
-	UI.hide(messagesPage);
-	UI.hide(accountPage);
-}
-
-hide.tempDataInLocalStorage = () => {
-	localStorage.recipientFingerprint = '';
-	localStorage.recipientPublicKey = '';
 }
 
 const timestampToTime = (unix_timestamp) => {
@@ -157,8 +121,3 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		html5QrCode.resume();
 	}
 };
-
-//hide.pages();
-UI.hide(menuButtonContacts);
-UI.hide(menuButtonChats);
-
