@@ -33,6 +33,16 @@ class UserInterface {
 		`;
 	}
 
+	menuAnimation() {
+		if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
+			UI.show(menu, 'showMenu menu');
+			UI.show(shade, 'shade');
+		} else {
+			UI.show(menu, 'hideMenu menu');
+			UI.hide(shade);
+		}
+	}
+
 	async click(elem) {
 		try {
 
@@ -59,14 +69,14 @@ class UserInterface {
 					break;
 
 				case 'buttonContacts':
-					menu.animation();
+					this.menuAnimation();
 					UI.hideAll('modal');
 					UI.show(background, 'modal-background');
 					UI.show(contacts, 'modal');
 					break;
 
 				case 'buttonSettings':
-					menu.animation();
+					this.menuAnimation();
 					UI.hideAll('modal');
 					UI.show(background, 'modal-background');
 					UI.show(settings, 'modal');
@@ -83,13 +93,7 @@ class UserInterface {
 	
 			switch(elem.getAttribute("name")) {
 				case 'menu':
-					if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
-						UI.show(menu, 'showMenu menu');
-						UI.show(shade, 'shade');
-					} else {
-						UI.show(menu, 'hideMenu menu');
-						UI.hide(shade);
-					}
+					this.menuAnimation();
 					break;
 
 				case 'qrScanner':
