@@ -33,4 +33,82 @@ class Ui {
 		`;
 	}
 
+	click(elem) {
+		try {
+	
+			switch(elem.id) {
+				case 'modalBackground':
+					if (!PGP.active) throw new Error('Container not connected');
+					UI.hideAll('modal');
+					UI.hideAll('subModal');
+					UI.hide(elem);
+					if (html5QrCode.isScanning === true) html5QrCode.stop();
+					break;
+	
+				case 'buttonStart':
+					UI.hide(buttonStart);
+					NODES.cyclicNodesCheck();
+					UI.show(selectNodeBlock, 'flex');
+					loader.show(modalStart, selectNodeBlock);
+					fillingNodeNetsSelectionOtions;
+					break;
+	
+				case 'buttonSelectNode':
+					config.net = selectNode.value;
+					UI.hide(selectNodeBlock);
+					UI.hide(modalStart);
+					UI.hideAll('modalSubBack');
+					UI.show(containerHeader, 'header');
+					if (PGP.active) {
+						await container.generate();
+					} else {
+						container.choice();
+					}
+					UI.show(container, 'modal flex-start');
+					break;
+	
+				case 'menuButtonSettings':
+					menu.animation();
+					UI.show(modalBackground, 'modal-background');
+					UI.show(listSettings, 'modal');
+					break;
+	
+				case 'setContainer':
+					UI.hide(listSettings);
+					UI.show(container, 'modal');
+					break;
+	
+				case 'qrScan':
+					UI.show(modalBackground, 'modal-background');
+					UI.show(qrScanner, 'modal');
+					UI.show(qrInfo, 'show');
+					html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
+					break;
+	
+				default:
+					break;
+			}
+	
+			switch(elem.getAttribute("name")) {
+				case 'modalBack':
+					UI.hideAll('modal');
+					UI.hideAll('subModal');
+					UI.hide(modalBackground);
+					if (html5QrCode.isScanning === true) html5QrCode.stop();
+					break;
+	
+				case 'modalSubBack':
+					UI.hideAll('subModal');
+					UI.show(listSettings, 'modal');
+					break;
+	
+				default:
+					break;
+			}
+	
+		} catch(e) {
+			console.log(e);
+		}		
+	}
+
 }
