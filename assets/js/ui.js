@@ -111,6 +111,7 @@ class UserInterface {
 							this.show(buttonContactEdit, 'btn btn-start');
 							this.hide(buttonContactSave);
 							this.show(buttonContactChat, 'btn btn-start');
+CONTACT.nickname = contactNameInput.value;
 							await CONTACT.save();
 						}
 					} else {
