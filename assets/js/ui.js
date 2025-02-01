@@ -35,16 +35,16 @@ class UserInterface {
 
 	async click(elem) {
 		try {
-	
+
 			switch(elem.id) {
 				case 'buttonStart':
 					UI.hide(buttonStart);
 					NODES.cyclicNodesCheck();
 					UI.show(selectNodeBlock, 'flex');
-					loader.show(modalStart, selectNodeBlock);
+					loader.show(start, selectNodeBlock);
 					fillingNodeNetsSelectionOtions;
 					break;
-	
+
 				case 'buttonSelectNode':
 					config.net = selectNode.value;
 					UI.hide(selectNodeBlock);
@@ -57,25 +57,33 @@ class UserInterface {
 					}
 					UI.show(container, 'modal flex-start');
 					break;
-	
-				case 'menuButtonSettings':
+
+				case 'buttonContacts':
 					menu.animation();
-					UI.show(modalBackground, 'modal-background');
-					UI.show(listSettings, 'modal');
+					UI.hideAll('modal');
+					UI.show(background, 'modal-background');
+					UI.show(contacts, 'modal');
 					break;
-	
-				case 'setContainer':
+
+				case 'buttonSettings':
+					menu.animation();
+					UI.hideAll('modal');
+					UI.show(background, 'modal-background');
+					UI.show(settings, 'modal');
+					break;
+
+				case 'buttonSettingsContainer':
 					UI.hideAll('modal');
 					UI.show(container, 'modal');
 					break;
-	
+
 				case 'qrScan':
-					UI.show(modalBackground, 'modal-background');
+					UI.show(background, 'modal-background');
 					UI.show(qrScanner, 'modal');
 					UI.show(qrInfo, 'show');
 					html5QrCode.start({ facingMode: "environment" }, config.qrScan, qrCodeSuccessCallback);
 					break;
-	
+
 				default:
 					break;
 			}
@@ -84,7 +92,7 @@ class UserInterface {
 				case 'backToMain':
 					if (!PGP.active) throw new Error('Container not connected');
 					UI.hideAll('modal');
-					UI.hide(modalBackground);
+					UI.hide(background);
 					if (html5QrCode.isScanning === true) html5QrCode.stop();
 					break;
 	
