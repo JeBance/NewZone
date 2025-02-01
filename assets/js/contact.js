@@ -92,75 +92,49 @@ class Contact {
 		let allContacts = await x.then((value) => { return value; });
 		return allContacts;
 	}
-}
 
-
-
-contact.click = async (elem) => {
-	let init, nickname, email, fingerprint, publicKey;
-	switch(elem.id) {
-		case 'contactAdd':
-			if (contactNameInput.value.length > 0) {
-				nickname = contactNameInput.value;
-				email = contactEmailInput.value;
-				fingerprint = contactFingerprintInput.value;
-				publicKey = contactPublicKeyInput.value;
-
-				init = await CONTACT.init({
-					nickname: nickname,
-					email: email,
-					fingerprint: fingerprint,
-					publicKey: publicKey
-				});
-
-				if (init) {
-					contactNameInput.readOnly = true;
-					UI.hide(contactAdd);
-					UI.show(contactEdit, 'btn btn-start');
-					UI.hide(contactSave);
-					UI.show(contactChat, 'btn btn-start');
+	async click(elem) {
+		let init, nickname, email, fingerprint, publicKey;
+		switch(elem.id) {
+			case 'contactAdd':
+			case 'contactSave':
+			case 'contactNameInput':
+				if (contactNameInput.value.length > 0) {
+					nickname = contactNameInput.value;
+					email = contactEmailInput.value;
+					fingerprint = contactFingerprintInput.value;
+					publicKey = contactPublicKeyInput.value;
+	
+					init = await CONTACT.init({
+						nickname: nickname,
+						email: email,
+						fingerprint: fingerprint,
+						publicKey: publicKey
+					});
+	
+					if (init) {
+						contactNameInput.readOnly = true;
+						UI.hide(contactAdd);
+						UI.show(contactEdit, 'btn btn-start');
+						UI.hide(contactSave);
+						UI.show(contactChat, 'btn btn-start');
+						await CONTACT.save();
+					}
+				} else {
+					alert('Введите имя контакта');
 				}
-			} else {
-				alert('Введите имя контакта');
-			}
-			break;
-
-		case 'contactEdit':
-			contactNameInput.readOnly = false;
-			UI.hide(contactAdd);
-			UI.hide(contactEdit);
-			UI.show(contactSave, 'btn btn-start');
-			UI.hide(contactChat);
-			break;
-
-		case 'contactSave', 'contactNameInput':
-			if (contactNameInput.value.length > 0) {
-				nickname = contactNameInput.value;
-				email = contactEmailInput.value;
-				fingerprint = contactFingerprintInput.value;
-				publicKey = contactPublicKeyInput.value;
-
-				init = CONTACT.init({
-					nickname: nickname,
-					email: email,
-					fingerprint: fingerprint,
-					publicKey: publicKey
-				});
-
-				if (init) {
-					contactNameInput.readOnly = true;
-					UI.hide(contactAdd);
-					UI.show(contactEdit, 'btn btn-start');
-					UI.hide(contactSave);
-					UI.show(contactChat, 'btn btn-start');
-					CONTACT.save();
-				}
-			} else {
-				alert('Введите имя контакта');
-			}
-			break;
-
-		default:
-			break;
+				break;
+	
+			case 'contactEdit':
+				contactNameInput.readOnly = false;
+				UI.hide(contactAdd);
+				UI.hide(contactEdit);
+				UI.show(contactSave, 'btn btn-start');
+				UI.hide(contactChat);
+				break;
+	
+			default:
+				break;
+		}
 	}
 }
