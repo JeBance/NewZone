@@ -5,7 +5,6 @@ const config = {
 		supportedScanTypes: [ Html5QrcodeScanType.SCAN_TYPE_CAMERA ]
 	}
 };
-const tmp = {};
 const UI = new Ui();
 const NODES = new Nodes();
 const CONTACT = new Contact();
@@ -50,7 +49,7 @@ async function backWrap(elem)
 		case 'backCenterTopButton':
 			hide.tempDataInLocalStorage();
 			UI.hide(blockCenter);
-UI.show(blockLeft, 'left');
+			UI.show(blockLeft, 'left');
 
 		default:
 			break;
@@ -65,7 +64,9 @@ window.onresize = () => {
 		UI.show(blockLeft, 'left');
 	} else {
 		UI.show(backCenterTopButton, 'square');
-		if ((localStorage.recipientFingerprint.length > 0)
+		if ((localStorage.recipientFingerprint !== undefined)
+		&& (localStorage.recipientPublicKey !== undefined)
+		&& (localStorage.recipientFingerprint.length > 0)
 		&& (localStorage.recipientPublicKey.length > 0)) {
 			UI.hide(blockLeft);
 			UI.show(blockCenter, 'center');
