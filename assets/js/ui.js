@@ -120,6 +120,13 @@ class UserInterface {
 					this.show(contacts, 'modal');
 					break;
 
+				case 'backToChats':
+					localStorage.recipientFingerprint = '';
+					localStorage.recipientPublicKey = '';
+					this.hide(blockCenter);
+					this.show(blockLeft, 'left');
+					break;
+
 				default:
 					break;
 			}
