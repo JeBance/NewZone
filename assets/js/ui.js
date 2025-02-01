@@ -112,7 +112,7 @@ class UserInterface {
 	
 				case 'backToSettings':
 					this.hideAll('modal');
-					this.show(listSettings, 'modal');
+					this.show(settings, 'modal');
 					break;
 
 				case 'backToContacts':
