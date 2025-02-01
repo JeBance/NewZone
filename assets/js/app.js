@@ -121,3 +121,5 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		html5QrCode.resume();
 	}
 };
+
+UI.hide(wraper);
