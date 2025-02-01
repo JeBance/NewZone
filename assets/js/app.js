@@ -40,7 +40,7 @@ window.onresize = () => {
 		UI.hide(backToChats);
 		UI.show(blockLeft, 'left');
 	} else {
-		UI.show(backCenterTopButton, 'square');
+		UI.show(backTopChats, 'square');
 		if ((localStorage.recipientFingerprint !== undefined)
 		&& (localStorage.recipientPublicKey !== undefined)
 		&& (localStorage.recipientFingerprint.length > 0)
