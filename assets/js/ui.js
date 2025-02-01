@@ -37,14 +37,6 @@ class Ui {
 		try {
 	
 			switch(elem.id) {
-				case 'modalBackground':
-					if (!PGP.active) throw new Error('Container not connected');
-					UI.hideAll('modal');
-					UI.hideAll('subModal');
-					UI.hide(elem);
-					if (html5QrCode.isScanning === true) html5QrCode.stop();
-					break;
-	
 				case 'buttonStart':
 					UI.hide(buttonStart);
 					NODES.cyclicNodesCheck();
@@ -56,8 +48,7 @@ class Ui {
 				case 'buttonSelectNode':
 					config.net = selectNode.value;
 					UI.hide(selectNodeBlock);
-					UI.hide(modalStart);
-					UI.hideAll('modalSubBack');
+					UI.hideAll('modal');
 					UI.show(containerHeader, 'header');
 					if (PGP.active) {
 						await container.generate();
@@ -74,7 +65,7 @@ class Ui {
 					break;
 	
 				case 'setContainer':
-					UI.hide(listSettings);
+					UI.hideAll('modal');
 					UI.show(container, 'modal');
 					break;
 	
@@ -90,18 +81,23 @@ class Ui {
 			}
 	
 			switch(elem.getAttribute("name")) {
-				case 'modalBack':
+				case 'backToMain':
+					if (!PGP.active) throw new Error('Container not connected');
 					UI.hideAll('modal');
-					UI.hideAll('subModal');
 					UI.hide(modalBackground);
 					if (html5QrCode.isScanning === true) html5QrCode.stop();
 					break;
 	
-				case 'modalSubBack':
-					UI.hideAll('subModal');
+				case 'backToSettings':
+					UI.hideAll('modal');
 					UI.show(listSettings, 'modal');
 					break;
-	
+
+				case 'backToContacts':
+					UI.hideAll('modal');
+					UI.show(contacts, 'modal');
+					break;
+
 				default:
 					break;
 			}
