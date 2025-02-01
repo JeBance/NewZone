@@ -23,6 +23,7 @@ container.click = async (elem) => {
 			downloadNZPGPhref.removeAttribute('href');
 			downloadNZPGPhref.removeAttribute('download');
 			UI.hideAll('buttonToSettings');
+			UI.hide(wraper);
 			container.choice();
 			break;
 
@@ -134,6 +135,7 @@ container.generate = async function()
 	UI.show(containerSave, 'btn btn-start');
 	UI.show(containerOff, 'btn btn-start');
 	UI.showAll('buttonToSettings', 'btn-circle');
+	UI.show(wraper, 'wraper');
 	config.dbName = config.net + '-' + PGP.fingerprint;
 	await MESSAGES.updateMonitor();
 	cyclicMessagesCheck = MESSAGES.cyclicMessagesCheck();
