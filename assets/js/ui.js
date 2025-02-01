@@ -1,4 +1,4 @@
-class Ui {
+class UserInterface {
 
 	hide(elem) {
 		elem.setAttribute('class', 'hide');
@@ -33,7 +33,7 @@ class Ui {
 		`;
 	}
 
-	click(elem) {
+	async click(elem) {
 		try {
 	
 			switch(elem.id) {
