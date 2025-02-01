@@ -134,7 +134,7 @@ container.generate = async function()
 	UI.show(containerInfoArea, 'info');
 	UI.show(containerSave, 'btn btn-start');
 	UI.show(containerOff, 'btn btn-start');
-	UI.showAll('buttonToSettings', 'btn-circle');
+	UI.showAll('backToSettings', 'btn-circle');
 	UI.show(wraper, 'wraper');
 	config.dbName = config.net + '-' + PGP.fingerprint;
 	await MESSAGES.updateMonitor();
