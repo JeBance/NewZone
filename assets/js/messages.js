@@ -212,6 +212,27 @@ class Messages {
 		}
 	}
 
+	async checkSendedMessage(message) {
+		try {
+			await sleep(3);
+			let fastNodes = await NODES.getFastNodes();
+			if (!fastNodes) throw new Error('Node list is empty');
+
+			let result = await this.getMessage(message.hash, fastNodes[0]);
+			if (!result) throw new Error('Message missing from server');
+			
+			if ((result.hash !== message.hash)
+			|| (result.timestamp !== message.timestamp)
+			|| (result.message !== message.message))
+			throw new Error('Message missing from server');
+			
+			return true;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+	}
+
 /*
 (async () => {
 	let messages = await MESSAGES.getAllMessages();

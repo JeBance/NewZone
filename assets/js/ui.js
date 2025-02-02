@@ -137,6 +137,42 @@ class UserInterface {
 		blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
 	}
 
+	async checkPublicKeyMessage() {
+		try {
+			let allMessages = await getAllMessagesFromChat(localStorage.recipientFingerprint);
+			if (allMessages.length <= 0) {
+				let publicKeyMessage = await PGP.decryptMessageWithVerificationKey(PGP.publicKeyArmory, localStorage.recipientPublicKey);
+				if (publicKeyMessage) MESSAGES.sendMessage(publicKeyMessage);
+			}
+			return true;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+	}
+
+
+	async sendMessage(string) {
+		try {
+			if (messageInput.value <= 0) throw new ('');
+			let encrypted = PGP.encryptMessage(localStorage.recipientPublicKey, string);
+			let resultSendMessage = MESSAGES.sendMessage(encrypted);
+			if (!resultSendMessage) throw new Error('Failed to send message');
+			let message = {
+				hash: resultSendMessage.hash,
+				timestamp: resultSendMessage.timestamp,
+				message: string
+			}
+			
+			//	add MESSAGES.checkSendedMessage(message); ??????????
+
+			return message;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+	}
+
 	async click(elem) {
 		let init, check, nickname, email, fingerprint, publicKey;
 		try {
@@ -233,6 +269,20 @@ class UserInterface {
 					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
 
 					this.hide(contact);
+					break;
+
+				case 'buttonSendMessage':
+					this.checkPublicKeyMessage();
+
+					let message = this.sendMessage(messageInput.value);
+					if (!message) throw new Error('Failed to send message');
+					message.chat = localStorage.recipientFingerprint;
+					message.from = PGP.fingerprint;
+					message.wasRead = true;
+					
+					MESSAGES.add(message);
+					messageInput.value = '';
+					this.showMessage(message);
 					break;
 
 				default:

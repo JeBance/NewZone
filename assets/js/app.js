@@ -15,6 +15,8 @@ const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@((
 const modal = {};
 const hide = {};
 
+const sleep = (s) => new Promise((r) => setTimeout(r, (s * 1000)));
+
 loader.show = (parent, elem) => {
 	loader.className = 'loader-background';
 	loader.style.width = elem.offsetWidth + 'px';
