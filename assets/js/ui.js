@@ -33,6 +33,16 @@ class UserInterface {
 		`;
 	}
 
+	menuAnimation() {
+		if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
+			this.show(menu, 'showMenu menu');
+			this.show(shade, 'shade');
+		} else {
+			this.show(menu, 'hideMenu menu');
+			this.hide(shade);
+		}
+	}
+
 	addContactButton(elem, obj = {
 		nickname: '',
 		email: '',
@@ -70,14 +80,61 @@ class UserInterface {
 		this.show(contacts, 'modal');
 	}
 
-	menuAnimation() {
-		if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
-			this.show(menu, 'showMenu menu');
-			this.show(shade, 'shade');
-		} else {
-			this.show(menu, 'hideMenu menu');
-			this.hide(shade);
+	async refreshChatsList() {
+	}
+
+	async showChats() {
+	}
+
+	async showChat(chatID) {
+		try {
+			chatReadArea.innerHTML = '';
+			topChatInfoName.innerHTML = localStorage.recipientNickname;
+			let allMessages = await MESSAGES.getAllMessagesFromChat(chatID);
+			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
+			for (let i = 0, l = allMessages.length; i < l; i++) {
+				this.showMessage(allMessages[i]);
+			}
+			this.show(blockCenter, 'center');
+			blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
+			if (document.documentElement.clientWidth < 800) {
+				this.hide(blockLeft);
+			}
+			return true;
+		} catch(e) {
+			alert('Что-то пошло не так =/');
+			console.log(e);
+			return false;
 		}
+	}
+
+	async showMessage(message) {
+		let newContainerForMessage = document.createElement('div');
+		newContainerForMessage.id = message.hash;
+		newContainerForMessage.setAttribute('name', 'message');
+		(message.from == PGP.fingerprint)
+		? newContainerForMessage.className = 'message outgoingMessage'
+		: newContainerForMessage.className = 'message incomingMessage';
+
+		if (hasPGPstructure(message.message)) {
+			let decrypted = await PGP.decryptMessageWithVerificationKey(message.message, localStorage.recipientPublicKey);
+			if (!decrypted) throw new Error("Can't decrypt message");
+			message.message = decrypted;
+			MESSAGES.add(message);
+		}
+
+		newContainerForMessage.innerHTML = message.message;
+
+		let newContainerForTime = document.createElement('div');
+		newContainerForTime.setAttribute('name', 'message');
+		(message.from == message.chat)
+		? newContainerForTime.className = 'leftMessageTime'
+		: newContainerForTime.className = 'rightMessageTime';
+		newContainerForTime.innerHTML = timestampToTime(message.timestamp);
+
+		newContainerForMessage.append(newContainerForTime);
+		chatReadArea.append(newContainerForMessage);
+		blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
 	}
 
 	async click(elem) {
@@ -109,10 +166,7 @@ class UserInterface {
 
 				case 'buttonContacts':
 					this.menuAnimation();
-					this.hideAll('modal');
-					await this.refreshContactsList();
-					this.show(background, 'modal-background');
-					this.show(contacts, 'modal');
+					this.showContacts();
 					break;
 
 				case 'buttonSettings':
@@ -164,6 +218,23 @@ class UserInterface {
 					this.hide(buttonContactChat);
 					break;
 
+				case 'buttonContactChat':
+					localStorage.recipientNickname = contactNameInput.value;
+					localStorage.recipientEmail = contactEmailInput.value;
+					localStorage.recipientFingerprint = contactFingerprintInput.value;
+					localStorage.recipientPublicKey = contactPublicKeyInput.value;
+
+					contactNameInput.value = '';
+					contactEmailInput.value = '';
+					contactFingerprintInput.value = '';
+					contactPublicKeyInput.value = '';
+					
+					let loadChatComplete = await this.showChat(localStorage.recipientFingerprint);
+					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
+
+					this.hide(contact);
+					break;
+
 				default:
 					break;
 			}
@@ -197,6 +268,8 @@ class UserInterface {
 					break;
 
 				case 'backToChats':
+					localStorage.recipientNickname = '';
+					localStorage.recipientEmail = '';
 					localStorage.recipientFingerprint = '';
 					localStorage.recipientPublicKey = '';
 					this.hide(blockCenter);

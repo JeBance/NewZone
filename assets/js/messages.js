@@ -32,25 +32,24 @@ class Messages {
 		}
 	}
 
-	async add(message = { hash: 'somehash', timestamp: '1731683656118', chat: 'chatID', from: 'fingerprint', message: 'PGP message', wasRead: true } ) {
+	async add(message = {
+		hash: 'somehash',
+		timestamp: '1731683656118',
+		chat: 'chatID',
+		from: 'fingerprint',
+		message: 'PGP message',
+		wasRead: true
+	} ) {
 		try {
-			if (this.checkMessage(message.message) === false)
-			message = {
-				hash: message.hash,
-				timestamp: message.timestamp,
-				chat: false,
-				from: false,
-				message: false,
-				wasRead: true
-			};
 			this.list[message.hash] = message.timestamp;
+
 			await this.initDB();
 			let request = this.messages.put(message);
 			let x = new Promise((resolve, reject) => {
 				request.onsuccess = function() { resolve(request.result); }
 			});
 			await x.then((value) => {
-				console.log('\x1b[1m%s\x1b[0m', 'New message:', message.hash);
+//				console.log('\x1b[1m%s\x1b[0m', 'New message:', message.hash);
 			});
 		} catch(e) {
 			console.log(e);
@@ -89,6 +88,8 @@ class Messages {
 
 	async updateMessages(node = { prot: 'https', host: 'jebance.ru', port: 28262 }) {
 		try {
+			let checkMessage;
+
 			let list = await this.getMessages(node);
 			if (!list) throw new Error('Failed to get message list');
 
@@ -96,7 +97,20 @@ class Messages {
 			if (keys.length > 0) for (let i = 0, l = keys.length; i < l; i++) {
 				if (this.list[keys[i]] === undefined) {
 					var message = await this.getMessage(keys[i], node);
-					if (message) await this.add(message);
+					if (message) {
+						checkMessage = await this.checkMessage(message.message);
+						if ((message.from !== PGP.fingerprint) && (checkMessage === false))
+						message = {
+							hash: message.hash,
+							timestamp: message.timestamp,
+							chat: false,
+							from: false,
+							message: false,
+							wasRead: true
+						};
+
+						await this.add(message);
+					}
 				}
 			}
 
