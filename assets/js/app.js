@@ -110,10 +110,6 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 		contactFingerprintInput.value = fingerprint;
 		contactPublicKeyInput.value = publicKey;
 
-		UI.show(contactNameArea, 'input-container');
-		UI.show(contactEmailArea, 'input-container');
-		UI.show(contactFingerprintArea, 'input-container');
-
 		html5QrCode.stop();
 		UI.hide(qrScanner);
 		UI.show(contact, 'modal flex-start');
