@@ -392,7 +392,7 @@
 			<div id="blockCenterBottom" class="footer">
 				<div id="chatInputArea" class="chatInputArea">
 					<div id="messageInputLine" class="messageInputLine"><input id="messageInput" type="text" placeholder="Сообщение" onkeydown="{if(event.key=='Enter')sendMessageButton.click()}" class="selectable"></div>
-					<div id="buttonSendMessage" class="btn-circle" aria-hidden="true" onclick="UI.click()">
+					<div id="buttonSendMessage" class="btn-circle" aria-hidden="true" onclick="UI.click(this)">
 						<span class="fa fa-chevron-circle-right fa-2x"></span>
 					</div>
 				</div>
