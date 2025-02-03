@@ -221,10 +221,10 @@ class UserInterface {
 				case 'contactNameInput':
 					if (contactNameInput.value.length > 0) {
 						nickname = contactNameInput.value;
-						email = contactEmailInput.value;
-						fingerprint = contactFingerprintInput.value;
-						publicKey = contactPublicKeyInput.value;
-		
+						email = localStorage.recipientEmail;
+						fingerprint = localStorage.recipientFingerprint;
+						publicKey = localStorage.recipientPublicKey;
+
 						init = await CONTACT.init({
 							nickname: nickname,
 							email: email,
@@ -254,15 +254,9 @@ class UserInterface {
 					break;
 
 				case 'buttonContactChat':
-					localStorage.recipientNickname = contactNameInput.value;
-					localStorage.recipientEmail = contactEmailInput.value;
-					localStorage.recipientFingerprint = contactFingerprintInput.value;
-					localStorage.recipientPublicKey = contactPublicKeyInput.value;
-
 					contactNameInput.value = '';
 					contactEmailInput.value = '';
 					contactFingerprintInput.value = '';
-					contactPublicKeyInput.value = '';
 					
 					let loadChatComplete = await this.showChat(localStorage.recipientFingerprint);
 					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
@@ -330,10 +324,14 @@ class UserInterface {
 					check = await CONTACT.check(elem.id);
 					if (!check) throw new Error('Contact not found');
 					
+					localStorage.recipientNickname = check.nickname;
+					localStorage.recipientEmail = check.email;
+					localStorage.recipientFingerprint = check.fingerprint;
+					localStorage.recipientPublicKey = check.publicKey;
+
 					contactNameInput.value = check.nickname;
 					contactEmailInput.value = check.email;
 					contactFingerprintInput.value = check.fingerprint;
-					contactPublicKeyInput.value = check.publicKey;
 
 					this.hide(contacts);
 					this.show(background, 'modal-background');
