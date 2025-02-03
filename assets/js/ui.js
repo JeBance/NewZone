@@ -154,7 +154,6 @@ class UserInterface {
 
 	async sendMessage(string) {
 		try {
-			if (messageInput.value <= 0) throw new ('');
 			let encrypted = await PGP.encryptMessage(localStorage.recipientPublicKey, string);
 			let resultSendMessage = await MESSAGES.sendMessage(encrypted);
 			if (!resultSendMessage) throw new Error('Failed to send message');
@@ -274,6 +273,7 @@ class UserInterface {
 				case 'buttonSendMessage':
 					this.checkPublicKeyMessage();
 
+					if (messageInput.value <= 0) throw new Error('Input empty');
 					let message = await this.sendMessage(messageInput.value);
 					if (!message) throw new Error('Failed to send message');
 					message.chat = localStorage.recipientFingerprint;
@@ -282,7 +282,7 @@ class UserInterface {
 					
 					MESSAGES.add(message);
 					messageInput.value = '';
-					this.showMessage(message);
+					await this.showMessage(message);
 					break;
 
 				default:
