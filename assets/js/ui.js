@@ -117,7 +117,7 @@ class UserInterface {
 		? newContainerForMessage.className = 'message outgoingMessage'
 		: newContainerForMessage.className = 'message incomingMessage';
 
-		if (hasPGPstructure(message.message)) {
+		if (message.message.hasPGPstructure()) {
 			let decrypted = await PGP.decryptMessageWithVerificationKey(message.message, localStorage.recipientPublicKey);
 			if (!decrypted) throw new Error("Can't decrypt message");
 			message.message = decrypted;
