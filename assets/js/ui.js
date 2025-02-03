@@ -90,6 +90,7 @@ class UserInterface {
 		try {
 			chatReadArea.innerHTML = '';
 			topChatInfoName.innerHTML = localStorage.recipientNickname;
+			topChatInfoText.innerHTML = localStorage.recipientEmail;
 			let allMessages = await MESSAGES.getAllMessagesFromChat(chatID);
 			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			for (let i = 0, l = allMessages.length; i < l; i++) {
@@ -272,6 +273,7 @@ class UserInterface {
 					if (!message) throw new Error('Failed to send message');
 					message.chat = localStorage.recipientFingerprint;
 					message.from = PGP.fingerprint;
+					message.message = messageInput.value;
 					message.wasRead = true;
 					
 					MESSAGES.add(message);
