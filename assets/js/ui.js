@@ -139,7 +139,7 @@ class UserInterface {
 
 	async checkPublicKeyMessage() {
 		try {
-			let allMessages = await getAllMessagesFromChat(localStorage.recipientFingerprint);
+			let allMessages = await MESSAGES.getAllMessagesFromChat(localStorage.recipientFingerprint);
 			if (allMessages.length <= 0) {
 				let publicKeyMessage = await PGP.decryptMessageWithVerificationKey(PGP.publicKeyArmory, localStorage.recipientPublicKey);
 				if (publicKeyMessage) MESSAGES.sendMessage(publicKeyMessage);
