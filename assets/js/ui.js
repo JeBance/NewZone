@@ -18,18 +18,18 @@ class UserInterface {
 		for (let i = 0, l = elements.length; i < l; i++) this.show(elements[i], attribute);
 	}
 
-	addKeyInfoBlock(elem, obj = {
+	addKeyInfoBlock(elem, contact = {
 		nickname: '',
 		email: '',
 		fingerprint: ''
 	}) {
 		elem.innerHTML = `
 			<div class="desc"><p>Никнейм</p></div>
-			<div class="val"><p>` + obj.nickname + `</p></div>
+			<div class="val"><p>` + contact.nickname + `</p></div>
 			<div class="desc"><p>E-mail</p></div>
-			<div class="val"><p>` + obj.email + `</p></div>
+			<div class="val"><p>` + contact.email + `</p></div>
 			<div class="desc"><p>Отпечаток</p></div>
-			<div class="val"><p>` + obj.fingerprint + `</p></div>
+			<div class="val"><p>` + contact.fingerprint + `</p></div>
 		`;
 	}
 
@@ -43,13 +43,13 @@ class UserInterface {
 		}
 	}
 
-	addContactButton(elem, obj = {
+	addContactButton(elem, contact = {
 		nickname: '',
 		email: '',
 		fingerprint: ''
 	}) {
 		let newContact = document.createElement('div');
-		newContact.id = obj.fingerprint;
+		newContact.id = contact.fingerprint;
 		newContact.setAttribute('name', 'contact');
 		newContact.className = 'leftItem';
 		newContact.setAttribute('onclick', 'UI.click(this)');
@@ -57,10 +57,10 @@ class UserInterface {
 			<div class="avatar">👾</div>
 			<div class="leftItemInfo">
 				<div class="leftItemInfoTop">
-					<div class="leftItemInfoName">` + obj.nickname + `</div>
+					<div class="leftItemInfoName">` + contact.nickname + `</div>
 				</div>
 				<div class="leftItemInfoBottom">
-					<div class="leftItemInfoText">` + obj.email + `</div>
+					<div class="leftItemInfoText">` + contact.email + `</div>
 				</div>
 			</div>`;
 		elem.append(newContact);
@@ -74,8 +74,8 @@ class UserInterface {
 	}
 
 	async showContacts() {
-		this.hideAll('modal');
 		await this.refreshContactsList();
+		this.hideAll('modal');
 		this.show(background, 'modal-background');
 		this.show(contacts, 'modal');
 	}
@@ -89,8 +89,8 @@ class UserInterface {
 	async showChat(chatID) {
 		try {
 			chatReadArea.innerHTML = '';
-			topChatInfoName.innerHTML = localStorage.recipientNickname;
-			topChatInfoText.innerHTML = localStorage.recipientEmail;
+			topChatInfoName.innerHTML = CONTACT.nickname;
+			topChatInfoText.innerHTML = CONTACT.email;
 			let allMessages = await MESSAGES.getAllMessagesFromChat(chatID);
 			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			for (let i = 0, l = allMessages.length; i < l; i++) {
@@ -118,7 +118,7 @@ class UserInterface {
 		: newContainerForMessage.className = 'message incomingMessage';
 
 		if (message.message.hasPGPstructure()) {
-			let decrypted = await PGP.decryptMessageWithVerificationKey(message.message, localStorage.recipientPublicKey);
+			let decrypted = await PGP.decryptMessageWithVerificationKey(message.message, CONTACT.publicKey);
 			if (!decrypted) throw new Error("Can't decrypt message");
 			message.message = decrypted;
 			MESSAGES.add(message);
@@ -140,9 +140,9 @@ class UserInterface {
 
 	async checkPublicKeyMessage() {
 		try {
-			let allMessages = await MESSAGES.getAllMessagesFromChat(localStorage.recipientFingerprint);
+			let allMessages = await MESSAGES.getAllMessagesFromChat(CONTACT.fingerprint);
 			if (allMessages.length <= 0) {
-				let publicKeyMessage = await PGP.encryptMessage(localStorage.recipientPublicKey, PGP.publicKeyArmored);
+				let publicKeyMessage = await PGP.encryptMessage(CONTACT.publicKey, PGP.publicKeyArmored);
 				if (publicKeyMessage) MESSAGES.sendMessage(publicKeyMessage);
 			}
 			return true;
@@ -152,26 +152,6 @@ class UserInterface {
 		}
 	}
 
-
-	async sendMessage(string) {
-		try {
-			let encrypted = await PGP.encryptMessage(localStorage.recipientPublicKey, string);
-			let resultSendMessage = await MESSAGES.sendMessage(encrypted);
-			if (!resultSendMessage) throw new Error('Failed to send message');
-			let message = {
-				hash: resultSendMessage.hash,
-				timestamp: resultSendMessage.timestamp,
-				message: string
-			}
-			
-			//	add await MESSAGES.checkSendedMessage(message); ??????????
-
-			return message;
-		} catch(e) {
-			console.log(e);
-			return false;
-		}
-	}
 
 	async click(elem) {
 		let init, check, nickname, email, fingerprint, publicKey;
@@ -221,19 +201,7 @@ class UserInterface {
 				case 'buttonContactSave':
 				case 'contactNameInput':
 					if (contactNameInput.value.length > 0) {
-						nickname = contactNameInput.value;
-						email = localStorage.recipientEmail;
-						fingerprint = localStorage.recipientFingerprint;
-						publicKey = localStorage.recipientPublicKey;
-
-						init = await CONTACT.init({
-							nickname: nickname,
-							email: email,
-							fingerprint: fingerprint,
-							publicKey: publicKey
-						});
-		
-						if (!init) throw new Error('Failed to initialize contact');
+						CONTACT.nickname = contactNameInput.value;
 						contactNameInput.readOnly = true;
 						this.hide(buttonContactAdd);
 						this.show(buttonContactEdit, 'btn btn-start');
@@ -255,28 +223,30 @@ class UserInterface {
 					break;
 
 				case 'buttonContactChat':
-					contactNameInput.value = '';
-					contactEmailInput.value = '';
-					contactFingerprintInput.value = '';
-					
-					let loadChatComplete = await this.showChat(localStorage.recipientFingerprint);
+					let loadChatComplete = await this.showChat(CONTACT.fingerprint);
 					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
-
 					this.hide(contact);
 					break;
 
 				case 'buttonSendMessage':
 					this.checkPublicKeyMessage();
-
 					if (messageInput.value <= 0) throw new Error('Input empty');
-					let message = await this.sendMessage(messageInput.value);
-					if (!message) throw new Error('Failed to send message');
-					message.chat = localStorage.recipientFingerprint;
-					message.from = PGP.fingerprint;
-					message.message = messageInput.value;
-					message.wasRead = true;
+					let encrypted = await PGP.encryptMessage(CONTACT.publicKey, messageInput.value);
+					let resultSendMessage = await MESSAGES.sendMessage(encrypted);
+					if (!resultSendMessage) throw new Error('Failed to send message');
+
+					let message = {
+						hash: resultSendMessage.hash,
+						timestamp: resultSendMessage.timestamp,
+						chat: CONTACT.fingerprint,
+						from: PGP.fingerprint,
+						message: messageInput.value,
+						wasRead: true
+					}
 					
-					MESSAGES.add(message);
+					//	add await MESSAGES.checkSendedMessage(message); ??????????
+
+					await MESSAGES.add(message);
 					messageInput.value = '';
 					await this.showMessage(message);
 					break;
@@ -314,26 +284,17 @@ class UserInterface {
 					break;
 
 				case 'backToChats':
-					localStorage.recipientNickname = '';
-					localStorage.recipientEmail = '';
-					localStorage.recipientFingerprint = '';
-					localStorage.recipientPublicKey = '';
 					this.hide(blockCenter);
 					this.show(blockLeft, 'left');
 					break;
 
 				case 'contact':
-					check = await CONTACT.check(elem.id);
-					if (!check) throw new Error('Contact not found');
-					
-					localStorage.recipientNickname = check.nickname;
-					localStorage.recipientEmail = check.email;
-					localStorage.recipientFingerprint = check.fingerprint;
-					localStorage.recipientPublicKey = check.publicKey;
+					let contactInitResult = await CONTACT.init({ fingerprint: elem.id });
+					if (!contactInitResult) throw new Error('Contact initialization failed');
 
-					contactNameInput.value = check.nickname;
-					contactEmailInput.value = check.email;
-					contactFingerprintInput.value = check.fingerprint;
+					contactNameInput.value = CONTACT.nickname;
+					contactEmailInput.value = CONTACT.email;
+					contactFingerprintInput.value = CONTACT.fingerprint;
 
 					this.hide(contacts);
 					this.show(background, 'modal-background');

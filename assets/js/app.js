@@ -72,47 +72,43 @@ publicKeyQR = new QRCode(document.getElementById("publicKeyQR"), {
 
 const html5QrCode = new Html5Qrcode("qrReader");
 const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
-	let nickname, email, fingerprint, publicKey;
 	try {
+		let scannedContact = {};
 		loader.show(qrScanner, qrContent);
 		html5QrCode.pause();
-		console.log(decodedResult);
 
 		let recipientPublicKey = await PGP.readKey(decodedText);
 		if (!recipientPublicKey) throw new Error('Invalid public key');
 
-		fingerprint = await recipientPublicKey.getFingerprint();
-		if (!CONTACT.isValidFingerprint(fingerprint)) throw new Error('Incorrect fingerprint entered');
+		scannedContact.fingerprint = await recipientPublicKey.getFingerprint();
 
-		let check = await CONTACT.check(fingerprint);
+		let check = await CONTACT.check(scannedContact.fingerprint);
 		if (!check) {
-			nickname = recipientPublicKey.users[0].userID.name;
-			email = recipientPublicKey.users[0].userID.email;
-			publicKey = decodedText;
+			scannedContact.nickname = recipientPublicKey.users[0].userID.name;
+			scannedContact.email = recipientPublicKey.users[0].userID.email;
+			scannedContact.publicKey = decodedText;
+			scannedContact.receivedContactMessage = false;
 			UI.show(buttonContactAdd, 'btn btn-start');
 			UI.hide(buttonContactEdit);
-			UI.hide(buttonContactSave);
-			UI.show(buttonContactChat, 'btn btn-start');
 			contactNameInput.readOnly = false;
 		} else {
-			nickname = check.nickname;
-			email = check.email;
-			publicKey = check.publicKey;
+			scannedContact.nickname = check.nickname;
+			scannedContact.email = check.email;
+			scannedContact.publicKey = check.publicKey;
+			scannedContact.receivedContactMessage = check.receivedContactMessage;
 			UI.hide(buttonContactAdd);
 			UI.show(buttonContactEdit, 'btn btn-start');
-			UI.hide(buttonContactSave);
-			UI.show(buttonContactChat, 'btn btn-start');
 			contactNameInput.readOnly = true;
 		}
+		UI.hide(buttonContactSave);
+		UI.show(buttonContactChat, 'btn btn-start');
 
-		localStorage.recipientNickname = nickname;
-		localStorage.recipientEmail = email;
-		localStorage.recipientFingerprint = fingerprint;
-		localStorage.recipientPublicKey = publicKey;
+		let contactInitResult = await CONTACT.init(scannedContact);
+		if (!contactInitResult) throw new Error('Contact initialization failed');
 
-		contactNameInput.value = nickname;
-		contactEmailInput.value = email;
-		contactFingerprintInput.value = fingerprint;
+		contactNameInput.value = CONTACT.nickname;
+		contactEmailInput.value = CONTACT.email;
+		contactFingerprintInput.value = CONTACT.fingerprint;
 
 		html5QrCode.stop();
 		UI.hide(qrScanner);
