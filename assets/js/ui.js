@@ -156,7 +156,7 @@ class UserInterface {
 		try {
 			if (messageInput.value <= 0) throw new ('');
 			let encrypted = PGP.encryptMessage(localStorage.recipientPublicKey, string);
-			let resultSendMessage = MESSAGES.sendMessage(encrypted);
+			let resultSendMessage = await MESSAGES.sendMessage(encrypted);
 			if (!resultSendMessage) throw new Error('Failed to send message');
 			let message = {
 				hash: resultSendMessage.hash,
@@ -164,7 +164,7 @@ class UserInterface {
 				message: string
 			}
 			
-			//	add MESSAGES.checkSendedMessage(message); ??????????
+			//	add await MESSAGES.checkSendedMessage(message); ??????????
 
 			return message;
 		} catch(e) {
