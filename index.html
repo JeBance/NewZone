@@ -193,18 +193,18 @@
 		</div>
 
 		<div id="contactContent" class="content">
-			<div id="contactNameArea" class="hide">
-				<input id="contactNameInput" onkeydown="{if(event.key=='Enter')UI.click(this)}" type="text" required="" class="selectable"/>
+			<div id="contactNameArea" class="input-container">
+				<input id="contactNameInput" onkeydown="{if(event.key=='Enter')UI.click(this)}" type="text" required="" class="selectable" readonly/>
 				<label>Имя</label>
 			</div>
 
-			<div id="contactEmailArea" class="hide">
-				<input id="contactEmailInput" type="text" readonly>
+			<div id="contactEmailArea" class="input-container">
+				<input id="contactEmailInput" type="text" required="" class="selectable" readonly>
 				<label>Email</label>
 			</div>
 
-			<div id="contactFingerprintArea" class="hide">
-				<input id="contactFingerprintInput" type="text" readonly>
+			<div id="contactFingerprintArea" class="input-container">
+				<input id="contactFingerprintInput" type="text" required="" class="selectable" readonly>
 				<label>Отпечаток</label>	
 			</div>
 
