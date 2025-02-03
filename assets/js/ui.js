@@ -110,48 +110,69 @@ class UserInterface {
 	}
 
 	async showMessage(message) {
-		let newContainerForMessage = document.createElement('div');
-		newContainerForMessage.id = message.hash;
-		newContainerForMessage.setAttribute('name', 'message');
-		(message.from == PGP.fingerprint)
-		? newContainerForMessage.className = 'message outgoingMessage'
-		: newContainerForMessage.className = 'message incomingMessage';
+		try {
+			let newContainerForMessage = document.createElement('div');
+			newContainerForMessage.id = message.hash;
+			newContainerForMessage.setAttribute('name', 'message');
+			(message.from == PGP.fingerprint)
+			? newContainerForMessage.className = 'message outgoingMessage'
+			: newContainerForMessage.className = 'message incomingMessage';
 
-		if (message.message.hasPGPstructure()) {
-			let decrypted = await PGP.decryptMessageWithVerificationKey(message.message, CONTACT.publicKey);
-			if (!decrypted) throw new Error("Can't decrypt message");
-			message.message = decrypted;
-			MESSAGES.add(message);
+			if (message.message.hasPGPmessageStructure()) {
+				let decrypted = await PGP.decryptMessageWithVerificationKey(message.message, CONTACT.publicKey);
+				if (!decrypted) throw new Error("Can't decrypt message");
+				message.message = decrypted;
+				MESSAGES.add(message);
+			}
+
+			if (message.message.hasPGPpublicKeyStructure()) throw new ('Contact message found');
+
+			newContainerForMessage.innerHTML = message.message;
+
+			let newContainerForTime = document.createElement('div');
+			newContainerForTime.setAttribute('name', 'message');
+			(message.from == message.chat)
+			? newContainerForTime.className = 'leftMessageTime'
+			: newContainerForTime.className = 'rightMessageTime';
+			newContainerForTime.innerHTML = timestampToTime(message.timestamp);
+
+			newContainerForMessage.append(newContainerForTime);
+			chatReadArea.append(newContainerForMessage);
+			blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
+		} catch(e) {
+			console.log(e);
 		}
-
-		newContainerForMessage.innerHTML = message.message;
-
-		let newContainerForTime = document.createElement('div');
-		newContainerForTime.setAttribute('name', 'message');
-		(message.from == message.chat)
-		? newContainerForTime.className = 'leftMessageTime'
-		: newContainerForTime.className = 'rightMessageTime';
-		newContainerForTime.innerHTML = timestampToTime(message.timestamp);
-
-		newContainerForMessage.append(newContainerForTime);
-		chatReadArea.append(newContainerForMessage);
-		blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
 	}
 
 	async checkPublicKeyMessage() {
 		try {
+			if (CONTACT.receivedContactMessage === true) return true;
 			let allMessages = await MESSAGES.getAllMessagesFromChat(CONTACT.fingerprint);
-			if (allMessages.length <= 0) {
-				let publicKeyMessage = await PGP.encryptMessage(CONTACT.publicKey, PGP.publicKeyArmored);
-				if (publicKeyMessage) MESSAGES.sendMessage(publicKeyMessage);
+			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
+			for (let i = 0, l = allMessages.length; i < l; i++) {
+				if (allMessages[i].message.hasPGPpublicKeyStructure()) {
+					CONTACT.receivedContactMessage = true;
+					await CONTACT.save();
+					return true;
+				}
 			}
-			return true;
+			return false;
 		} catch(e) {
 			console.log(e);
 			return false;
 		}
 	}
 
+	async sendPublicKeyMessage() {
+		try {
+			let publicKeyMessage = await PGP.encryptMessage(CONTACT.publicKey, PGP.publicKeyArmored);
+			if (publicKeyMessage) await MESSAGES.sendMessage(publicKeyMessage);
+			return true;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+	}
 
 	async click(elem) {
 		let init, check, nickname, email, fingerprint, publicKey;
@@ -229,8 +250,15 @@ class UserInterface {
 					break;
 
 				case 'buttonSendMessage':
-					this.checkPublicKeyMessage();
 					if (messageInput.value <= 0) throw new Error('Input empty');
+
+					if (this.checkPublicKeyMessage() === false) {
+						let resultSendingContactMessage = await this.sendPublicKeyMessage();
+						if (!resultSendingContactMessage) throw new Error('Failed to send contact message');
+						CONTACT.receivedContactMessage = true;
+						await CONTACT.save();
+					}
+
 					let encrypted = await PGP.encryptMessage(CONTACT.publicKey, messageInput.value);
 					let resultSendMessage = await MESSAGES.sendMessage(encrypted);
 					if (!resultSendMessage) throw new Error('Failed to send message');
