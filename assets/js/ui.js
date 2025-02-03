@@ -274,7 +274,7 @@ class UserInterface {
 				case 'buttonSendMessage':
 					this.checkPublicKeyMessage();
 
-					let message = this.sendMessage(messageInput.value);
+					let message = await this.sendMessage(messageInput.value);
 					if (!message) throw new Error('Failed to send message');
 					message.chat = localStorage.recipientFingerprint;
 					message.from = PGP.fingerprint;
