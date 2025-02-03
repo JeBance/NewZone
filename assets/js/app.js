@@ -105,10 +105,14 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 			contactNameInput.readOnly = true;
 		}
 
+		localStorage.recipientNickname = nickname;
+		localStorage.recipientEmail = email;
+		localStorage.recipientFingerprint = fingerprint;
+		localStorage.recipientPublicKey = publicKey;
+
 		contactNameInput.value = nickname;
 		contactEmailInput.value = email;
 		contactFingerprintInput.value = fingerprint;
-		contactPublicKeyInput.value = publicKey;
 
 		html5QrCode.stop();
 		UI.hide(qrScanner);
