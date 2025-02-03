@@ -141,7 +141,7 @@ class UserInterface {
 		try {
 			let allMessages = await MESSAGES.getAllMessagesFromChat(localStorage.recipientFingerprint);
 			if (allMessages.length <= 0) {
-				let publicKeyMessage = await PGP.decryptMessageWithVerificationKey(PGP.publicKeyArmory, localStorage.recipientPublicKey);
+				let publicKeyMessage = await PGP.decryptMessageWithVerificationKey(PGP.publicKeyArmored, localStorage.recipientPublicKey);
 				if (publicKeyMessage) MESSAGES.sendMessage(publicKeyMessage);
 			}
 			return true;
@@ -155,7 +155,7 @@ class UserInterface {
 	async sendMessage(string) {
 		try {
 			if (messageInput.value <= 0) throw new ('');
-			let encrypted = PGP.encryptMessage(localStorage.recipientPublicKey, string);
+			let encrypted = await PGP.encryptMessage(localStorage.recipientPublicKey, string);
 			let resultSendMessage = await MESSAGES.sendMessage(encrypted);
 			if (!resultSendMessage) throw new Error('Failed to send message');
 			let message = {
