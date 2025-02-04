@@ -81,13 +81,33 @@ class UserInterface {
 	}
 
 	async refreshChatsList() {
+/*
+		chats.innerHTML = '';
+		let allMessages = await MESSAGE.getAllMessages();
+		let allChats = new Object();
+		for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
+			if ((allMessages[l].chat in allChats) == false) {
+				allChats[allMessages[l].chat] = allMessages[l]['message'];
+				chat.addChatButton(allMessages[l]);
+			}
+		}
+  */
 	}
 
 	async showChats() {
+		this.refreshChatsList();
+		this.hideAll('modal');
+		this.show(background, 'modal-background');
+		this.show(blockLeft, 'left');
 	}
 
 	async showChat(chatID) {
 		try {
+			if (CONTACT.publicKey === undefined) {
+				let contactInitResult = await CONTACT.init({ fingerprint: chatID });
+				if (!contactInitResult) throw new Error('Contact initialization failed');
+			}
+
 			chatReadArea.innerHTML = '';
 			topChatInfoName.innerHTML = CONTACT.nickname;
 			topChatInfoText.innerHTML = CONTACT.email;
