@@ -320,6 +320,7 @@ class UserInterface {
 					this.hideAll('modal');
 					this.hide(background);
 					if (html5QrCode.isScanning === true) html5QrCode.stop();
+					CONTACT.clear();
 					break;
 	
 				case 'backToSettings':
@@ -329,11 +330,13 @@ class UserInterface {
 
 				case 'backToContacts':
 					this.showContacts();
+					CONTACT.clear();
 					break;
 
 				case 'backToChats':
 					this.hide(blockCenter);
 					this.show(blockLeft, 'left');
+					CONTACT.clear();
 					break;
 
 				case 'contact':
