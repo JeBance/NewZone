@@ -134,4 +134,12 @@ class Contact {
 		}
 	}
 
+	clear() {
+		this.nickname = '';
+		this.email = '';
+		this.fingerprint = '';
+		this.publicKey = '';
+		this.receivedContactMessage = false;
+	}
+
 }
