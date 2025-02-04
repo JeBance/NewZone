@@ -99,7 +99,7 @@ class Messages {
 					var message = await this.getMessage(keys[i], node);
 					if (message) {
 						checkMessage = await this.checkMessage(message.message);
-						if ((message.from !== PGP.fingerprint) && (checkMessage === false))
+						if (checkMessage === false)
 						message = {
 							hash: message.hash,
 							timestamp: message.timestamp,
@@ -110,6 +110,7 @@ class Messages {
 						};
 
 						await this.add(message);
+						UI.refreshChatsList();
 					}
 				}
 			}
@@ -186,6 +187,25 @@ class Messages {
 			console.log(e);
 			return false;
 		}
+	}
+
+	async getAllChats() {
+/*
+		try {
+			await this.initDB();
+			let chatIndex = this.messages.index("chat_id");
+			let request = chatIndex.openKeyCursor(null, IDBCursor.nextunique);
+			let x = new Promise((resolve, reject) => {
+				request.onsuccess = function() { resolve(request.result); }
+				request.onerror = function() { reject('Error: ' + openRequest.error); }
+			});
+			let allMessages = await x.then((value) => { return value; }).catch((error) => console.log(`${error}`));
+			return allMessages;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+*/
 	}
 
 	async sendMessage(message = 'encryptedPGPstring') {

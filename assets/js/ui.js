@@ -80,18 +80,103 @@ class UserInterface {
 		this.show(contacts, 'modal');
 	}
 
+	addChatButton(elem, chat = {
+		id: '',
+		title: '',
+		timestamp: '',
+		lastmessage: '',
+		unreadMessages: 0		
+	}) {
+		let newContainerForChat = document.createElement('div');
+		newContainerForChat.id = chat.id;
+		newContainerForChat.setAttribute('name', 'chat');
+		newContainerForChat.className = 'leftItem';
+		newContainerForChat.setAttribute('onclick', 'chat.getChat(\'' + chat.id + '\')');
+
+		let newDivForAvatar = document.createElement('div');
+		newDivForAvatar.className = 'avatar';
+
+		let newDivForLeftItemInfo = document.createElement('div');
+		newDivForLeftItemInfo.className = 'leftItemInfo';
+
+		let newDivForLeftItemInfoTop = document.createElement('div');
+		newDivForLeftItemInfoTop.className = 'leftItemInfoTop';
+
+		let newDivForLeftItemInfoBottom = document.createElement('div');
+		newDivForLeftItemInfoBottom.className = 'leftItemInfoBottom';
+
+		let newDivForLeftItemInfoName = document.createElement('div');
+		newDivForLeftItemInfoName.className = 'leftItemInfoName';
+		newDivForLeftItemInfoName.innerHTML = chat.title;
+
+		let newDivForLeftItemInfoTime = document.createElement('div');
+		newDivForLeftItemInfoTime.className = 'leftItemInfoTime';
+		newDivForLeftItemInfoTime.innerHTML = timestampToTime(chat.timestamp);
+
+		let newDivForLeftItemInfoText = document.createElement('div');
+		newDivForLeftItemInfoText.className = 'leftItemInfoText';
+		newDivForLeftItemInfoText.innerHTML = chat.message;
+
+		let newDivForLeftItemInfoCounter = document.createElement('div');
+		newDivForLeftItemInfoCounter.setAttribute('name', 'inboxCounter');
+		newDivForLeftItemInfoCounter.className = 'leftItemInfoCounter';
+		if (chat.unreadMessages > 0) newDivForLeftItemInfoCounter.innerHTML = chat.unreadMessages;
+
+		newDivForLeftItemInfoTop.append(newDivForLeftItemInfoName);
+		newDivForLeftItemInfoTop.append(newDivForLeftItemInfoTime);
+		newDivForLeftItemInfoBottom.append(newDivForLeftItemInfoText);
+		newDivForLeftItemInfoBottom.append(newDivForLeftItemInfoCounter);
+		newDivForLeftItemInfo.append(newDivForLeftItemInfoTop);
+		newDivForLeftItemInfo.append(newDivForLeftItemInfoBottom);
+		newContainerForChat.append(newDivForAvatar);
+		newContainerForChat.append(newDivForLeftItemInfo);
+		elem.append(newContainerForChat);
+	}
+
 	async refreshChatsList() {
-/*
-		chats.innerHTML = '';
-		let allMessages = await MESSAGE.getAllMessages();
-		let allChats = new Object();
-		for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
-			if ((allMessages[l].chat in allChats) == false) {
-				allChats[allMessages[l].chat] = allMessages[l]['message'];
-				chat.addChatButton(allMessages[l]);
+		try {
+			chats.innerHTML = '';
+			let allMessages = await MESSAGES.getAllMessages();
+			let allChats = new Object();
+			let unreadMessages = new Object();
+			let num = 0;
+
+console.log(allMessages);
+
+			for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
+				if ((allMessages[l].chat in allChats) === false) {
+					allChats[num] = {
+						id: allMessages[l].chat,
+						title: '',
+						timestamp: allMessages[l].timestamp,
+						lastmessage: allMessages[l].message,
+						unreadMessages: 0
+					};
+
+					unreadMessages[allMessages[l].chat] = 0;
+
+					if (allMessages[l].wasRead === false)
+					unreadMessages[allMessages[l].chat]++;
+console.log(allMessages[l].chat);
+					await CONTACT.init({ fingerprint: allMessages[l].chat });
+					allChats[num].title = CONTACT.nickname;
+					
+					num++;
+				} else {
+					if (allMessages[l].wasRead === false)
+					unreadMessages[allMessages[l].chat]++;
+				}
 			}
+
+			for (let m = 0, n = allChats.length; m < n; m++) {
+				allChats[m].unreadMessages = unreadMessages[allChats[m].id];
+				this.addChatButton(chats, allChats[m]);
+			}
+
+		} catch(e) {
+			console.log(e);
 		}
-  */
+
 	}
 
 	async showChats() {
@@ -337,6 +422,7 @@ class UserInterface {
 					this.hide(blockCenter);
 					this.show(blockLeft, 'left');
 					CONTACT.clear();
+					this.showChats();
 					break;
 
 				case 'contact':
