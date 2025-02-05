@@ -19,7 +19,6 @@ registerServiceWorker();
 
 let deferredPrompt;
 a2hs.style.display = 'none';
-github.style.display = 'block';
 
 window.addEventListener('beforeinstallprompt', (e) => {
 	e.preventDefault();
