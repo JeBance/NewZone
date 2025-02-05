@@ -114,35 +114,33 @@ class Messages {
 			if (!list) throw new Error('Failed to get message list');
 
 			let keys = Object.keys(list);
-			if (keys.length > 0) for (let i = 0, l = keys.length; i < l; i++) {
+			if (keys.length <= 0) throw new Error('List is empty');
+
+			for (let i = 0, l = keys.length; i < l; i++) {
 				if (this.list[keys[i]] === undefined) {
 					var message = await this.getMessage(keys[i], node);
 					if (message) {
 						checkMessage = await this.checkMessage(message.message);
-						if (checkMessage === true) {
+						try {
+							if (!checkMessage) throw new ('');
 							let decrypted = await this.decryptMessage(message.message);
-							if (!decrypted) throw new Error("Can't decrypt message");
+							if (!decrypted) throw new ('');
 							message.chat = decrypted.chat;
 							message.from = decrypted.from;
 							message.message = decrypted.message;
 							message.wasRead = false;
-						} else {
-							message = {
-								hash: message.hash,
-								timestamp: message.timestamp,
-								chat: false,
-								from: false,
-								message: false,
-								wasRead: true
-							};
+						} catch(e) {
+							message.chat = false;
+							message.from = false;
+							message.message = false;
+							message.wasRead = false;
 						}
-
 						await this.add(message);
-						UI.refreshChatsList();
 					}
 				}
 			}
 
+			UI.refreshChatsList();
 			await this.updateMonitor();
 		} catch(e) {
 			console.log(e);
