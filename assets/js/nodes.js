@@ -89,7 +89,15 @@ class Nodes {
 			}
 			this.nets = new Set([...nets]);
 		} catch(e) {
-			console.log(e);
+			await this.add({
+				keyID: "0fa208709bdbe958016d4c72bf61c7a5",
+				net: "ALPHA",
+				prot: "https",
+				host: "jebance.ru",
+				port: 28262,
+				ping: 10
+			});
+			this.nets = ['ALPHA'];
 		}
 	}
 
