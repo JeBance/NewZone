@@ -219,16 +219,9 @@ console.log(allMessages[l].chat);
 			let newContainerForMessage = document.createElement('div');
 			newContainerForMessage.id = message.hash;
 			newContainerForMessage.setAttribute('name', 'message');
-			(message.from == PGP.fingerprint)
+			(message.from == message.chat)
 			? newContainerForMessage.className = 'message outgoingMessage'
 			: newContainerForMessage.className = 'message incomingMessage';
-
-			if (message.message.hasPGPmessageStructure()) {
-				let decrypted = await PGP.decryptMessageWithVerificationKey(message.message, CONTACT.publicKey);
-				if (!decrypted) throw new Error("Can't decrypt message");
-				message.message = decrypted;
-				MESSAGES.add(message);
-			}
 
 			if (message.message.hasPGPpublicKeyStructure()) throw new ('Contact message found');
 
