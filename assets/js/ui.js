@@ -145,6 +145,7 @@ class UserInterface {
 console.log(allMessages);
 
 			for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
+				if (typeof allMessages[l].chat !== 'string') continue;
 				if ((allMessages[l].chat in allChats) === false) {
 					await tmpContact.init({ fingerprint: allMessages[l].chat });
 					allChats[num] = {
