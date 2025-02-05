@@ -70,10 +70,25 @@ class Contact {
 	}
 
 	async init(contact = { nickname: '', email: '', fingerprint: '', publicKey: '', receivedContactMessage: false }) {
+		let check, fingerprint;
 		try {
-			if (!this.isValidFingerprint(contact.fingerprint)) throw new Error('Incorrect fingerprint entered');
-			this.fingerprint = contact.fingerprint;
-			let check = await this.check(this.fingerprint);
+			if (contact.publicKey !== undefined) {
+				let contactPublicKey = await PGP.readKey(contact.publicKey);
+				if (!contactPublicKey) throw new Error('Invalid public key');
+				fingerprint = await contactPublicKey.getFingerprint();
+				contact.nickname = contactPublicKey.users[0].userID.name;
+				contact.email = contactPublicKey.users[0].userID.email;
+				contact.fingerprint = fingerprint;
+				if (contact.receivedContactMessage === undefined)
+				contact.receivedContactMessage = false;
+			} else if (contact.fingerprint !== undefined) {
+				if (!this.isValidFingerprint(contact.fingerprint)) throw new Error('Incorrect fingerprint entered');
+				fingerprint = contact.fingerprint;
+			} else {
+				throw new Error('Incorrect fingerprint entered');
+			}
+
+			check = await this.check(fingerprint);
 			if (!check) {
 				let resultOfAdding = await this.add(contact);
 				if (!resultOfAdding) throw new Error('Failed to add contact');
