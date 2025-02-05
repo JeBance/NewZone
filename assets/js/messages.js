@@ -27,7 +27,6 @@ class Messages {
 			if (!decrypted) throw new Error("Can't decrypt message");
 			return true;
 		} catch(e) {
-			console.log(e);
 			return false;
 		}
 	}
@@ -37,7 +36,7 @@ class Messages {
 		timestamp: '1731683656118',
 		chat: 'chatID',
 		from: 'fingerprint',
-		message: 'PGP message',
+		message: 'message',
 		wasRead: true
 	} ) {
 		try {
@@ -99,15 +98,31 @@ class Messages {
 					var message = await this.getMessage(keys[i], node);
 					if (message) {
 						checkMessage = await this.checkMessage(message.message);
-						if (checkMessage === false)
-						message = {
-							hash: message.hash,
-							timestamp: message.timestamp,
-							chat: false,
-							from: false,
-							message: false,
-							wasRead: true
-						};
+						if (checkMessage === true) {
+							let allContacts = await CONTACT.getAllContacts();
+							for (let i = 0, l = allContacts.length; i < l; i++) {
+								try {
+									var decrypted = await PGP.decryptMessageWithVerificationKey(message.message, CONTACT.publicKey);
+									if (!decrypted) throw new Error("Can't decrypt message");
+									if (decrypted.hasPGPpublicKeyStructure()) {
+										await CONTACT.init({ publicKey: decrypted });
+									}
+									message.message = decrypted;
+									break;
+								} catch(e) {
+									console.log(e);
+								}
+							}
+						} else {
+							message = {
+								hash: message.hash,
+								timestamp: message.timestamp,
+								chat: false,
+								from: false,
+								message: false,
+								wasRead: true
+							};
+						}
 
 						await this.add(message);
 						UI.refreshChatsList();
