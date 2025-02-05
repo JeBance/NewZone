@@ -31,6 +31,27 @@ class Messages {
 		}
 	}
 
+	async decryptMessage(armoredMessage) {
+		let decrypted, message;
+		let allContacts = await CONTACT.getAllContacts();
+		for (let i = 0, l = allContacts.length; i < l; i++) {
+			try {
+				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, CONTACT.publicKey);
+				if (!decrypted) throw new Error("Can't decrypt message");
+				if (decrypted.hasPGPpublicKeyStructure()) await CONTACT.init({ publicKey: decrypted });
+				message = {
+					chat: CONTACT.fingerprint,
+					from: CONTACT.fingerprint,
+					message: decrypted
+				};
+				return message;
+			} catch(e) {
+				console.log(e);
+			}
+		}
+		return false;
+	}
+
 	async add(message = {
 		hash: 'somehash',
 		timestamp: '1731683656118',
@@ -99,20 +120,12 @@ class Messages {
 					if (message) {
 						checkMessage = await this.checkMessage(message.message);
 						if (checkMessage === true) {
-							let allContacts = await CONTACT.getAllContacts();
-							for (let i = 0, l = allContacts.length; i < l; i++) {
-								try {
-									var decrypted = await PGP.decryptMessageWithVerificationKey(message.message, CONTACT.publicKey);
-									if (!decrypted) throw new Error("Can't decrypt message");
-									if (decrypted.hasPGPpublicKeyStructure()) {
-										await CONTACT.init({ publicKey: decrypted });
-									}
-									message.message = decrypted;
-									break;
-								} catch(e) {
-									console.log(e);
-								}
-							}
+							let decrypted = await this.decryptMessage(message.message);
+							if (!decrypted) throw new Error("Can't decrypt message");
+							message.chat = decrypted.chat;
+							message.from = decrypted.from;
+							message.message = decrypted.message;
+							message.wasRead = false;
 						} else {
 							message = {
 								hash: message.hash,
