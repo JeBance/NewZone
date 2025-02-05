@@ -145,7 +145,9 @@ class UserInterface {
 console.log(allMessages);
 
 			for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
+console.log(l + ': ' + allMessages[l].chat);
 				if (typeof allMessages[l].chat !== 'string') continue;
+console.log(l + ': ' + allMessages[l].chat);
 				if ((allMessages[l].chat in allChats) === false) {
 					await tmpContact.init({ fingerprint: allMessages[l].chat });
 					allChats[num] = {
@@ -166,6 +168,8 @@ console.log(allMessages);
 					unreadMessages[allMessages[l].chat]++;
 				}
 			}
+
+console.log(allChats);
 
 			for (let m = 0, n = allChats.length; m < n; m++) {
 				allChats[m].unreadMessages = unreadMessages[allChats[m].id];
