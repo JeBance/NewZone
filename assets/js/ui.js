@@ -139,15 +139,17 @@ class UserInterface {
 			let allMessages = await MESSAGES.getAllMessages();
 			let allChats = new Object();
 			let unreadMessages = new Object();
+			let tmpContact = new Contact();
 			let num = 0;
 
 console.log(allMessages);
 
 			for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
 				if ((allMessages[l].chat in allChats) === false) {
+					await tmpContact.init({ fingerprint: allMessages[l].chat });
 					allChats[num] = {
 						id: allMessages[l].chat,
-						title: '',
+						title: tmpContact.nickname,
 						timestamp: allMessages[l].timestamp,
 						lastmessage: allMessages[l].message,
 						unreadMessages: 0
@@ -157,10 +159,6 @@ console.log(allMessages);
 
 					if (allMessages[l].wasRead === false)
 					unreadMessages[allMessages[l].chat]++;
-console.log(allMessages[l].chat);
-					await CONTACT.init({ fingerprint: allMessages[l].chat });
-					allChats[num].title = CONTACT.nickname;
-					
 					num++;
 				} else {
 					if (allMessages[l].wasRead === false)
