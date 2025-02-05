@@ -12,27 +12,45 @@ String.prototype.isJsonString = function() {
 };
 
 String.prototype.hasPGPmessageStructure = function () {
-	if (typeof this !== 'string') return false;
 	try {
-		if ((this.slice(0,27) === '-----BEGIN PGP MESSAGE-----')
-		&& (this.slice(this.length - 25) === '-----END PGP MESSAGE-----')) {
-			return true;
-		}
+		if (Object.prototype.toString.call(this) !== '[object String]')
+		throw new Error('parameter not string');
+
+		if (this.indexOf('-----BEGIN PGP MESSAGE-----') == -1)
+		throw new Error('no begin');
+
+		if (this.indexOf('-----END PGP MESSAGE-----') == -1)
+		throw new Error('no end');
+
+		let explode = this.split('-----');
+		if (explode[1] !== 'BEGIN PGP MESSAGE'
+		|| explode[3] !== 'END PGP MESSAGE')
+		throw new Error('data sequence is broken');
+
+		return true;
 	} catch(e) {
-		console.log(e);
+		return false;
 	}
-	return false;
 };
 
 String.prototype.hasPGPpublicKeyStructure = function () {
-	if (typeof this !== 'string') return false;
 	try {
-		if ((this.slice(0,27) === '-----BEGIN PGP MESSAGE-----')
-		&& (this.slice(this.length - 25) === '-----END PGP MESSAGE-----')) {
-			return true;
-		}
+		if (Object.prototype.toString.call(this) !== '[object String]')
+		throw new Error('parameter not string');
+
+		if (this.indexOf('-----BEGIN PGP PUBLIC KEY BLOCK-----') == -1)
+		throw new Error('no begin');
+
+		if (this.indexOf('-----END PGP PUBLIC KEY BLOCK-----') == -1)
+		throw new Error('no end');
+
+		let explode = this.split('-----');
+		if (explode[1] !== 'BEGIN PGP PUBLIC KEY BLOCK'
+		|| explode[3] !== 'END PGP PUBLIC KEY BLOCK')
+		throw new Error('data sequence is broken');
+
+		return true;
 	} catch(e) {
-		console.log(e);
+		return false;
 	}
-	return false;
 };
