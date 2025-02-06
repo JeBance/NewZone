@@ -33,15 +33,16 @@ class Messages {
 
 	async decryptMessage(armoredMessage) {
 		let decrypted, message;
-		let allContacts = await CONTACT.getAllContacts();
+		let tmpContact = new Contact();
+		let allContacts = await tmpContact.getAllContacts();
 		for (let i = 0, l = allContacts.length; i < l; i++) {
 			try {
-				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, CONTACT.publicKey);
+				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, allContacts[i].publicKey);
 				if (!decrypted) throw new Error("Can't decrypt message");
-				if (decrypted.hasPGPpublicKeyStructure()) await CONTACT.init({ publicKey: decrypted });
+				if (decrypted.hasPGPpublicKeyStructure()) await tmpContact.init({ publicKey: decrypted });
 				message = {
-					chat: CONTACT.fingerprint,
-					from: CONTACT.fingerprint,
+					chat: tmpContact.fingerprint,
+					from: tmpContact.fingerprint,
 					message: decrypted
 				};
 				return message;
@@ -122,9 +123,9 @@ class Messages {
 					if (message) {
 						checkMessage = await this.checkMessage(message.message);
 						try {
-							if (!checkMessage) throw new ('');
+							if (!checkMessage) throw new Error('');
 							let decrypted = await this.decryptMessage(message.message);
-							if (!decrypted) throw new ('');
+							if (!decrypted) throw new Error('');
 							message.chat = decrypted.chat;
 							message.from = decrypted.from;
 							message.message = decrypted.message;
