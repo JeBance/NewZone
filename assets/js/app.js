@@ -5,11 +5,18 @@ const config = {
 		supportedScanTypes: [ Html5QrcodeScanType.SCAN_TYPE_CAMERA ]
 	}
 };
+
+const NZHUB = new nzhub({
+	log: true
+});
+NZHUB.cyclicNodesCheck();
+NZHUB.cyclicMessagesCheck();
+
 const UI = new UserInterface();
 const NODES = new Nodes();
 const CONTACT = new Contact();
 const MESSAGES = new Messages();
-let cyclicMessagesCheck;
+let updateMessages;
 const PGP = new SecureStorage();
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 const modal = {};
@@ -28,8 +35,9 @@ loader.show = (parent, elem) => {
 }
 
 let fillingNodeNetsSelectionOtions = setInterval(async () => {
-	if (NODES.nets !== undefined) {
-		for (let value of NODES.nets) {
+	let keys = Object.keys(NZHUB.knownNets);
+	if (keys.length > 0) {
+		for (let value of keys) {
 			selectNode.append(new Option(value, value));
 		}
 		clearInterval(fillingNodeNetsSelectionOtions);

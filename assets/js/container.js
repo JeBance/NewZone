@@ -108,7 +108,7 @@ container.clearInputs = function()
 
 container.choice = function()
 {
-	clearInterval(cyclicMessagesCheck);
+	clearInterval(updateMessages);
 	config.dbName = false;
 	container.clearInputs();
 	UI.hideAll('container');
@@ -137,8 +137,8 @@ container.generate = async function()
 	UI.showAll('backToSettings', 'btn-circle');
 	UI.show(wraper, 'wraper');
 	config.dbName = config.net + '-' + PGP.fingerprint;
-	await MESSAGES.updateMonitor();
-	cyclicMessagesCheck = MESSAGES.cyclicMessagesCheck();
+	MESSAGES.initList();
+	updateMessages = MESSAGES.update();
 	publicKeyQR.clear();
 	publicKeyQR.makeCode(PGP.publicKeyArmored);
 }

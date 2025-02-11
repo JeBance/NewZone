@@ -280,14 +280,12 @@ console.log(allChats);
 			switch(elem.id) {
 				case 'buttonStart':
 					this.hide(buttonStart);
-					NODES.cyclicNodesCheck();
 					this.show(selectNodeBlock, 'flex');
-					loader.show(start, selectNodeBlock);
-					fillingNodeNetsSelectionOtions;
 					break;
 
 				case 'buttonSelectNode':
 					config.net = selectNode.value;
+					NZHUB.addNet({ net: selectNode.value, status: 'read' });
 					this.hide(selectNodeBlock);
 					this.hideAll('modal');
 					this.hideAll('backToSettings');
