@@ -132,3 +132,28 @@ const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
 };
 
 UI.hide(wraper);
+
+const chat = {};
+
+const getNameForPrivateChat = async (str1, str2) => {
+	try {
+		if (str1.length <= 0 || str2.length <= 0)
+		throw new Error('Empty parameter');
+		
+		let p1, p2, result = '';
+		if (str1[0] < str2[0]) {
+			p1 = str1;
+			p2 = str2;
+		} else {
+			p1 = str2;
+			p2 = str1;
+		}
+		
+		for (let i = 0, l = str1.length; i < l; i++)
+		result = result + p1[i] + p2[i];
+		return result;
+	} catch(e) {
+		console.log(e);
+		return false;
+	}
+}

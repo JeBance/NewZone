@@ -136,15 +136,13 @@ class UserInterface {
 	async refreshChatsList() {
 		try {
 			chats.innerHTML = '';
-			let allMessages = await MESSAGES.getAllMessages();
+			let allMessages = await MESSAGES.getAll();
 			let allChats = new Object();
 			let unreadMessages = new Object();
 			let tmpContact = new Contact();
 			let num = 0;
 
-console.log(allMessages);
 			for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
-console.log(l + ': ' + allMessages[l].chat);
 				if (typeof allMessages[l].chat !== 'string') continue;
 				if ((allMessages[l].chat in allChats) === false) {
 					await tmpContact.init({ fingerprint: allMessages[l].chat });
@@ -197,7 +195,7 @@ console.log(allChats);
 			chatReadArea.innerHTML = '';
 			topChatInfoName.innerHTML = CONTACT.nickname;
 			topChatInfoText.innerHTML = CONTACT.email;
-			let allMessages = await MESSAGES.getAllMessagesFromChat(chatID);
+			let allMessages = await MESSAGES.getAllFromChat(chatID);
 			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			for (let i = 0, l = allMessages.length; i < l; i++) {
 				this.showMessage(allMessages[i]);
@@ -245,8 +243,12 @@ console.log(allChats);
 
 	async checkPublicKeyMessage() {
 		try {
+			chat.id = await getNameForPrivateChat(CONTACT.fingerprint, PGP.fingerprint);
+			if (!chat.id) throw new Error('Empty chat id');
+
 			if (CONTACT.receivedContactMessage === true) return true;
-			let allMessages = await MESSAGES.getAllMessagesFromChat(CONTACT.fingerprint);
+
+			let allMessages = await MESSAGES.getAllFromChat(chat.id);
 			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			for (let i = 0, l = allMessages.length; i < l; i++) {
 				if (allMessages[i].message.hasPGPpublicKeyStructure()) {
@@ -264,8 +266,16 @@ console.log(allChats);
 
 	async sendPublicKeyMessage() {
 		try {
-			let publicKeyMessage = await PGP.encryptMessage(CONTACT.publicKey, PGP.publicKeyArmored);
-			if (publicKeyMessage) await MESSAGES.sendMessage(publicKeyMessage);
+			let messageObj = {
+				chat: chat.id,
+				from: PGP.fingerprint,
+				to: CONTACT.fingerprint,
+				message: PGP.publicKeyArmored
+			}));
+
+			let publicKeyMessage = await PGP.encryptMessage(CONTACT.publicKey, JSON.stringify(messageObj));
+			if (publicKeyMessage) let result = await NZHUB.sendMessage({ net: config.net, message: publicKeyMessage });
+			if (!result) throw new Error('');
 			return true;
 		} catch(e) {
 			console.log(e);
@@ -341,39 +351,11 @@ console.log(allChats);
 					break;
 
 				case 'buttonContactChat':
-					let loadChatComplete = await this.showChat(CONTACT.fingerprint);
+					chat.id = await getNameForPrivateChat(CONTACT.fingerprint, PGP.fingerprint);
+					if (!chat.id) throw new Error('Empty chat id');
+					let loadChatComplete = await this.showChat(chat.id);
 					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
 					this.hide(contact);
-					break;
-
-				case 'buttonSendMessage':
-					if (messageInput.value <= 0) throw new Error('Input empty');
-
-					if (this.checkPublicKeyMessage() === false) {
-						let resultSendingContactMessage = await this.sendPublicKeyMessage();
-						if (!resultSendingContactMessage) throw new Error('Failed to send contact message');
-						CONTACT.receivedContactMessage = true;
-						await CONTACT.save();
-					}
-
-					let encrypted = await PGP.encryptMessage(CONTACT.publicKey, messageInput.value);
-					let resultSendMessage = await MESSAGES.sendMessage(encrypted);
-					if (!resultSendMessage) throw new Error('Failed to send message');
-
-					let message = {
-						hash: resultSendMessage.hash,
-						timestamp: resultSendMessage.timestamp,
-						chat: CONTACT.fingerprint,
-						from: PGP.fingerprint,
-						message: messageInput.value,
-						wasRead: true
-					}
-					
-					//	add await MESSAGES.checkSendedMessage(message); ??????????
-
-					await MESSAGES.add(message);
-					messageInput.value = '';
-					await this.showMessage(message);
 					break;
 
 				default:
@@ -442,6 +424,50 @@ console.log(allChats);
 		} catch(e) {
 			console.log(e);
 		}		
+	}
+
+	async sendMessage() {
+		try {
+			if (messageInput.value <= 0) throw new Error('Input empty');
+
+			let check = await this.checkPublicKeyMessage();
+			if (check === false) {
+				let resultSendingContactMessage = await this.sendPublicKeyMessage();
+				if (!resultSendingContactMessage) throw new Error('Failed to send contact message');
+				CONTACT.receivedContactMessage = true;
+				await CONTACT.save();
+			}
+			
+			let messageObj = {
+				chat: chat.id,
+				from: PGP.fingerprint,
+				to: CONTACT.fingerprint,
+				message: messageInput.value
+			}));
+
+			let encryptedToRecipient = await PGP.encryptMessage(CONTACT.publicKey, JSON.stringify(messageObj));
+			let resultSendMessageTR = await NZHUB.sendMessage({ net: config.net, message: encryptedToRecipient });
+			if (!resultSendMessageTR) throw new Error('Failed to send message');
+
+			let encryptedToSender = await PGP.encryptMessage(PGP.publicKeyArmored, JSON.stringify(messageObj));
+			let resultSendMessageTS = await NZHUB.sendMessage({ net: config.net, message: encryptedToSender });
+			if (!resultSendMessageTS) throw new Error('Failed to send message');
+
+			let message = {
+				hash: resultSendMessageTR.hash,
+				timestamp: resultSendMessageTR.timestamp,
+				chat: CONTACT.fingerprint,
+				from: PGP.fingerprint,
+				message: messageInput.value,
+				wasRead: true
+			}
+
+			await MESSAGES.add(message);
+			messageInput.value = '';
+			await this.showMessage(message);
+		} catch(e) {
+			alert(e);
+		}
 	}
 
 }

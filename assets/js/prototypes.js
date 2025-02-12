@@ -54,3 +54,17 @@ String.prototype.hasPGPpublicKeyStructure = function () {
 		return false;
 	}
 };
+
+String.prototype.getSHA256Hash = async function() {
+	try {
+		const textAsBuffer = new TextEncoder().encode(this);
+		const hashBuffer = await window.crypto.subtle.digest("SHA-256", textAsBuffer);
+		const hashArray = Array.from(new Uint8Array(hashBuffer));
+		const hash = hashArray
+			.map((item) => item.toString(16).padStart(2, "0"))
+			.join("");
+		return hash;
+	} catch(e) {
+		return false;
+	}
+};

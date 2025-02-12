@@ -67,6 +67,23 @@ class Messages {
 		}
 	}
 
+	async getAllFromChat(chat_id) {
+		try {
+			await this.initDB();
+			let chatIndex = this.messages.index("chat_id");
+			let request = chatIndex.getAll(chat_id);
+			let x = new Promise((resolve, reject) => {
+				request.onsuccess = function() { resolve(request.result); }
+				request.onerror = function() { reject('Error: ' + openRequest.error); }
+			});
+			let allMessages = await x.then((value) => { return value; }).catch((error) => console.log(`${error}`));
+			return allMessages;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+	}
+
 	async update() {
 		setInterval(async () => {
 			try {
@@ -92,18 +109,18 @@ class Messages {
 						try {
 							let decrypted = await this.decryptMessage(message.message);
 							if (!decrypted) throw new Error('');
-							message.chat = decrypted.chat;
-							message.from = decrypted.from;
-							message.message = decrypted.message;
-							message.wasRead = false;
+							decrypted.wasRead = false;
+							message = Object.assign(decrypted, message);
 						} catch(e) {
 							message = Object.assign(message, {
 								chat: false,
 								from: false,
-								message = false,
-								wasRead = false
+								to: false,
+								message: false,
+								wasRead: false
 							});
 						}
+
 						this.add(message);
 					}
 				});
@@ -130,19 +147,18 @@ class Messages {
 				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, message.message);
 				if (!decrypted) throw new Error("Can't decrypt and verify message");
 				await tmpContact.init({ publicKey: message.message });
-				return message;
 
 			} else if (typeof message.message === 'object') {
 				let resultOfInit = await tmpContact.init({ fingerprint: message.from });
 				if (!resultOfInit) throw new Error('Failed to init contact');
 				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, tmpContact.publicKey);
 				if (!decrypted) throw new Error("Can't decrypt and verify message");
-				return message;
 				
 			} else {
 				return false;
 			}
 
+			return message;
 		} catch(e) {
 			console.log(e);
 			return false;
