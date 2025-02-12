@@ -70,7 +70,7 @@ class Messages {
 	async getAllFromChat(chat_id) {
 		try {
 			await this.initDB();
-			let chatIndex = this.messages.index("chat_id");
+			let chatIndex = this.messages.index("chat");
 			let request = chatIndex.getAll(chat_id);
 			let x = new Promise((resolve, reject) => {
 				request.onsuccess = function() { resolve(request.result); }

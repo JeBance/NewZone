@@ -7,10 +7,22 @@ async function dbInit(nameDB)
 			let db = openRequest.result;
 			switch(event.oldVersion) {
 				case 0:
+					let chats = db.createObjectStore('chats', {keyPath: 'hash'});
+					chats.createIndex('type', 'type');
+					chats.createIndex('owner', 'owner');
+					chats.createIndex('title', 'title');
+					chats.createIndex('description', 'description');
+
 					let contacts = db.createObjectStore('contacts', {keyPath: 'fingerprint'});
+					contacts.createIndex('nickname', 'nickname');
+					contacts.createIndex('email', 'nickname');
+					contacts.createIndex('nickname', 'nickname');
+					contacts.createIndex('publicKey', 'publicKey');
+
 					let messages = db.createObjectStore('messages', {keyPath: 'hash'});
-					let nicknameIndex = contacts.createIndex('nickname_id', 'nickname');
-					let chatIndex = messages.createIndex('chat_id', 'chat');
+					messages.createIndex('chat', 'chat');
+					messages.createIndex('from', 'from');
+					messages.createIndex('to', 'to');
 					break;
 			}
 		};
