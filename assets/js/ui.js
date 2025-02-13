@@ -271,7 +271,7 @@ console.log(allChats);
 				from: PGP.fingerprint,
 				to: CONTACT.fingerprint,
 				message: PGP.publicKeyArmored
-			}));
+			};
 
 			let publicKeyMessage = await PGP.encryptMessage(CONTACT.publicKey, JSON.stringify(messageObj));
 			if (publicKeyMessage) let result = await NZHUB.sendMessage({ net: config.net, message: publicKeyMessage });
