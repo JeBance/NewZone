@@ -164,9 +164,10 @@ const getFingerprintsFromPrivateChat = async (str) => {
 		throw new Error('Incorrect parameter');
 		
 		let result = { f1: '', f2: '' };
-		for (let i = 0, l = str.length; i < l; i = i + 2)
-		result.f1 = result.f1 + str[i];
-		result.f2 = result.f2 + str[i+1];
+		for (let i = 0, l = str.length; i < l; i = i + 2) {
+			result.f1 = result.f1 + str[i];
+			result.f2 = result.f2 + str[i+1];
+		}
 		return result;
 	} catch(e) {
 		console.log(e);
