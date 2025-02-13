@@ -160,7 +160,7 @@ const getNameForPrivateChat = async (str1, str2) => {
 
 const getFingerprintsFromPrivateChat = async (str) => {
 	try {
-		if (str.length !== 40)
+		if (str.length !== 80)
 		throw new Error('Incorrect parameter');
 		
 		let result = { f1: '', f2: '' };
