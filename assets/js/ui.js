@@ -192,9 +192,9 @@ console.log(fingerprints);
 			if (!fingerprints) throw new Error('This chat is not private');
 
 			let recipientFingerprint;
-			(fingerprints[0] !== PGP.fingerprint)
-			? recipientFingerprint = fingerprints[0]
-			: recipientFingerprint = fingerprints[1];
+			(fingerprints[f1] !== PGP.fingerprint)
+			? recipientFingerprint = fingerprints[f1]
+			: recipientFingerprint = fingerprints[f2];
 console.log(recipientFingerprint);
 
 			let contactInitResult = await CONTACT.init({ fingerprint: recipientFingerprint });
