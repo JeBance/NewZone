@@ -141,7 +141,7 @@ const getNameForPrivateChat = async (str1, str2) => {
 		throw new Error('Empty parameter');
 		
 		let p1, p2, result = '';
-		if (str1[0] < str2[0]) {
+		if (str1 < str2) {
 			p1 = str1;
 			p2 = str2;
 		} else {
@@ -151,6 +151,22 @@ const getNameForPrivateChat = async (str1, str2) => {
 		
 		for (let i = 0, l = str1.length; i < l; i++)
 		result = result + p1[i] + p2[i];
+		return result;
+	} catch(e) {
+		console.log(e);
+		return false;
+	}
+}
+
+const getFingerprintsFromPrivateChat = async (str) => {
+	try {
+		if (str.length !== 40)
+		throw new Error('Incorrect parameter');
+		
+		let result = { f1: '', f2: '' };
+		for (let i = 0, l = str.length; i < l; i+2)
+		result.f1 = result.f1 + str[i];
+		result.f2 = result.f2 + str[i+1];
 		return result;
 	} catch(e) {
 		console.log(e);
