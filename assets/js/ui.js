@@ -273,8 +273,9 @@ console.log(allChats);
 				message: PGP.publicKeyArmored
 			};
 
+			let result = false;
 			let publicKeyMessage = await PGP.encryptMessage(CONTACT.publicKey, JSON.stringify(messageObj));
-			if (publicKeyMessage) let result = await NZHUB.sendMessage({ net: config.net, message: publicKeyMessage });
+			if (publicKeyMessage) result = await NZHUB.sendMessage({ net: config.net, message: publicKeyMessage });
 			if (!result) throw new Error('');
 			return true;
 		} catch(e) {
