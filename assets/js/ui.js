@@ -191,7 +191,7 @@ console.log(allChats);
 			if (!fingerprints) throw new Error('This chat is not private');
 
 			let recipientFingerprint;
-			(fingerprints.f1. !== PGP.fingerprint)
+			(fingerprints.f1 !== PGP.fingerprint)
 			? recipientFingerprint = fingerprints.f1
 			: recipientFingerprint = fingerprints.f2;
 
