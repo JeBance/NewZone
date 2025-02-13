@@ -148,14 +148,11 @@ class Messages {
 				if (!decrypted) throw new Error("Can't decrypt and verify message");
 				await tmpContact.init({ publicKey: message.message });
 
-			} else if (typeof message.message === 'object') {
+			} else {
 				let resultOfInit = await tmpContact.init({ fingerprint: message.from });
 				if (!resultOfInit) throw new Error('Failed to init contact');
 				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, tmpContact.publicKey);
 				if (!decrypted) throw new Error("Can't decrypt and verify message");
-				
-			} else {
-				return false;
 			}
 
 			return message;
