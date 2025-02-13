@@ -443,7 +443,7 @@ console.log(allChats);
 				from: PGP.fingerprint,
 				to: CONTACT.fingerprint,
 				message: messageInput.value
-			}));
+			};
 
 			let encryptedToRecipient = await PGP.encryptMessage(CONTACT.publicKey, JSON.stringify(messageObj));
 			let resultSendMessageTR = await NZHUB.sendMessage({ net: config.net, message: encryptedToRecipient });
