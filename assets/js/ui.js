@@ -295,7 +295,7 @@ console.log(recipientFingerprint);
 	async click(elem) {
 		let init, check, nickname, email, fingerprint, publicKey;
 		try {
-
+console.log('clicked: ' + elem);
 			switch(elem.id) {
 				case 'buttonStart':
 					this.hide(buttonStart);
