@@ -121,7 +121,7 @@ class Messages {
 							});
 						}
 
-						this.add(message);
+						await this.add(message);
 					}
 				});
 
@@ -140,18 +140,27 @@ class Messages {
 			if (!message) throw new Error("Can't read message");
 			let decrypted = await PGP.decryptMessage(armoredMessage);
 			if (!decrypted) throw new Error("Can't decrypt message");
-			message = JSON.parse(decrypted);
+			message = await JSON.parse(decrypted);
+console.log(message);
 			if (!message) throw new Error("Can't parse message");
 
-			if (message.message.hasPGPpublicKeyStructure()) {
+			if (await message.message.hasPGPpublicKeyStructure()) {
 				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, message.message);
+console.log(decrypted);
 				if (!decrypted) throw new Error("Can't decrypt and verify message");
 				await tmpContact.init({ publicKey: message.message });
 
 			} else {
-				let resultOfInit = await tmpContact.init({ fingerprint: message.from });
+				if (message.from !== PGP.fingerprint) {
+					let resultOfInit = await tmpContact.init({ fingerprint: message.from });
+				} else {
+					let resultOfInit = await tmpContact.init({ publicKey: PGP.publicKeyArmored });
+				}
+console.log(resultOfInit);
+console.log(tmpContact);
 				if (!resultOfInit) throw new Error('Failed to init contact');
 				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, tmpContact.publicKey);
+console.log(decrypted);
 				if (!decrypted) throw new Error("Can't decrypt and verify message");
 			}
 
