@@ -188,14 +188,12 @@ console.log(allChats);
 	async showChat(chatID) {
 		try {
 			let fingerprints = await getFingerprintsFromPrivateChat(chatID);
-console.log(fingerprints);
 			if (!fingerprints) throw new Error('This chat is not private');
 
 			let recipientFingerprint;
-			(fingerprints[f1] !== PGP.fingerprint)
-			? recipientFingerprint = fingerprints[f1]
-			: recipientFingerprint = fingerprints[f2];
-console.log(recipientFingerprint);
+			(fingerprints.f1. !== PGP.fingerprint)
+			? recipientFingerprint = fingerprints.f1
+			: recipientFingerprint = fingerprints.f2;
 
 			let contactInitResult = await CONTACT.init({ fingerprint: recipientFingerprint });
 			if (!contactInitResult) throw new Error('Contact initialization failed');
@@ -295,7 +293,7 @@ console.log(recipientFingerprint);
 	async click(elem) {
 		let init, check, nickname, email, fingerprint, publicKey;
 		try {
-console.log('clicked: ' + elem);
+
 			switch(elem.id) {
 				case 'buttonStart':
 					this.hide(buttonStart);
