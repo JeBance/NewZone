@@ -188,12 +188,14 @@ console.log(allChats);
 	async showChat(chatID) {
 		try {
 			let fingerprints = await getFingerprintsFromPrivateChat(chatID);
+console.log(fingerprints);
 			if (!fingerprints) throw new Error('This chat is not private');
 
 			let recipientFingerprint;
 			(fingerprints[0] !== PGP.fingerprint)
 			? recipientFingerprint = fingerprints[0]
 			: recipientFingerprint = fingerprints[1];
+console.log(recipientFingerprint);
 
 			let contactInitResult = await CONTACT.init({ fingerprint: recipientFingerprint });
 			if (!contactInitResult) throw new Error('Contact initialization failed');
@@ -359,6 +361,7 @@ console.log(allChats);
 
 				case 'buttonContactChat':
 					chat.id = await getNameForPrivateChat(CONTACT.fingerprint, PGP.fingerprint);
+console.log(chat.id);
 					if (!chat.id) throw new Error('Empty chat id');
 					let loadChatComplete = await this.showChat(chat.id);
 					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
