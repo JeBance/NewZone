@@ -15,8 +15,7 @@ async function dbInit(nameDB)
 
 					let contacts = db.createObjectStore('contacts', {keyPath: 'fingerprint'});
 					contacts.createIndex('nickname', 'nickname');
-					contacts.createIndex('email', 'nickname');
-					contacts.createIndex('nickname', 'nickname');
+					contacts.createIndex('email', 'email');
 					contacts.createIndex('publicKey', 'publicKey');
 
 					let messages = db.createObjectStore('messages', {keyPath: 'hash'});
