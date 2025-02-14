@@ -93,6 +93,44 @@ class Messages {
 				let map = new Map(Object.entries(NZHUB.knownMessages[config.net]));
 				let newMap = Array.from(map).sort((a, b) => a[1] - b[1]);
 				let sortedMap = new Map(newMap);
+				if (sortedMap.size > this.list.size) for (let key of sortedMap.keys()) {
+					if (!this.list.has(key)) {
+						console.log(key + ': ' + sortedMap.get(key));
+						var dbName = 'nz_' + config.net;
+						var db = await NZHUB.dbInitMessages(dbName).then((db) => { return db; });
+						var transaction = db.transaction('messages', 'readwrite');
+						var messages = transaction.objectStore('messages');
+						var request = messages.get(key);
+						var x = new Promise((resolve, reject) => {
+							request.onsuccess = function() { resolve(request.result); }
+							request.onerror = function() { reject('Error: ' + openRequest.error); }
+						});
+						var message = await x.then((value) => { return value; }).catch((error) => console.log(`${error}`));
+
+						try {
+							let decrypted = await this.decryptMessage(message.message);
+							if (!decrypted) throw new Error('');
+							decrypted.wasRead = false;
+							message = Object.assign(decrypted, {
+								hash: message.hash,
+								timestamp: message.timestamp,
+								net: message.net
+							});
+						} catch(e) {
+							message = Object.assign(message, {
+								chat: false,
+								from: false,
+								to: false,
+								message: false,
+								wasRead: false
+							});
+						}
+
+						await this.add(message);
+					}
+				}
+
+/*
 				if (sortedMap.size > this.list.size) await sortedMap.forEach(async (value, key, map) => {
 					if (!this.list.has(key)) {
 						console.log(`${key}: ${value}`);
@@ -129,7 +167,7 @@ class Messages {
 						await this.add(message);
 					}
 				});
-
+*/
 			} catch(e) {
 				// console.log(e);
 			}
@@ -150,24 +188,21 @@ console.log(message);
 			if (!message) throw new Error("Can't parse message");
 
 			if (await message.message.hasPGPpublicKeyStructure()) {
-				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, message.message);
-console.log(decrypted);
-				if (!decrypted) throw new Error("Can't decrypt and verify message");
-				await tmpContact.init({ publicKey: message.message });
-
+console.log(message.message);
+				resultOfInit = await tmpContact.init({ publicKey: message.message });
+console.log(tmpContact.publicKey);
 			} else {
 				if (message.from !== PGP.fingerprint) {
 					resultOfInit = await tmpContact.init({ fingerprint: message.from });
 				} else {
 					resultOfInit = await tmpContact.init({ publicKey: PGP.publicKeyArmored });
 				}
-console.log(resultOfInit);
-console.log(tmpContact);
-				if (!resultOfInit) throw new Error('Failed to init contact');
-				decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, tmpContact.publicKey);
-console.log(decrypted);
-				if (!decrypted) throw new Error("Can't decrypt and verify message");
 			}
+			if (!resultOfInit) throw new Error('Failed to init contact: ' + message.from);
+
+			decrypted = await PGP.decryptMessageWithVerificationKey(armoredMessage, tmpContact.publicKey);
+console.log(decrypted);
+			if (!decrypted) throw new Error("Can't decrypt and verify message");
 
 			return message;
 		} catch(e) {
