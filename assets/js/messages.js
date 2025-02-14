@@ -110,7 +110,11 @@ class Messages {
 							let decrypted = await this.decryptMessage(message.message);
 							if (!decrypted) throw new Error('');
 							decrypted.wasRead = false;
-							message = Object.assign(decrypted, message);
+							message = Object.assign(decrypted, {
+								hash: message.hash,
+								timestamp: message.timestamp,
+								net: message.net
+							});
 						} catch(e) {
 							message = Object.assign(message, {
 								chat: false,
