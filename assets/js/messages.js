@@ -136,7 +136,7 @@ class Messages {
 	}
 
 	async decryptMessage(armoredMessage) {
-		let decrypted, message;
+		let decrypted, message, resultOfInit;
 		let tmpContact = new Contact();
 
 		try {
@@ -156,9 +156,9 @@ console.log(decrypted);
 
 			} else {
 				if (message.from !== PGP.fingerprint) {
-					let resultOfInit = await tmpContact.init({ fingerprint: message.from });
+					resultOfInit = await tmpContact.init({ fingerprint: message.from });
 				} else {
-					let resultOfInit = await tmpContact.init({ publicKey: PGP.publicKeyArmored });
+					resultOfInit = await tmpContact.init({ publicKey: PGP.publicKeyArmored });
 				}
 console.log(resultOfInit);
 console.log(tmpContact);
