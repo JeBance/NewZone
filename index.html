@@ -260,7 +260,7 @@
 
 			<div id="blockLeftCenter" class="content">
 
-				<div id="chats">
+				<div id="chats" class="flex">
 					<div id="1" name="chat" class="leftItem">
 						<div class="avatar">👾</div>
 						<div class="leftItemInfo">
@@ -390,7 +390,7 @@
 
 			<div id="blockCenterBottom" class="footer">
 				<div id="chatInputArea" class="chatInputArea">
-					<div id="messageInputLine" class="messageInputLine"><input id="messageInput" type="text" placeholder="Сообщение" onkeydown="{if(event.key=='Enter')sendMessageButton.click()}" class="selectable"></div>
+					<div id="messageInputLine" class="messageInputLine"><input id="messageInput" type="text" placeholder="Сообщение" onkeydown="{if(event.key=='Enter')UI.sendMessage()}" class="selectable"></div>
 					<div id="buttonSendMessage" class="btn-circle" aria-hidden="true" onclick="UI.sendMessage()">
 						<span class="fa fa-chevron-circle-right fa-2x"></span>
 					</div>

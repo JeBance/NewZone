@@ -18,7 +18,6 @@ class Messages {
 	async initList() {
 		this.list.clear();
 		let list = await this.getAll();
-		await list.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 		let keys = Object.keys(list);
 		if (keys.length > 0) for (let i = 0, l = keys.length; i < l; i++) {
 			this.list.set(list[keys[i]].hash, list[keys[i]].timestamp);
@@ -60,6 +59,7 @@ class Messages {
 				request.onerror = function() { reject('Error: ' + openRequest.error); }
 			});
 			let allMessages = await x.then((value) => { return value; }).catch((error) => console.log(`${error}`));
+			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			return allMessages;
 		} catch(e) {
 			console.log(e);
@@ -77,6 +77,7 @@ class Messages {
 				request.onerror = function() { reject('Error: ' + openRequest.error); }
 			});
 			let allMessages = await x.then((value) => { return value; }).catch((error) => console.log(`${error}`));
+			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			return allMessages;
 		} catch(e) {
 			console.log(e);

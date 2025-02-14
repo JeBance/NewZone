@@ -74,9 +74,9 @@ class UserInterface {
 	}
 
 	async showContacts() {
+		this.show(background, 'modal-background');
 		await this.refreshContactsList();
 		this.hideAll('modal');
-		this.show(background, 'modal-background');
 		this.show(contacts, 'modal');
 	}
 
@@ -84,92 +84,110 @@ class UserInterface {
 		id: '',
 		title: '',
 		timestamp: '',
-		lastmessage: '',
+		lastMessage: '',
 		unreadMessages: 0		
 	}) {
-		let newContainerForChat = document.createElement('div');
-		newContainerForChat.id = chat.id;
-		newContainerForChat.setAttribute('name', 'chat');
-		newContainerForChat.className = 'leftItem';
-		newContainerForChat.setAttribute('onclick', 'chat.getChat(\'' + chat.id + '\')');
+		try {
+			let newContainerForChat = document.createElement('div');
+			newContainerForChat.id = chat.id;
+			newContainerForChat.setAttribute('name', 'chat');
+			newContainerForChat.className = 'leftItem';
+			newContainerForChat.setAttribute('onclick', 'UI.showChat(\'' + chat.id + '\')');
 
-		let newDivForAvatar = document.createElement('div');
-		newDivForAvatar.className = 'avatar';
+			let newDivForAvatar = document.createElement('div');
+			newDivForAvatar.className = 'avatar';
 
-		let newDivForLeftItemInfo = document.createElement('div');
-		newDivForLeftItemInfo.className = 'leftItemInfo';
+			let newDivForLeftItemInfo = document.createElement('div');
+			newDivForLeftItemInfo.className = 'leftItemInfo';
 
-		let newDivForLeftItemInfoTop = document.createElement('div');
-		newDivForLeftItemInfoTop.className = 'leftItemInfoTop';
+			let newDivForLeftItemInfoTop = document.createElement('div');
+			newDivForLeftItemInfoTop.className = 'leftItemInfoTop';
 
-		let newDivForLeftItemInfoBottom = document.createElement('div');
-		newDivForLeftItemInfoBottom.className = 'leftItemInfoBottom';
+			let newDivForLeftItemInfoBottom = document.createElement('div');
+			newDivForLeftItemInfoBottom.className = 'leftItemInfoBottom';
 
-		let newDivForLeftItemInfoName = document.createElement('div');
-		newDivForLeftItemInfoName.className = 'leftItemInfoName';
-		newDivForLeftItemInfoName.innerHTML = chat.title;
+			let newDivForLeftItemInfoName = document.createElement('div');
+			newDivForLeftItemInfoName.className = 'leftItemInfoName';
+			newDivForLeftItemInfoName.innerHTML = chat.title;
 
-		let newDivForLeftItemInfoTime = document.createElement('div');
-		newDivForLeftItemInfoTime.className = 'leftItemInfoTime';
-		newDivForLeftItemInfoTime.innerHTML = timestampToTime(chat.timestamp);
+			let newDivForLeftItemInfoTime = document.createElement('div');
+			newDivForLeftItemInfoTime.className = 'leftItemInfoTime';
+			newDivForLeftItemInfoTime.innerHTML = timestampToTime(chat.timestamp);
 
-		let newDivForLeftItemInfoText = document.createElement('div');
-		newDivForLeftItemInfoText.className = 'leftItemInfoText';
-		newDivForLeftItemInfoText.innerHTML = chat.message;
+			let newDivForLeftItemInfoText = document.createElement('div');
+			newDivForLeftItemInfoText.className = 'leftItemInfoText';
+			newDivForLeftItemInfoText.innerHTML = chat.lastMessage;
 
-		let newDivForLeftItemInfoCounter = document.createElement('div');
-		newDivForLeftItemInfoCounter.setAttribute('name', 'inboxCounter');
-		newDivForLeftItemInfoCounter.className = 'leftItemInfoCounter';
-		if (chat.unreadMessages > 0) newDivForLeftItemInfoCounter.innerHTML = chat.unreadMessages;
+			let newDivForLeftItemInfoCounter = document.createElement('div');
+			newDivForLeftItemInfoCounter.setAttribute('name', 'inboxCounter');
+			newDivForLeftItemInfoCounter.className = 'leftItemInfoCounter';
+			if (chat.unreadMessages > 0) newDivForLeftItemInfoCounter.innerHTML = chat.unreadMessages;
 
-		newDivForLeftItemInfoTop.append(newDivForLeftItemInfoName);
-		newDivForLeftItemInfoTop.append(newDivForLeftItemInfoTime);
-		newDivForLeftItemInfoBottom.append(newDivForLeftItemInfoText);
-		newDivForLeftItemInfoBottom.append(newDivForLeftItemInfoCounter);
-		newDivForLeftItemInfo.append(newDivForLeftItemInfoTop);
-		newDivForLeftItemInfo.append(newDivForLeftItemInfoBottom);
-		newContainerForChat.append(newDivForAvatar);
-		newContainerForChat.append(newDivForLeftItemInfo);
-		elem.append(newContainerForChat);
+			newDivForLeftItemInfoTop.append(newDivForLeftItemInfoName);
+			newDivForLeftItemInfoTop.append(newDivForLeftItemInfoTime);
+			newDivForLeftItemInfoBottom.append(newDivForLeftItemInfoText);
+			newDivForLeftItemInfoBottom.append(newDivForLeftItemInfoCounter);
+			newDivForLeftItemInfo.append(newDivForLeftItemInfoTop);
+			newDivForLeftItemInfo.append(newDivForLeftItemInfoBottom);
+			newContainerForChat.append(newDivForAvatar);
+			newContainerForChat.append(newDivForLeftItemInfo);
+			elem.append(newContainerForChat);
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
 	async refreshChatsList() {
+		let fingerprints, recipientFingerprint;
 		try {
 			chats.innerHTML = '';
 			let allMessages = await MESSAGES.getAll();
 			let allChats = new Object();
+			allChats.list = [];
 			let unreadMessages = new Object();
 			let tmpContact = new Contact();
 			let num = 0;
 
+console.log(allMessages);
+
 			for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
 				if (typeof allMessages[l].chat !== 'string') continue;
-				if ((allMessages[l].chat in allChats) === false) {
-					await tmpContact.init({ fingerprint: allMessages[l].chat });
-					allChats[num] = {
-						id: allMessages[l].chat,
-						title: tmpContact.nickname,
-						timestamp: allMessages[l].timestamp,
-						lastmessage: allMessages[l].message,
-						unreadMessages: 0
-					};
+				try {
+					if (allChats.list.includes(allMessages[l].chat) === false) {
+						fingerprints = await getFingerprintsFromPrivateChat(allMessages[l].chat);
+						if (!fingerprints) throw new Error('This chat is not private');
 
-					unreadMessages[allMessages[l].chat] = 0;
+						(fingerprints.f1 !== PGP.fingerprint)
+						? recipientFingerprint = fingerprints.f1
+						: recipientFingerprint = fingerprints.f2;
 
-					if (allMessages[l].wasRead === false)
-					unreadMessages[allMessages[l].chat]++;
-					num++;
-				} else {
-					if (allMessages[l].wasRead === false)
-					unreadMessages[allMessages[l].chat]++;
+						await tmpContact.init({ fingerprint: recipientFingerprint });
+						allChats[num] = {
+							id: allMessages[l].chat,
+							title: tmpContact.nickname,
+							timestamp: allMessages[l].timestamp,
+							lastMessage: allMessages[l].message,
+							unreadMessages: 0
+						};
+
+						unreadMessages[allMessages[l].chat] = 0;
+
+						if (allMessages[l].wasRead === false)
+						unreadMessages[allMessages[l].chat]++;
+						num++;
+						allChats.list.push(allMessages[l].chat);
+					} else {
+						if (allMessages[l].wasRead === false)
+						unreadMessages[allMessages[l].chat]++;
+					}
+				} catch(e) {
+					console.log(e);
 				}
 			}
 
-console.log(allChats);
-
-			for (let m = 0, n = allChats.length; m < n; m++) {
+			for (let m = 0, n = allChats.list.length; m < n; m++) {
 				allChats[m].unreadMessages = unreadMessages[allChats[m].id];
-				this.addChatButton(chats, allChats[m]);
+				await this.addChatButton(chats, allChats[m]);
 			}
 
 		} catch(e) {
@@ -181,7 +199,7 @@ console.log(allChats);
 	async showChats() {
 		this.refreshChatsList();
 		this.hideAll('modal');
-		this.show(background, 'modal-background');
+		this.hide(background);
 		this.show(blockLeft, 'left');
 	}
 
@@ -194,7 +212,7 @@ console.log(allChats);
 			(fingerprints.f1 !== PGP.fingerprint)
 			? recipientFingerprint = fingerprints.f1
 			: recipientFingerprint = fingerprints.f2;
-
+console.log(recipientFingerprint)
 			let contactInitResult = await CONTACT.init({ fingerprint: recipientFingerprint });
 			if (!contactInitResult) throw new Error('Contact initialization failed');
 
@@ -224,11 +242,11 @@ console.log(allChats);
 			let newContainerForMessage = document.createElement('div');
 			newContainerForMessage.id = message.hash;
 			newContainerForMessage.setAttribute('name', 'message');
-			(message.from == message.chat)
+			(message.from == PGP.fingerprint)
 			? newContainerForMessage.className = 'message outgoingMessage'
 			: newContainerForMessage.className = 'message incomingMessage';
 
-			if (message.message.hasPGPpublicKeyStructure()) throw new ('Contact message found');
+			if (message.message.hasPGPpublicKeyStructure()) return false;
 
 			newContainerForMessage.innerHTML = message.message;
 
@@ -321,9 +339,9 @@ console.log(allChats);
 					break;
 
 				case 'buttonSettings':
+					this.show(background, 'modal-background');
 					this.menuAnimation();
 					this.hideAll('modal');
-					this.show(background, 'modal-background');
 					this.show(settings, 'modal');
 					break;
 
@@ -359,7 +377,6 @@ console.log(allChats);
 
 				case 'buttonContactChat':
 					chat.id = await getNameForPrivateChat(CONTACT.fingerprint, PGP.fingerprint);
-console.log(chat.id);
 					if (!chat.id) throw new Error('Empty chat id');
 					let loadChatComplete = await this.showChat(chat.id);
 					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
@@ -383,11 +400,16 @@ console.log(chat.id);
 					break;
 
 				case 'backToMain':
+				try {
 					if (!PGP.active) throw new Error('Container not connected');
 					this.hideAll('modal');
 					this.hide(background);
 					if (html5QrCode.isScanning === true) html5QrCode.stop();
 					CONTACT.clear();
+					this.showChats();
+				} catch(e) {
+console.log(e);
+				}
 					break;
 	
 				case 'backToSettings':
@@ -446,6 +468,13 @@ console.log(chat.id);
 				await CONTACT.save();
 			}
 			
+			/* Формируем сообщение.
+			 * Шифруем для получателя и отправителя соответствующими ключами.
+			 * Отправляем две шифровки в сеть для будущего распознавания отправленных сообщений обоими собеседниками.
+			 * В свой чат отправляем одно сообщение.
+			 * В будущем необходимо распознавать хэш сообщения, которое у получателя, чтобы можно было ответить на него.
+			 */
+
 			let messageObj = {
 				chat: chat.id,
 				from: PGP.fingerprint,
@@ -453,18 +482,20 @@ console.log(chat.id);
 				message: messageInput.value
 			};
 
-			let encryptedToRecipient = await PGP.encryptMessage(CONTACT.publicKey, JSON.stringify(messageObj));
-			let resultSendMessageTR = await NZHUB.sendMessage({ net: config.net, message: encryptedToRecipient });
-			if (!resultSendMessageTR) throw new Error('Failed to send message');
+			if (messageObj.from !== messageObj.to) {
+				let encryptedToRecipient = await PGP.encryptMessage(CONTACT.publicKey, JSON.stringify(messageObj));
+				let resultSendMessageTR = await NZHUB.sendMessage({ net: config.net, message: encryptedToRecipient });
+				if (!resultSendMessageTR) throw new Error('Failed to send message');
+			}
 
 			let encryptedToSender = await PGP.encryptMessage(PGP.publicKeyArmored, JSON.stringify(messageObj));
 			let resultSendMessageTS = await NZHUB.sendMessage({ net: config.net, message: encryptedToSender });
 			if (!resultSendMessageTS) throw new Error('Failed to send message');
 
 			let message = {
-				hash: resultSendMessageTR.hash,
-				timestamp: resultSendMessageTR.timestamp,
-				chat: CONTACT.fingerprint,
+				hash: resultSendMessageTS.hash,
+				timestamp: resultSendMessageTS.timestamp,
+				chat: chat.id,
 				from: PGP.fingerprint,
 				message: messageInput.value,
 				wasRead: true
@@ -474,7 +505,7 @@ console.log(chat.id);
 			messageInput.value = '';
 			await this.showMessage(message);
 		} catch(e) {
-			alert(e);
+			console.log(e);
 		}
 	}
 
