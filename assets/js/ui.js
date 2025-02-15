@@ -148,8 +148,6 @@ class UserInterface {
 			let tmpContact = new Contact();
 			let num = 0;
 
-console.log(allMessages);
-
 			for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
 				if (typeof allMessages[l].chat !== 'string') continue;
 				try {
@@ -212,7 +210,7 @@ console.log(allMessages);
 			(fingerprints.f1 !== PGP.fingerprint)
 			? recipientFingerprint = fingerprints.f1
 			: recipientFingerprint = fingerprints.f2;
-console.log(recipientFingerprint)
+
 			let contactInitResult = await CONTACT.init({ fingerprint: recipientFingerprint });
 			if (!contactInitResult) throw new Error('Contact initialization failed');
 
@@ -316,6 +314,7 @@ console.log(recipientFingerprint)
 				case 'buttonStart':
 					this.hide(buttonStart);
 					this.show(selectNodeBlock, 'flex');
+					if (!selectNode.hasChildNodes()) this.show(loader, 'loader');
 					break;
 
 				case 'buttonSelectNode':
@@ -400,16 +399,12 @@ console.log(recipientFingerprint)
 					break;
 
 				case 'backToMain':
-				try {
 					if (!PGP.active) throw new Error('Container not connected');
 					this.hideAll('modal');
 					this.hide(background);
 					if (html5QrCode.isScanning === true) html5QrCode.stop();
 					CONTACT.clear();
 					this.showChats();
-				} catch(e) {
-console.log(e);
-				}
 					break;
 	
 				case 'backToSettings':
