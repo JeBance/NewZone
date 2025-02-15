@@ -7,7 +7,7 @@ class Messages {
 
 	constructor() {
 		this.list = new Map();
-		document.addEventListener("newMessage", (event) => {
+		document.addEventListener("newMessageFromNZhub", (event) => {
 			this.newMessage(event.detail);
 		});
 	}
