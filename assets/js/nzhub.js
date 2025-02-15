@@ -476,7 +476,7 @@ class nzhub {
 					if (message) {
 						message.net = node.net;
 						await this.addMessage(message);
-						document.dispatchEvent(new CustomEvent("newMessage", {
+						document.dispatchEvent(new CustomEvent("newMessageFromNZhub", {
 							detail: message
 						}));
 					}
