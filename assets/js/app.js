@@ -13,7 +13,6 @@ NZHUB.cyclicNodesCheck();
 NZHUB.cyclicMessagesCheck();
 
 const UI = new UserInterface();
-const NODES = new Nodes();
 const CONTACT = new Contact();
 const MESSAGES = new Messages();
 let updateMessages;
