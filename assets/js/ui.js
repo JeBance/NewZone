@@ -314,7 +314,7 @@ class UserInterface {
 				case 'buttonStart':
 					this.hide(buttonStart);
 					this.show(selectNodeBlock, 'flex');
-					if (!selectNode.hasChildNodes()) this.show(loader, 'loader');
+					if (!selectNode.hasChildNodes()) loader.show(start, selectNodeBlock);
 					break;
 
 				case 'buttonSelectNode':
