@@ -7,6 +7,8 @@ class nzhub {
 
 	constructor(config = {}) {
 		this.config = Object.assign({
+			checkingNodes: false,
+			checkingMessages: false,
 			timeForCyclicNodesCheck: 3000,
 			timeForCyclicMessagesCheck: 3000,
 			log: false
@@ -388,6 +390,7 @@ class nzhub {
 
 	async cyclicNodesCheck() {
 		setInterval(async () => {
+			if (!this.config.checkingNodes) return;
 			let keys = Object.keys(this.knownNodes);
 			if (keys.length > 0) for (let i = 0, l = keys.length; i < l; i++) {
 				if (this.knownNodes[keys[i]].status !== 'blocked')
@@ -473,6 +476,9 @@ class nzhub {
 					if (message) {
 						message.net = node.net;
 						await this.addMessage(message);
+						document.dispatchEvent(new CustomEvent("newMessage", {
+							detail: message
+						}));
 					}
 				}
 			}
@@ -545,6 +551,7 @@ class nzhub {
 	async cyclicMessagesCheck() {
 		setInterval(async () => {
 			try {
+				if (!this.config.checkingMessages) return;
 				let keys = Object.keys(this.knownNets);
 				if (keys.length > 0) for (let i = 0, l = keys.length; i < l; i++) {
 					if (this.knownNets[keys[i]].status === 'read')

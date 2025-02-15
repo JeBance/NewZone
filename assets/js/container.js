@@ -108,7 +108,7 @@ container.clearInputs = function()
 
 container.choice = function()
 {
-	clearInterval(updateMessages);
+	NZHUB.config.checkingMessages = false;
 	config.dbName = false;
 	container.clearInputs();
 	UI.hideAll('container');
@@ -138,7 +138,7 @@ container.generate = async function()
 	UI.show(wraper, 'wraper');
 	config.dbName = config.net + '-' + PGP.fingerprint;
 	MESSAGES.initList();
-	updateMessages = MESSAGES.update();
+	NZHUB.config.checkingMessages = true;
 	publicKeyQR.clear();
 	publicKeyQR.makeCode(PGP.publicKeyArmored);
 }

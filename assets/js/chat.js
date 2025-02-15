@@ -1,15 +1,75 @@
-class Messages {
+class Chat {
 	db;
-	list;
+	contact;
 	messages;
-	monitor;
 	transaction;
 
 	constructor() {
-		this.list = new Map();
-		document.addEventListener("newMessage", (event) => {
-			this.newMessage(event.detail);
+		document.addEventListener("addMessageToChat", (event) => {
+			this.addMessage(event.detail);
 		});
+	}
+
+	async showChat(chatID) {
+		try {
+			let fingerprints = await getFingerprintsFromPrivateChat(chatID);
+			if (!fingerprints) throw new Error('This chat is not private');
+
+			let recipientFingerprint;
+			(fingerprints.f1 !== PGP.fingerprint)
+			? recipientFingerprint = fingerprints.f1
+			: recipientFingerprint = fingerprints.f2;
+
+			let contactInitResult = await CONTACT.init({ fingerprint: recipientFingerprint });
+			if (!contactInitResult) throw new Error('Contact initialization failed');
+
+			chatReadArea.innerHTML = '';
+			topChatInfoName.innerHTML = CONTACT.nickname;
+			topChatInfoText.innerHTML = CONTACT.email;
+			let allMessages = await MESSAGES.getAllFromChat(chatID);
+			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
+			for (let i = 0, l = allMessages.length; i < l; i++) {
+				this.addMessage(allMessages[i]);
+			}
+			this.show(blockCenter, 'center');
+			blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
+			if (document.documentElement.clientWidth < 800) {
+				this.hide(blockLeft);
+			}
+			return true;
+		} catch(e) {
+			alert('Что-то пошло не так =/');
+			console.log(e);
+			return false;
+		}
+	}
+
+	async addMessage(message) {
+		try {
+			let newContainerForMessage = document.createElement('div');
+			newContainerForMessage.id = message.hash;
+			newContainerForMessage.setAttribute('name', 'message');
+			(message.from == PGP.fingerprint)
+			? newContainerForMessage.className = 'message outgoingMessage'
+			: newContainerForMessage.className = 'message incomingMessage';
+
+			if (message.message.hasPGPpublicKeyStructure()) return false;
+
+			newContainerForMessage.innerHTML = message.message;
+
+			let newContainerForTime = document.createElement('div');
+			newContainerForTime.setAttribute('name', 'message');
+			(message.from == message.chat)
+			? newContainerForTime.className = 'leftMessageTime'
+			: newContainerForTime.className = 'rightMessageTime';
+			newContainerForTime.innerHTML = timestampToTime(message.timestamp);
+
+			newContainerForMessage.append(newContainerForTime);
+			chatReadArea.append(newContainerForMessage);
+			blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
+		} catch(e) {
+			console.log(e);
+		}
 	}
 
 	async initDB() {

@@ -315,6 +315,7 @@ class UserInterface {
 					this.hide(buttonStart);
 					this.show(selectNodeBlock, 'flex');
 					if (!selectNode.hasChildNodes()) loader.show(start, selectNodeBlock);
+					NZHUB.config.checkingNodes = true;
 					break;
 
 				case 'buttonSelectNode':
