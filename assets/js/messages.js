@@ -166,7 +166,7 @@ class Messages {
 
 			return message;
 		} catch(e) {
-			console.log(e);
+			// console.log(e);
 			return false;
 		}
 
@@ -192,6 +192,9 @@ class Messages {
 			});
 		}
 		await this.add(message);
+		document.dispatchEvent(new CustomEvent("newMessage", {
+			detail: message
+		}));
 	}
 
 }

@@ -13,9 +13,11 @@ NZHUB.cyclicNodesCheck();
 NZHUB.cyclicMessagesCheck();
 
 const UI = new UserInterface();
+const CHAT = new Chat();
+const CHATS = new Chats();
 const CONTACT = new Contact();
 const MESSAGES = new Messages();
-let updateMessages;
+
 const PGP = new SecureStorage();
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 const modal = {};

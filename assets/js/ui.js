@@ -80,202 +80,18 @@ class UserInterface {
 		this.show(contacts, 'modal');
 	}
 
-	addChatButton(elem, chat = {
-		id: '',
-		title: '',
-		timestamp: '',
-		lastMessage: '',
-		unreadMessages: 0		
-	}) {
+	async checkPublicKeyMessage(chatID) {
 		try {
-			let newContainerForChat = document.createElement('div');
-			newContainerForChat.id = chat.id;
-			newContainerForChat.setAttribute('name', 'chat');
-			newContainerForChat.className = 'leftItem';
-			newContainerForChat.setAttribute('onclick', 'UI.showChat(\'' + chat.id + '\')');
+			if (!chatID) throw new Error('Empty chat id');
 
-			let newDivForAvatar = document.createElement('div');
-			newDivForAvatar.className = 'avatar';
+			if (CHAT.contact.receivedContactMessage === true) return true;
 
-			let newDivForLeftItemInfo = document.createElement('div');
-			newDivForLeftItemInfo.className = 'leftItemInfo';
-
-			let newDivForLeftItemInfoTop = document.createElement('div');
-			newDivForLeftItemInfoTop.className = 'leftItemInfoTop';
-
-			let newDivForLeftItemInfoBottom = document.createElement('div');
-			newDivForLeftItemInfoBottom.className = 'leftItemInfoBottom';
-
-			let newDivForLeftItemInfoName = document.createElement('div');
-			newDivForLeftItemInfoName.className = 'leftItemInfoName';
-			newDivForLeftItemInfoName.innerHTML = chat.title;
-
-			let newDivForLeftItemInfoTime = document.createElement('div');
-			newDivForLeftItemInfoTime.className = 'leftItemInfoTime';
-			newDivForLeftItemInfoTime.innerHTML = timestampToTime(chat.timestamp);
-
-			let newDivForLeftItemInfoText = document.createElement('div');
-			newDivForLeftItemInfoText.className = 'leftItemInfoText';
-			newDivForLeftItemInfoText.innerHTML = chat.lastMessage;
-
-			let newDivForLeftItemInfoCounter = document.createElement('div');
-			newDivForLeftItemInfoCounter.setAttribute('name', 'inboxCounter');
-			newDivForLeftItemInfoCounter.className = 'leftItemInfoCounter';
-			if (chat.unreadMessages > 0) newDivForLeftItemInfoCounter.innerHTML = chat.unreadMessages;
-
-			newDivForLeftItemInfoTop.append(newDivForLeftItemInfoName);
-			newDivForLeftItemInfoTop.append(newDivForLeftItemInfoTime);
-			newDivForLeftItemInfoBottom.append(newDivForLeftItemInfoText);
-			newDivForLeftItemInfoBottom.append(newDivForLeftItemInfoCounter);
-			newDivForLeftItemInfo.append(newDivForLeftItemInfoTop);
-			newDivForLeftItemInfo.append(newDivForLeftItemInfoBottom);
-			newContainerForChat.append(newDivForAvatar);
-			newContainerForChat.append(newDivForLeftItemInfo);
-			elem.append(newContainerForChat);
-		} catch(e) {
-			console.log(e);
-		}
-	}
-
-	async refreshChatsList() {
-		let fingerprints, recipientFingerprint;
-		try {
-			chats.innerHTML = '';
-			let allMessages = await MESSAGES.getAll();
-			let allChats = new Object();
-			allChats.list = [];
-			let unreadMessages = new Object();
-			let tmpContact = new Contact();
-			let num = 0;
-
-			for (let i = -1, l = allMessages.length - 1; l !== i; l--) {
-				if (typeof allMessages[l].chat !== 'string') continue;
-				try {
-					if (allChats.list.includes(allMessages[l].chat) === false) {
-						fingerprints = await getFingerprintsFromPrivateChat(allMessages[l].chat);
-						if (!fingerprints) throw new Error('This chat is not private');
-
-						(fingerprints.f1 !== PGP.fingerprint)
-						? recipientFingerprint = fingerprints.f1
-						: recipientFingerprint = fingerprints.f2;
-
-						await tmpContact.init({ fingerprint: recipientFingerprint });
-						allChats[num] = {
-							id: allMessages[l].chat,
-							title: tmpContact.nickname,
-							timestamp: allMessages[l].timestamp,
-							lastMessage: allMessages[l].message,
-							unreadMessages: 0
-						};
-
-						unreadMessages[allMessages[l].chat] = 0;
-
-						if (allMessages[l].wasRead === false)
-						unreadMessages[allMessages[l].chat]++;
-						num++;
-						allChats.list.push(allMessages[l].chat);
-					} else {
-						if (allMessages[l].wasRead === false)
-						unreadMessages[allMessages[l].chat]++;
-					}
-				} catch(e) {
-					console.log(e);
-				}
-			}
-
-			for (let m = 0, n = allChats.list.length; m < n; m++) {
-				allChats[m].unreadMessages = unreadMessages[allChats[m].id];
-				await this.addChatButton(chats, allChats[m]);
-			}
-
-		} catch(e) {
-			console.log(e);
-		}
-
-	}
-
-	async showChats() {
-		this.refreshChatsList();
-		this.hideAll('modal');
-		this.hide(background);
-		this.show(blockLeft, 'left');
-	}
-
-	async showChat(chatID) {
-		try {
-			let fingerprints = await getFingerprintsFromPrivateChat(chatID);
-			if (!fingerprints) throw new Error('This chat is not private');
-
-			let recipientFingerprint;
-			(fingerprints.f1 !== PGP.fingerprint)
-			? recipientFingerprint = fingerprints.f1
-			: recipientFingerprint = fingerprints.f2;
-
-			let contactInitResult = await CONTACT.init({ fingerprint: recipientFingerprint });
-			if (!contactInitResult) throw new Error('Contact initialization failed');
-
-			chatReadArea.innerHTML = '';
-			topChatInfoName.innerHTML = CONTACT.nickname;
-			topChatInfoText.innerHTML = CONTACT.email;
 			let allMessages = await MESSAGES.getAllFromChat(chatID);
 			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			for (let i = 0, l = allMessages.length; i < l; i++) {
-				this.showMessage(allMessages[i]);
-			}
-			this.show(blockCenter, 'center');
-			blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
-			if (document.documentElement.clientWidth < 800) {
-				this.hide(blockLeft);
-			}
-			return true;
-		} catch(e) {
-			alert('Что-то пошло не так =/');
-			console.log(e);
-			return false;
-		}
-	}
-
-	async showMessage(message) {
-		try {
-			let newContainerForMessage = document.createElement('div');
-			newContainerForMessage.id = message.hash;
-			newContainerForMessage.setAttribute('name', 'message');
-			(message.from == PGP.fingerprint)
-			? newContainerForMessage.className = 'message outgoingMessage'
-			: newContainerForMessage.className = 'message incomingMessage';
-
-			if (message.message.hasPGPpublicKeyStructure()) return false;
-
-			newContainerForMessage.innerHTML = message.message;
-
-			let newContainerForTime = document.createElement('div');
-			newContainerForTime.setAttribute('name', 'message');
-			(message.from == message.chat)
-			? newContainerForTime.className = 'leftMessageTime'
-			: newContainerForTime.className = 'rightMessageTime';
-			newContainerForTime.innerHTML = timestampToTime(message.timestamp);
-
-			newContainerForMessage.append(newContainerForTime);
-			chatReadArea.append(newContainerForMessage);
-			blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
-		} catch(e) {
-			console.log(e);
-		}
-	}
-
-	async checkPublicKeyMessage() {
-		try {
-			chat.id = await getNameForPrivateChat(CONTACT.fingerprint, PGP.fingerprint);
-			if (!chat.id) throw new Error('Empty chat id');
-
-			if (CONTACT.receivedContactMessage === true) return true;
-
-			let allMessages = await MESSAGES.getAllFromChat(chat.id);
-			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
-			for (let i = 0, l = allMessages.length; i < l; i++) {
 				if (allMessages[i].message.hasPGPpublicKeyStructure()) {
-					CONTACT.receivedContactMessage = true;
-					await CONTACT.save();
+					CHAT.contact.receivedContactMessage = true;
+					await CHAT.contact.save();
 					return true;
 				}
 			}
@@ -289,14 +105,14 @@ class UserInterface {
 	async sendPublicKeyMessage() {
 		try {
 			let messageObj = {
-				chat: chat.id,
+				chat: CHAT.id,
 				from: PGP.fingerprint,
-				to: CONTACT.fingerprint,
+				to: CHAT.contact.fingerprint,
 				message: PGP.publicKeyArmored
 			};
 
 			let result = false;
-			let publicKeyMessage = await PGP.encryptMessage(CONTACT.publicKey, JSON.stringify(messageObj));
+			let publicKeyMessage = await PGP.encryptMessage(CHAT.contact.publicKey, JSON.stringify(messageObj));
 			if (publicKeyMessage) result = await NZHUB.sendMessage({ net: config.net, message: publicKeyMessage });
 			if (!result) throw new Error('');
 			return true;
@@ -376,9 +192,9 @@ class UserInterface {
 					break;
 
 				case 'buttonContactChat':
-					chat.id = await getNameForPrivateChat(CONTACT.fingerprint, PGP.fingerprint);
-					if (!chat.id) throw new Error('Empty chat id');
-					let loadChatComplete = await this.showChat(chat.id);
+					var chatID = await getNameForPrivateChat(CONTACT.fingerprint, PGP.fingerprint);
+					if (!chatID) throw new Error('Empty chat id');
+					let loadChatComplete = await CHAT.show(chatID);
 					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
 					this.hide(contact);
 					break;
@@ -405,7 +221,7 @@ class UserInterface {
 					this.hide(background);
 					if (html5QrCode.isScanning === true) html5QrCode.stop();
 					CONTACT.clear();
-					this.showChats();
+					CHATS.show();
 					break;
 	
 				case 'backToSettings':
@@ -422,7 +238,7 @@ class UserInterface {
 					this.hide(blockCenter);
 					this.show(blockLeft, 'left');
 					CONTACT.clear();
-					this.showChats();
+					CHATS.show();
 					break;
 
 				case 'contact':
@@ -456,30 +272,23 @@ class UserInterface {
 		try {
 			if (messageInput.value <= 0) throw new Error('Input empty');
 
-			let check = await this.checkPublicKeyMessage();
+			let check = await this.checkPublicKeyMessage(CHAT.id);
 			if (check === false) {
 				let resultSendingContactMessage = await this.sendPublicKeyMessage();
 				if (!resultSendingContactMessage) throw new Error('Failed to send contact message');
-				CONTACT.receivedContactMessage = true;
-				await CONTACT.save();
+				CHAT.contact.receivedContactMessage = true;
+				await CHAT.contact.save();
 			}
 			
-			/* Формируем сообщение.
-			 * Шифруем для получателя и отправителя соответствующими ключами.
-			 * Отправляем две шифровки в сеть для будущего распознавания отправленных сообщений обоими собеседниками.
-			 * В свой чат отправляем одно сообщение.
-			 * В будущем необходимо распознавать хэш сообщения, которое у получателя, чтобы можно было ответить на него.
-			 */
-
 			let messageObj = {
-				chat: chat.id,
+				chat: CHAT.id,
 				from: PGP.fingerprint,
-				to: CONTACT.fingerprint,
+				to: CHAT.contact.fingerprint,
 				message: messageInput.value
 			};
 
 			if (messageObj.from !== messageObj.to) {
-				let encryptedToRecipient = await PGP.encryptMessage(CONTACT.publicKey, JSON.stringify(messageObj));
+				let encryptedToRecipient = await PGP.encryptMessage(CHAT.contact.publicKey, JSON.stringify(messageObj));
 				let resultSendMessageTR = await NZHUB.sendMessage({ net: config.net, message: encryptedToRecipient });
 				if (!resultSendMessageTR) throw new Error('Failed to send message');
 			}
@@ -491,15 +300,15 @@ class UserInterface {
 			let message = {
 				hash: resultSendMessageTS.hash,
 				timestamp: resultSendMessageTS.timestamp,
-				chat: chat.id,
+				chat: CHAT.id,
 				from: PGP.fingerprint,
 				message: messageInput.value,
 				wasRead: true
 			}
 
-			await MESSAGES.add(message);
 			messageInput.value = '';
-			await this.showMessage(message);
+			document.dispatchEvent(new CustomEvent("newMessage", { detail: message }));
+			MESSAGES.add(message);
 		} catch(e) {
 			console.log(e);
 		}

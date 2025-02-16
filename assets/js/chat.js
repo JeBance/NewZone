@@ -1,19 +1,14 @@
 class Chat {
-id;
-	db;
-	contact;
-	messages;
-	transaction;
 
 	constructor() {
-	this.id = '';
-this.contact = new Contact();	document.addEventListener("newMessage", (event) => {
-if (event.detail.chat === this.id)
-			this.addMessage(event.detail);
+		this.id = '';
+		this.contact = new Contact();
+		document.addEventListener("newMessage", (event) => {
+			if (event.detail.chat === this.id) this.addMessage(event.detail);
 		});
 	}
 
-	async showChat(chatID) {
+	async show(chatID) {
 		try {
 			let fingerprints = await getFingerprintsFromPrivateChat(chatID);
 			if (!fingerprints) throw new Error('This chat is not private');
@@ -34,15 +29,14 @@ if (event.detail.chat === this.id)
 			for (let i = 0, l = allMessages.length; i < l; i++) {
 				this.addMessage(allMessages[i]);
 			}
-			this.show(blockCenter, 'center');
+			UI.show(blockCenter, 'center');
 			blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
 			if (document.documentElement.clientWidth < 800) {
-				this.hide(blockLeft);
+				UI.hide(blockLeft);
 			}
-this.id = chatID;
+			this.id = chatID;
 			return true;
 		} catch(e) {
-			alert('Что-то пошло не так =/');
 			console.log(e);
 			return false;
 		}
@@ -57,7 +51,7 @@ this.id = chatID;
 			? newContainerForMessage.className = 'message outgoingMessage'
 			: newContainerForMessage.className = 'message incomingMessage';
 
-			if (message.message.hasPGPpublicKeyStructure()) return false;
+			if (message.message.hasPGPpublicKeyStructure()) return;
 
 			newContainerForMessage.innerHTML = message.message;
 

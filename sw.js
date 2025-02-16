@@ -42,6 +42,8 @@ self.addEventListener("install", (event) => {
       "/NewZone/assets/img/poster.svg",
       "/NewZone/assets/img/poster_transparent.svg",
       "/NewZone/assets/js/app.js",
+      "/NewZone/assets/js/chat.js",
+      "/NewZone/assets/js/chats.js",
       "/NewZone/assets/js/contact.js",
       "/NewZone/assets/js/container.js",
       "/NewZone/assets/js/db.js",
