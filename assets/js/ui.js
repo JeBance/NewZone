@@ -308,7 +308,6 @@ class UserInterface {
 
 			messageInput.value = '';
 			document.dispatchEvent(new CustomEvent("newMessage", { detail: message }));
-			MESSAGES.add(message);
 		} catch(e) {
 			console.log(e);
 		}
