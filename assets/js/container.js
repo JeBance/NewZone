@@ -138,6 +138,7 @@ container.generate = async function()
 	UI.show(wraper, 'wraper');
 	config.dbName = config.net + '-' + PGP.fingerprint;
 	MESSAGES.initList();
+	MESSAGES.update();
 	NZHUB.config.checkingMessages = true;
 	publicKeyQR.clear();
 	publicKeyQR.makeCode(PGP.publicKeyArmored);
