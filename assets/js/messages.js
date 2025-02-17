@@ -7,9 +7,9 @@ class Messages {
 
 	constructor() {
 		this.list = new Map();
-		document.addEventListener("newMessageFromNZhub", (event) => {
-			this.newMessage(event.detail);
-		});
+		//document.addEventListener("newMessageFromNZhub", (event) => {
+//			this.newMessage(event.detail);
+//		});
 	}
 
 	async initDB() {
@@ -119,6 +119,9 @@ class Messages {
 								timestamp: message.timestamp,
 								net: message.net
 							});
+		document.dispatchEvent(new CustomEvent("newMessage", {
+			detail: message
+		}));
 						} catch(e) {
 							message = Object.assign(message, {
 								chat: false,
