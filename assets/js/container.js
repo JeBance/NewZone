@@ -136,10 +136,10 @@ container.generate = async function()
 	UI.show(containerOff, 'btn btn-start');
 	UI.showAll('backToSettings', 'btn-circle');
 	UI.show(wraper, 'wraper');
+	NZHUB.config.checkingMessages = true;
 	config.dbName = config.net + '-' + PGP.fingerprint;
 	MESSAGES.initList();
 	MESSAGES.update();
-	NZHUB.config.checkingMessages = true;
 	publicKeyQR.clear();
 	publicKeyQR.makeCode(PGP.publicKeyArmored);
 }

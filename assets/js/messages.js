@@ -7,7 +7,7 @@ class Messages {
 
 	constructor() {
 		this.list = new Map();
-		//document.addEventListener("newMessageFromNZhub", (event) => {
+//		document.addEventListener("newMessageFromNZhub", (event) => {
 //			this.newMessage(event.detail);
 //		});
 	}
@@ -119,9 +119,7 @@ class Messages {
 								timestamp: message.timestamp,
 								net: message.net
 							});
-		document.dispatchEvent(new CustomEvent("newMessage", {
-			detail: message
-		}));
+							document.dispatchEvent(new CustomEvent("newMessage", { detail: message }));
 						} catch(e) {
 							message = Object.assign(message, {
 								chat: false,
@@ -185,6 +183,7 @@ class Messages {
 				timestamp: message.timestamp,
 				net: message.net
 			});
+			document.dispatchEvent(new CustomEvent("newMessage", { detail: message }));
 		} catch(e) {
 			message = Object.assign(message, {
 				chat: false,
@@ -194,10 +193,7 @@ class Messages {
 				wasRead: false
 			});
 		}
-		await this.add(message);
-		document.dispatchEvent(new CustomEvent("newMessage", {
-			detail: message
-		}));
+		this.add(message);
 	}
 
 }

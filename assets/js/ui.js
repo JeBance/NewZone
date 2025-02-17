@@ -195,6 +195,7 @@ class UserInterface {
 					var chatID = await getNameForPrivateChat(CONTACT.fingerprint, PGP.fingerprint);
 					if (!chatID) throw new Error('Empty chat id');
 					let loadChatComplete = await CHAT.show(chatID);
+					this.sendPublicKeyMessage();
 					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
 					this.hide(contact);
 					break;
