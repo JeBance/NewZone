@@ -45,7 +45,7 @@ class Chat {
 	async addMessage(message) {
 		try {
 			let searchMessageByHash = document.getElementById(message.hash);
-			if (searchMessageByHash === null) return;
+			if (searchMessageByHash !== null) return;
 
 			let newContainerForMessage = document.createElement('div');
 			newContainerForMessage.id = message.hash;
