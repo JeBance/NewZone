@@ -89,7 +89,8 @@ class UserInterface {
 			let allMessages = await MESSAGES.getAllFromChat(chatID);
 			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			for (let i = 0, l = allMessages.length; i < l; i++) {
-				if (allMessages[i].message.hasPGPpublicKeyStructure()) {
+				if (allMessages[i].message.hasPGPpublicKeyStructure()
+				&& allMessages[i].from === PGP.fingerprint) {
 					CHAT.contact.receivedContactMessage = true;
 					await CHAT.contact.save();
 					return true;
@@ -115,6 +116,8 @@ class UserInterface {
 			let publicKeyMessage = await PGP.encryptMessage(CHAT.contact.publicKey, JSON.stringify(messageObj));
 			if (publicKeyMessage) result = await NZHUB.sendMessage({ net: config.net, message: publicKeyMessage });
 			if (!result) throw new Error('');
+			let publicKeyMessageToSender = await PGP.encryptMessage(PGP.publicKeyArmored, JSON.stringify(messageObj));
+			if (publicKeyMessageToSender) await NZHUB.sendMessage({ net: config.net, message: publicKeyMessageToSender });
 			return true;
 		} catch(e) {
 			console.log(e);
