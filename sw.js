@@ -48,6 +48,7 @@ self.addEventListener("install", (event) => {
       "/NewZone/assets/js/container.js",
       "/NewZone/assets/js/db.js",
       "/NewZone/assets/js/nzhub.js",
+      "/NewZone/assets/js/message.js",
       "/NewZone/assets/js/messages.js",
       "/NewZone/assets/js/openpgp.min.js",
       "/NewZone/assets/js/openpgp.min.js.map",

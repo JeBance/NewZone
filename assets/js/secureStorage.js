@@ -162,7 +162,7 @@ class SecureStorage {
 
 			return encrypted;
 		} catch(e) {
-			alert(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}

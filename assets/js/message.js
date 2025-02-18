@@ -1,92 +1,87 @@
-/*
 class Message {
-	db;
-	transaction;
-	messages;
-
+	chat;
+	from;
+	to;
 	message;
+	encrypted;
 
-	async initDB() {
-		this.db = await dbInit(config.dbName).then((db) => { return db; });
-		this.transaction = this.db.transaction("messages", "readwrite");
-		this.messages = this.transaction.objectStore("messages");
-	}
-
-	async check(message) {
-		const type = Object.prototype.toString.call(message);
-		if (type !== '[object Object]') return false;
-
-		if (message.chat === 'chatID'
-		|| message.to === 'recipientsFingerprint'
-		|| !message.message) return false;
-
-		if (typeof message.chat !== 'string'
-		|| typeof message.to !== 'string'
-		|| typeof message.message !== 'string') return false;
-
-		return true;
-	}
-
-	async init(message = {}) {
+	constructor(message = {}) {
 		message = Object.assign({
-			chat: 'chatID',
-			from: PGP.fingerprint,
-			to: 'recipientsFingerprint',
-			message: false
+			hash: null,
+			timestamp: null,
+			chat: null,
+			from: null,
+			to: null,
+			message: null.
+			wasRead: false
 		}, message);
 
 		try {
-			if (!this.check(message)) return false;
+			if (message.chat === null
+			|| message.from === null
+			|| message.to === null
+			|| message.message === null)
+			return false;
 
-			this.message = message
-			let keys = Object.keys(message);
-			for (let i = 0, l = keys.length; i < l; i++) {
-				this[keys[i]] = message[keys[i]];
-			}
+			if (typeof message.chat !== 'string'
+			|| typeof message.from !== 'string'
+			|| typeof message.to !== 'string'
+			|| typeof message.message !== 'string')
+			return false;
 
-			if (message.hash !== undefined) {
-			} else if () {
-			}
+			this.hash = message.hash;
+			this.timestamp = message.timestamp;
+			this.chat = message.chat;
+			this.from = message.from;
+			this.to = message.to;
+			this.message = message.message;
+			this.wasRead = false;
 
+			return true;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+	}
 
+	async encrypt(recipientsPublicKey = null) {
+		try {
+			if (!recipientsPublicKey.hasPGPpublicKeyStructure())
+			throw new Error("Recipient's public key hasn't PGP structure");
 
+			let message = {
+				chat: this.chat,
+				from: this.from,
+				to: this.to,
+				message: this.message
+			};
 
+			let encrypted = await PGP.encryptMessage(recipientsPublicKey, JSON.stringify(message));
+			if (!encrypted) throw new Error("Can't encrypt message");
+			
+			this.encrypted = encrypted;
+			return true;
+		} catch(e) {
+			console.log(e);
+			return false;
+		}
+	}
 
+	async send(net = null) {
+		try {
+			if (typeof net !== 'string')
+			throw new Error('No node network specified for sending messages');
 
+			if (!this.encrypted.hasPGPmessageStructure())
+			throw new Error("Encrypted message hasn't PGP structure");
 
+			let result = await NZHUB.sendMessage({ net: net, message: this.encrypted });
+			if (!result) throw new Error("Can't send message");
+			
+			this.hash = result.hash;
+			this.timestamp = result.timestamp;
+			this.wasRead = true;
 
-				let contactPublicKey = await PGP.readKey(contact.publicKey);
-				if (!contactPublicKey) throw new Error('Invalid public key');
-				fingerprint = await contactPublicKey.getFingerprint();
-				contact.nickname = contactPublicKey.users[0].userID.name;
-				contact.email = contactPublicKey.users[0].userID.email;
-				contact.fingerprint = fingerprint;
-				if (contact.receivedContactMessage === undefined)
-				contact.receivedContactMessage = false;
-			} else if (contact.fingerprint !== undefined) {
-				if (!this.isValidFingerprint(contact.fingerprint)) throw new Error('Incorrect fingerprint entered');
-				fingerprint = contact.fingerprint;
-			} else {
-				throw new Error('Incorrect fingerprint entered');
-			}
-
-			check = await this.check(fingerprint);
-			if (!check) {
-				let resultOfAdding = await this.add(contact);
-				if (!resultOfAdding) throw new Error('Failed to add contact');
-
-				this.nickname = contact.nickname;
-				this.email = contact.email;
-				this.fingerprint = contact.fingerprint;
-				this.publicKey = contact.publicKey;
-				this.receivedContactMessage = contact.receivedContactMessage;
-			} else {
-				this.nickname = check.nickname;
-				this.email = check.email;
-				this.fingerprint = check.fingerprint;
-				this.publicKey = check.publicKey;
-				this.receivedContactMessage = check.receivedContactMessage;
-			}
 			return true;
 		} catch(e) {
 			console.log(e);
@@ -96,48 +91,30 @@ class Message {
 
 	async save() {
 		try {
-			let addedContact = {
-				nickname: this.nickname,
-				email: this.email,
-				fingerprint: this.fingerprint,
-				publicKey: this.publicKey,
-				receivedContactMessage: this.receivedContactMessage
+			let message = {
+				hash: this.hash,
+				timestamp: this.timestamp,
+				chat: this.chat,
+				from: this.from,
+				to: this.to,
+				message: this.message,
+				wasRead: this.wasRead
 			};
 
-			await this.initDB();
-			let request = this.contacts.put(addedContact);
+			let db = await dbInit(config.dbName).then((db) => { return db; });
+			let transaction = db.transaction("messages", "readwrite");
+			let messages = transaction.objectStore("messages");
+			let request = messages.put(message);
 			let x = new Promise((resolve, reject) => {
 				request.onsuccess = function() { resolve(request.result); }
 			});
 			await x.then((value) => { return value; });
+
+			return true;
 		} catch(e) {
 			console.log(e);
 			return false;
 		}
-	}
-
-	async getAllContacts() {
-		try {
-			await this.initDB();
-			let request = this.contacts.getAll();
-			let x = new Promise((resolve, reject) => {
-				request.onsuccess = function() { resolve(request.result); }
-			});
-			let allContacts = await x.then((value) => { return value; });
-			return allContacts;
-		} catch(e) {
-			console.log(e);
-			return false;
-		}
-	}
-
-	clear() {
-		this.nickname = '';
-		this.email = '';
-		this.fingerprint = '';
-		this.publicKey = '';
-		this.receivedContactMessage = false;
 	}
 
 }
-*/

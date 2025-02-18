@@ -135,6 +135,8 @@ UI.hide(wraper);
 const chat = {};
 
 const getNameForPrivateChat = async (str1, str2) => {
+	// srt1 - recipient's fingerprint
+	// srt2 - sender's fingerprint
 	try {
 		if (str1.length <= 0 || str2.length <= 0)
 		throw new Error('Empty parameter');
