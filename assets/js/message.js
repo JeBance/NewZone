@@ -7,20 +7,20 @@ class Message {
 
 	constructor(message = {}) {
 		message = Object.assign({
-			hash: null,
-			timestamp: null,
-			chat: null,
-			from: null,
-			to: null,
-			message: null.
+			hash: '',
+			timestamp: '',
+			chat: '',
+			from: '',
+			to: '',
+			message: '',
 			wasRead: false
 		}, message);
 
 		try {
-			if (message.chat === null
-			|| message.from === null
-			|| message.to === null
-			|| message.message === null)
+			if (message.chat.length <= 0
+			|| message.from.length <= 0
+			|| message.to.length <= 0
+			|| message.message.length <= 0)
 			return false;
 
 			if (typeof message.chat !== 'string'
