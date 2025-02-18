@@ -5,7 +5,11 @@ class Messages {
 	monitor;
 	transaction;
 
-	constructor() {
+	constructor(config = {}) {
+		this.config = Object.assign({
+			log: false
+		}, config);
+
 		this.list = new Map();
 //		document.addEventListener("newMessageFromNZhub", (event) => {
 //			this.newMessage(event.detail);
@@ -49,7 +53,7 @@ class Messages {
 				console.log('\x1b[1m%s\x1b[0m', 'New message:', message);
 			});
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 		}
 	}
 
@@ -65,7 +69,7 @@ class Messages {
 			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			return allMessages;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -83,7 +87,7 @@ class Messages {
 			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 			return allMessages;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -91,7 +95,7 @@ class Messages {
 	async update() {
 		setInterval(async () => {
 			try {
-				if (NZHUB.knownMessages[config.net] === undefined) throw new Error(config.net + ' undefined');
+				if (NZHUB.knownMessages[config.net] === undefined) return;
 
 				let map = new Map(Object.entries(NZHUB.knownMessages[config.net]));
 				let newMap = Array.from(map).sort((a, b) => a[1] - b[1]);
@@ -134,7 +138,7 @@ class Messages {
 					}
 				}
 			} catch(e) {
-				console.log(e);
+				if (this.config.log) console.log(e);
 			}
 		}, 3000);
 	}
@@ -167,7 +171,7 @@ class Messages {
 
 			return message;
 		} catch(e) {
-			// console.log(e);
+			// if (this.config.log) console.log(e);
 			return false;
 		}
 

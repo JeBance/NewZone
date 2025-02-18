@@ -9,7 +9,11 @@ class SecureStorage {
 	#privateKey;
 	#passphrase;
 
-	constructor() {
+	constructor(config = {}) {
+		this.config = Object.assign({
+			log: false
+		}, config);
+
 		this.active = false;
 	}
 
@@ -35,7 +39,7 @@ class SecureStorage {
 
 			return true;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -95,7 +99,7 @@ class SecureStorage {
 			let fileHref = 'data:application/pgp-encrypted,' + encodeURIComponent(encrypted);
 			return fileHref;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -105,7 +109,7 @@ class SecureStorage {
 			let key = await openpgp.readKey({ armoredKey: publicKeyArmored });
 			return key;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -119,7 +123,7 @@ class SecureStorage {
 			});
 			return key;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -129,7 +133,7 @@ class SecureStorage {
 			let message = await openpgp.readMessage({ armoredMessage: data });
 			return message;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -143,7 +147,7 @@ class SecureStorage {
 			});
 			return encrypted;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -175,7 +179,7 @@ class SecureStorage {
 
 			return decrypted;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -198,7 +202,7 @@ class SecureStorage {
 
 			return decrypted;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -212,7 +216,7 @@ class SecureStorage {
 			});
 			return encrypted;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -229,7 +233,7 @@ class SecureStorage {
 
 			return decrypted;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -258,7 +262,7 @@ class SecureStorage {
 			let decrypted = await this.decryptMessageWithVerificationKey(encrypted, this.publicKeyArmored);
 			console.log(decrypted);
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 		}
 	}
 

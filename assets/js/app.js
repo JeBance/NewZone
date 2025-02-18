@@ -6,19 +6,17 @@ const config = {
 	}
 };
 
-const NZHUB = new nzhub({
-	log: true
-});
+const NZHUB = new nzhub({ log: true });
 NZHUB.cyclicNodesCheck();
 NZHUB.cyclicMessagesCheck();
 
 const UI = new UserInterface();
-const CHAT = new Chat();
-const CHATS = new Chats();
+const CHAT = new Chat({ log: true });
+const CHATS = new Chats({ log: true });
 const CONTACT = new Contact();
-const MESSAGES = new Messages();
+const MESSAGES = new Messages({ log: true });
 
-const PGP = new SecureStorage();
+const PGP = new SecureStorage({ log: false });
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 const modal = {};
 const hide = {};

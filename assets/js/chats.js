@@ -1,6 +1,10 @@
 class Chats {
 
-	constructor(elem) {
+	constructor(config = {}) {
+		this.config = Object.assign({
+			log: false
+		}, config);
+
 		document.addEventListener("newMessage", (event) => {
 			this.refreshChatsList();
 		});
@@ -61,7 +65,7 @@ class Chats {
 			newContainerForChat.append(newDivForLeftItemInfo);
 			elem.append(newContainerForChat);
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 		}
 	}
 
@@ -106,7 +110,7 @@ class Chats {
 						unreadMessages[allMessages[l].chat]++;
 					}
 				} catch(e) {
-					console.log(e);
+					if (this.config.log) console.log(e);
 				}
 			}
 
@@ -118,7 +122,7 @@ class Chats {
 			}
 
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 		}
 
 	}

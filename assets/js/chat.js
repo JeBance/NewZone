@@ -1,6 +1,10 @@
 class Chat {
 
-	constructor() {
+	constructor(config = {}) {
+		this.config = Object.assign({
+			log: false
+		}, config);
+
 		this.id = '';
 		this.contact = new Contact();
 		document.addEventListener("newMessage", (event) => {
@@ -37,7 +41,7 @@ class Chat {
 			this.id = chatID;
 			return true;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 			return false;
 		}
 	}
@@ -69,7 +73,7 @@ class Chat {
 			chatReadArea.append(newContainerForMessage);
 			blockCenterCenter.scrollTop = blockCenterCenter.scrollHeight;
 		} catch(e) {
-			console.log(e);
+			if (this.config.log) console.log(e);
 		}
 	}
 
