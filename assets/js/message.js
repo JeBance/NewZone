@@ -16,26 +16,28 @@ class Message {
 			wasRead: false
 		}, message);
 
+		this.hash = message.hash;
+		this.timestamp = message.timestamp;
+		this.chat = message.chat;
+		this.from = message.from;
+		this.to = message.to;
+		this.message = message.message;
+		this.wasRead = false;
+	}
+
+	isValid() {
 		try {
-			if (message.chat.length <= 0
-			|| message.from.length <= 0
-			|| message.to.length <= 0
-			|| message.message.length <= 0)
+			if (this.chat.length <= 0
+			|| this.from.length <= 0
+			|| this.to.length <= 0
+			|| this.message.length <= 0)
 			return false;
 
-			if (typeof message.chat !== 'string'
-			|| typeof message.from !== 'string'
-			|| typeof message.to !== 'string'
-			|| typeof message.message !== 'string')
+			if (typeof this.chat !== 'string'
+			|| typeof this.from !== 'string'
+			|| typeof this.to !== 'string'
+			|| typeof this.message !== 'string')
 			return false;
-
-			this.hash = message.hash;
-			this.timestamp = message.timestamp;
-			this.chat = message.chat;
-			this.from = message.from;
-			this.to = message.to;
-			this.message = message.message;
-			this.wasRead = false;
 
 			return true;
 		} catch(e) {

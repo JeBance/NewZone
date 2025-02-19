@@ -80,14 +80,15 @@ class UserInterface {
 		this.show(contacts, 'modal');
 	}
 
-	async checkPublicKeyMessage(chatID) {
+	async checkSendedMessageWithPublicKey(chatID) {
 		try {
-			if (!chatID) throw new Error('Empty chat id');
+			if (!chatID || chatID.length !== 80) throw new Error('Empty chat id');
 
 			if (CHAT.contact.receivedContactMessage === true) return true;
 
 			let allMessages = await MESSAGES.getAllFromChat(chatID);
 			await allMessages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
+
 			for (let i = 0, l = allMessages.length; i < l; i++) {
 				if (allMessages[i].message.hasPGPpublicKeyStructure()
 				&& allMessages[i].from === PGP.fingerprint) {
@@ -96,6 +97,7 @@ class UserInterface {
 					return true;
 				}
 			}
+
 			return false;
 		} catch(e) {
 			console.log(e);
@@ -103,21 +105,26 @@ class UserInterface {
 		}
 	}
 
-	async sendPublicKeyMessage() {
-		try {
-			let messageObj = {
-				chat: CHAT.id,
-				from: PGP.fingerprint,
-				to: CHAT.contact.fingerprint,
-				message: PGP.publicKeyArmored
-			};
+	async sendMessageWithPublicKey(message = {}, recipientsPublicKey = null) {
+		message = Object.assign({
+			chat: '',
+			from: '',
+			to: '',
+			message: ''
+		}, message);
 
-			let result = false;
-			let publicKeyMessage = await PGP.encryptMessage(CHAT.contact.publicKey, JSON.stringify(messageObj));
-			if (publicKeyMessage) result = await NZHUB.sendMessage({ net: config.net, message: publicKeyMessage });
-			if (!result) throw new Error('');
-			let publicKeyMessageToSender = await PGP.encryptMessage(PGP.publicKeyArmored, JSON.stringify(messageObj));
-			if (publicKeyMessageToSender) await NZHUB.sendMessage({ net: config.net, message: publicKeyMessageToSender });
+		try {
+			let MESSAGE = new Message(message);
+			if (!MESSAGE.isValid()) throw new Error('Message is invalid');
+
+			// Encrypt and send the message to the recipient
+			if (!(await MESSAGE.encrypt(recipientsPublicKey))) throw new Error('Failed to encrypt message');
+			if (!(await MESSAGE.send(config.net))) throw new Error('Failed to send message');
+
+			// Encrypt and send the message to the sender
+			if (!(await MESSAGE.encrypt(PGP.publicKeyArmored))) throw new Error('Failed to encrypt message');
+			if (!(await MESSAGE.send(config.net))) throw new Error('Failed to send message');
+
 			return true;
 		} catch(e) {
 			console.log(e);
@@ -201,7 +208,16 @@ class UserInterface {
 					let loadChatComplete = await CHAT.show(chatID);
 					if (!loadChatComplete) throw new Error('Не удалось загрузить чат');
 
-					this.sendPublicKeyMessage();
+					this.sendMessageWithPublicKey({
+						chat: chatID,
+						from: PGP.fingerprint,
+						to: CONTACT.fingerprint,
+						message: PGP.publicKeyArmored
+					}, CONTACT.publicKey);
+
+					CHAT.contact.receivedContactMessage == true;
+					CHAT.contact.save();
+
 					this.hide(contact);
 					break;
 
@@ -277,43 +293,46 @@ class UserInterface {
 	async sendMessage() {
 		try {
 			if (messageInput.value <= 0) throw new Error('Input empty');
+			if (CHAT.contact.fingerprint.length !== 40) throw new Error('Incorrect fingerprint');
 
-			let check = await this.checkPublicKeyMessage(CHAT.id);
-			if (check === false) {
-				let resultSendingContactMessage = await this.sendPublicKeyMessage();
+			let check = await this.checkSendedMessageWithPublicKey(CHAT.id);
+			if (!check) {
+				let resultSendingContactMessage = await this.sendMessageWithPublicKey({
+					chat: CHAT.id,
+					from: PGP.fingerprint,
+					to: CHAT.contact.fingerprint,
+					message: PGP.publicKeyArmored
+				}, CHAT.contact.publicKey);
 				if (!resultSendingContactMessage) throw new Error('Failed to send contact message');
+
 				CHAT.contact.receivedContactMessage = true;
 				await CHAT.contact.save();
 			}
-			
-			let messageObj = {
+
+			let message = {
 				chat: CHAT.id,
 				from: PGP.fingerprint,
 				to: CHAT.contact.fingerprint,
 				message: messageInput.value
 			};
 
-			if (messageObj.from !== messageObj.to) {
-				let encryptedToRecipient = await PGP.encryptMessage(CHAT.contact.publicKey, JSON.stringify(messageObj));
-				let resultSendMessageTR = await NZHUB.sendMessage({ net: config.net, message: encryptedToRecipient });
-				if (!resultSendMessageTR) throw new Error('Failed to send message');
+			let MESSAGE = new Message(message);
+			if (!MESSAGE.isValid()) throw new Error('Message is invalid');
+
+			// Encrypt and send the message to the recipient
+			if (message.from !== message.to) {
+				if (!(await MESSAGE.encrypt(CHAT.contact.publicKey))) throw new Error('Failed to encrypt message');
+				if (!(await MESSAGE.send(config.net))) throw new Error('Failed to send message');
+				await MESSAGE.save();
 			}
 
-			let encryptedToSender = await PGP.encryptMessage(PGP.publicKeyArmored, JSON.stringify(messageObj));
-			let resultSendMessageTS = await NZHUB.sendMessage({ net: config.net, message: encryptedToSender });
-			if (!resultSendMessageTS) throw new Error('Failed to send message');
-
-			let message = {
-				hash: resultSendMessageTS.hash,
-				timestamp: resultSendMessageTS.timestamp,
-				chat: CHAT.id,
-				from: PGP.fingerprint,
-				message: messageInput.value,
-				wasRead: true
-			}
+			// Encrypt and send the message to the sender
+			if (!(await MESSAGE.encrypt(PGP.publicKeyArmored))) throw new Error('Failed to encrypt message');
+			if (!(await MESSAGE.send(config.net))) throw new Error('Failed to send message');
+			await MESSAGE.save();
 
 			messageInput.value = '';
-			document.dispatchEvent(new CustomEvent("newMessage", { detail: message }));
+			document.dispatchEvent(new CustomEvent("newMessage", { detail: MESSAGE }));
 		} catch(e) {
 			console.log(e);
 		}

@@ -64,7 +64,7 @@ class Chat {
 
 			let newContainerForTime = document.createElement('div');
 			newContainerForTime.setAttribute('name', 'message');
-			(message.from == message.chat)
+			(message.from != PGP.fingerprint)
 			? newContainerForTime.className = 'leftMessageTime'
 			: newContainerForTime.className = 'rightMessageTime';
 			newContainerForTime.innerHTML = timestampToTime(message.timestamp);
