@@ -6,7 +6,7 @@ const config = {
 	}
 };
 
-const NZHUB = new nzhub({ log: true });
+const NZHUB = new nzhub({ log: false });
 NZHUB.cyclicNodesCheck();
 NZHUB.cyclicMessagesCheck();
 

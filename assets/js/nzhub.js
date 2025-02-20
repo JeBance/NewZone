@@ -309,7 +309,7 @@ class nzhub {
 				request.onsuccess = function() { resolve(request.result); }
 			});
 			await x.then((value) => {
-				console.log('\x1b[1m%s\x1b[0m', 'Put net:', net);
+				if (this.config.log) console.log('\x1b[1m%s\x1b[0m', 'Put net:', net);
 			});
 		} catch(e) {
 			if (this.config.log) console.log(e);
@@ -340,7 +340,7 @@ class nzhub {
 				request.onsuccess = function() { resolve(request.result); }
 			});
 			await x.then((value) => {
-				console.log('\x1b[1m%s\x1b[0m', 'Put node:', node);
+				if (this.config.log) console.log('\x1b[1m%s\x1b[0m', 'Put node:', node);
 			});
 		} catch(e) {
 			if (this.config.log) console.log(e);
@@ -444,7 +444,7 @@ class nzhub {
 				request.onsuccess = function() { resolve(request.result); }
 			});
 			await x.then((value) => {
-				console.log('\x1b[1m%s\x1b[0m', 'Put message:', message);
+				if (this.config.log) console.log('\x1b[1m%s\x1b[0m', 'Put message:', message);
 			});
 
 			return true;

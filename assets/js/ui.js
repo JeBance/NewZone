@@ -91,7 +91,8 @@ class UserInterface {
 
 			for (let i = 0, l = allMessages.length; i < l; i++) {
 				if (allMessages[i].message.hasPGPpublicKeyStructure()
-				&& allMessages[i].from === PGP.fingerprint) {
+				&& allMessages[i].from === PGP.fingerprint
+				&& allMessages[i].to === CHAT.contact.fingerprint) {
 					CHAT.contact.receivedContactMessage = true;
 					await CHAT.contact.save();
 					return true;

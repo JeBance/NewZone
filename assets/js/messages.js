@@ -50,7 +50,7 @@ class Messages {
 				request.onsuccess = function() { resolve(request.result); }
 			});
 			await x.then((value) => {
-				console.log('\x1b[1m%s\x1b[0m', 'New message:', message);
+				if (this.config.log) console.log('\x1b[1m%s\x1b[0m', 'New message:', message);
 			});
 		} catch(e) {
 			if (this.config.log) console.log(e);
@@ -102,7 +102,7 @@ class Messages {
 				let sortedMap = new Map(newMap);
 				if (sortedMap.size > this.list.size) for (let key of sortedMap.keys()) {
 					if (!this.list.has(key)) {
-						console.log(key + ': ' + sortedMap.get(key));
+						// console.log(key + ': ' + sortedMap.get(key));
 						var dbName = 'nz_' + config.net;
 						var db = await NZHUB.dbInitMessages(dbName).then((db) => { return db; });
 						var transaction = db.transaction('messages', 'readwrite');
