@@ -225,6 +225,8 @@ hr {
 	list-style: none;
 	text-decoration: none;
 	border-radius: 0 50px 50px 0;
+	display: flex;
+	align-items: center;
 }
 
 .nav li:hover {
@@ -837,6 +839,13 @@ input:checked + .slider:before {
 
 @media screen and (max-width: 1000px) {
 	.right {
+		display: none;
+	}
+
+}
+
+@media screen and (min-width: 800px) {
+	#backToChats {
 		display: none;
 	}
 

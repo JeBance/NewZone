@@ -51,7 +51,7 @@ window.onresize = () => {
 		UI.hide(backToChats);
 		UI.show(blockLeft, 'left');
 	} else {
-		UI.show(backToChats, 'square');
+		UI.show(backToChats, 'btn-circle');
 		if ((localStorage.recipientFingerprint !== undefined)
 		&& (localStorage.recipientPublicKey !== undefined)
 		&& (localStorage.recipientFingerprint.length > 0)

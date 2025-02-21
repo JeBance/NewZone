@@ -13,7 +13,6 @@
 	<link rel="stylesheet" href="assets/css/loader.css">
 	<link rel="stylesheet" href="assets/css/modal.css">
 	<link rel="stylesheet" href="assets/css/style.css">
-	<link rel="stylesheet" href="assets/fa/css/font-awesome.min.css">
 	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="apple-touch-icon" href="assets/img/icon-192.png">
 	<meta property="og:image" content="assets/img/icon-512.png">
@@ -45,8 +44,23 @@
 	<div id="menu" class="menu">
 		<div id="publicKeyQR" class="flex" style="padding:10px;background:#ffffff;"></div>
 		<ul class="nav">
-			<a id="buttonContacts" onclick="UI.click(this)"><li><i class="fa fa-address-book-o fa-fw" aria-hidden="true"></i>Контакты</li></a>
-			<a id="buttonSettings" onclick="UI.click(this)"><li><i class="fa fa-cogs fa-fw" aria-hidden="true"></i>Настройки</li></a>
+			<a id="buttonContacts" onclick="UI.click(this)">
+				<li>
+					<svg width="20" height="20" viewBox="0 0 448 512" aria-hidden="true" data-view-component="true" style="fill: var(--color-content-2); margin: 0 1em 0 0.5em;" xmlns="http://www.w3.org/2000/svg">
+						<path d="M436 160c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h320c26.5 0 48-21.5 48-48v-48h20c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20v-64h20c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20v-64h20zm-68 304H48V48h320v416zM208 256c35.3 0 64-28.7 64-64s-28.7-64-64-64-64 28.7-64 64 28.7 64 64 64zm-89.6 128h179.2c12.4 0 22.4-8.6 22.4-19.2v-19.2c0-31.8-30.1-57.6-67.2-57.6-10.8 0-18.7 8-44.8 8-26.9 0-33.4-8-44.8-8-37.1 0-67.2 25.8-67.2 57.6v19.2c0 10.6 10 19.2 22.4 19.2z"></path>
+					</svg>
+					Контакты
+				</li>
+			</a>
+
+			<a id="buttonSettings" onclick="UI.click(this)">
+				<li>
+					<svg width="20" height="20" viewBox="0 0 640 512" aria-hidden="true" data-view-component="true" style="fill: var(--color-content-2); margin: 0 1em 0 0.5em;" xmlns="http://www.w3.org/2000/svg">
+						<path d="M512.1 191l-8.2 14.3c-3 5.3-9.4 7.5-15.1 5.4-11.8-4.4-22.6-10.7-32.1-18.6-4.6-3.8-5.8-10.5-2.8-15.7l8.2-14.3c-6.9-8-12.3-17.3-15.9-27.4h-16.5c-6 0-11.2-4.3-12.2-10.3-2-12-2.1-24.6 0-37.1 1-6 6.2-10.4 12.2-10.4h16.5c3.6-10.1 9-19.4 15.9-27.4l-8.2-14.3c-3-5.2-1.9-11.9 2.8-15.7 9.5-7.9 20.4-14.2 32.1-18.6 5.7-2.1 12.1.1 15.1 5.4l8.2 14.3c10.5-1.9 21.2-1.9 31.7 0L552 6.3c3-5.3 9.4-7.5 15.1-5.4 11.8 4.4 22.6 10.7 32.1 18.6 4.6 3.8 5.8 10.5 2.8 15.7l-8.2 14.3c6.9 8 12.3 17.3 15.9 27.4h16.5c6 0 11.2 4.3 12.2 10.3 2 12 2.1 24.6 0 37.1-1 6-6.2 10.4-12.2 10.4h-16.5c-3.6 10.1-9 19.4-15.9 27.4l8.2 14.3c3 5.2 1.9 11.9-2.8 15.7-9.5 7.9-20.4 14.2-32.1 18.6-5.7 2.1-12.1-.1-15.1-5.4l-8.2-14.3c-10.4 1.9-21.2 1.9-31.7 0zm-10.5-58.8c38.5 29.6 82.4-14.3 52.8-52.8-38.5-29.7-82.4 14.3-52.8 52.8zM386.3 286.1l33.7 16.8c10.1 5.8 14.5 18.1 10.5 29.1-8.9 24.2-26.4 46.4-42.6 65.8-7.4 8.9-20.2 11.1-30.3 5.3l-29.1-16.8c-16 13.7-34.6 24.6-54.9 31.7v33.6c0 11.6-8.3 21.6-19.7 23.6-24.6 4.2-50.4 4.4-75.9 0-11.5-2-20-11.9-20-23.6V418c-20.3-7.2-38.9-18-54.9-31.7L74 403c-10 5.8-22.9 3.6-30.3-5.3-16.2-19.4-33.3-41.6-42.2-65.7-4-10.9.4-23.2 10.5-29.1l33.3-16.8c-3.9-20.9-3.9-42.4 0-63.4L12 205.8c-10.1-5.8-14.6-18.1-10.5-29 8.9-24.2 26-46.4 42.2-65.8 7.4-8.9 20.2-11.1 30.3-5.3l29.1 16.8c16-13.7 34.6-24.6 54.9-31.7V57.1c0-11.5 8.2-21.5 19.6-23.5 24.6-4.2 50.5-4.4 76-.1 11.5 2 20 11.9 20 23.6v33.6c20.3 7.2 38.9 18 54.9 31.7l29.1-16.8c10-5.8 22.9-3.6 30.3 5.3 16.2 19.4 33.2 41.6 42.1 65.8 4 10.9.1 23.2-10 29.1l-33.7 16.8c3.9 21 3.9 42.5 0 63.5zm-117.6 21.1c59.2-77-28.7-164.9-105.7-105.7-59.2 77 28.7 164.9 105.7 105.7zm243.4 182.7l-8.2 14.3c-3 5.3-9.4 7.5-15.1 5.4-11.8-4.4-22.6-10.7-32.1-18.6-4.6-3.8-5.8-10.5-2.8-15.7l8.2-14.3c-6.9-8-12.3-17.3-15.9-27.4h-16.5c-6 0-11.2-4.3-12.2-10.3-2-12-2.1-24.6 0-37.1 1-6 6.2-10.4 12.2-10.4h16.5c3.6-10.1 9-19.4 15.9-27.4l-8.2-14.3c-3-5.2-1.9-11.9 2.8-15.7 9.5-7.9 20.4-14.2 32.1-18.6 5.7-2.1 12.1.1 15.1 5.4l8.2 14.3c10.5-1.9 21.2-1.9 31.7 0l8.2-14.3c3-5.3 9.4-7.5 15.1-5.4 11.8 4.4 22.6 10.7 32.1 18.6 4.6 3.8 5.8 10.5 2.8 15.7l-8.2 14.3c6.9 8 12.3 17.3 15.9 27.4h16.5c6 0 11.2 4.3 12.2 10.3 2 12 2.1 24.6 0 37.1-1 6-6.2 10.4-12.2 10.4h-16.5c-3.6 10.1-9 19.4-15.9 27.4l8.2 14.3c3 5.2 1.9 11.9-2.8 15.7-9.5 7.9-20.4 14.2-32.1 18.6-5.7 2.1-12.1-.1-15.1-5.4l-8.2-14.3c-10.4 1.9-21.2 1.9-31.7 0zM501.6 431c38.5 29.6 82.4-14.3 52.8-52.8-38.5-29.6-82.4 14.3-52.8 52.8z"></path>
+					</svg>
+					Настройки
+				</li>
+			</a>
 		</ul>
 	</div>
 
@@ -86,7 +100,9 @@
 	<div id="settings" class="hide" name="modal">
 		<div class="header">
 			<div class="btn-circle" name="backToMain" onclick="UI.click(this)">
-				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
+				<svg width="32" height="32" viewBox="20 0 256 512" aria-hidden="true" data-view-component="true" style="fill: var(--color-content-1);" xmlns="http://www.w3.org/2000/svg">
+					<path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"></path>
+				</svg>
 			</div>
 			<h1>Настройки</h1>
 		</div>
@@ -99,7 +115,9 @@
 	<div id="container" class="hide" name="modal">
 		<div id="containerHeader" class="header">
 			<div class="btn-circle" name="backToSettings" onclick="UI.click(this)">
-				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
+				<svg width="32" height="32" viewBox="20 0 256 512" aria-hidden="true" data-view-component="true" style="fill: var(--color-content-1);" xmlns="http://www.w3.org/2000/svg">
+					<path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"></path>
+				</svg>
 			</div>
 			<h1>Контейнер</h1>
 		</div>
@@ -152,7 +170,9 @@
 	<div id="qrScanner" class="hide" name="modal">
 		<div class="header">
 			<div class="btn-circle" name="backToMain" onclick="UI.click(this)">
-				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
+				<svg width="32" height="32" viewBox="20 0 256 512" aria-hidden="true" data-view-component="true" style="fill: var(--color-content-1);" xmlns="http://www.w3.org/2000/svg">
+					<path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"></path>
+				</svg>
 			</div>
 			<h1>Сканер QR-кода</h1>
 		</div>
@@ -166,7 +186,9 @@
 	<div id="contacts" class="hide" name="modal">
 		<div class="header">
 			<div class="btn-circle" name="backToMain" onclick="UI.click(this)">
-				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
+				<svg width="32" height="32" viewBox="20 0 256 512" aria-hidden="true" data-view-component="true" style="fill: var(--color-content-1);" xmlns="http://www.w3.org/2000/svg">
+					<path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"></path>
+				</svg>
 			</div>
 			<h1>Contacts</h1>
 		</div>
@@ -190,7 +212,9 @@
 	<div id="contact" class="hide" name="modal">
 		<div class="header">
 			<div class="btn-circle" name="backToContacts" onclick="UI.click(this)">
-				<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
+				<svg width="32" height="32" viewBox="20 0 256 512" aria-hidden="true" data-view-component="true" style="fill: var(--color-content-1);" xmlns="http://www.w3.org/2000/svg">
+					<path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"></path>
+				</svg>
 			</div>
 			<h1>Contact</h1>
 		</div>
@@ -255,9 +279,20 @@
 		<div id="blockLeft" class="left">
 
 			<div id="blockLeftTop" class="header" style="justify-content: space-between;">
-				<div name="menu" class="btn-square" onclick="UI.click(this)"><span class="fa fa-bars fa-2x" aria-hidden="true"></span></div>
-				<div class="cyberpunk"><span style="color:red;">New</span> Zone</div>
-				<div name="qrScanner" class="btn-square" onclick="UI.click(this)"><span class="fa fa-qrcode fa-2x" aria-hidden="true"></span></div>
+				<div name="menu" class="btn-square" onclick="UI.click(this)">
+					<svg width="32" height="32" aria-hidden="true" style="fill:var(--color-content-1);" data-view-component="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+						<path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"/>
+					</svg>
+				</div>
+				<div class="cyberpunk">
+					<span style="color:red;">New</span> Zone
+				</div>
+				<div name="qrScanner" class="btn-square" onclick="UI.click(this)">
+					<svg aria-hidden="true" style="fill: var(--color-content-1); -webkit-transform: scaleY(-1); transform: scaleY(-1);" data-view-component="true" viewBox="0 0 1408 1408" width="28" height="28">
+						<path d="M384 384v-128h-128v128h128zM384 1152v-128h-128v128h128zM1152 1152v-128h-128v128h128zM128 129h384v383h-384v-383zM128 896h384v384h-384v-384zM896 896h384v384h-384v-384zM640 640v-640h-640v640h640zM1152 128v-128h-128v128h128zM1408 128v-128h-128v128h128zM1408 640v-384h-384v128h-128v-384h-128v640h384v-128h128v128h128zM640 1408v-640h-640v640h640zM1408 1408v-640h-640v640h640z"></path>
+					</svg>
+				</div>
+
 			</div>
 
 			<div id="blockLeftCenter" class="content">
@@ -332,7 +367,9 @@
 			<div id="blockCenterTop" class="header">
 				<div class="tools">
 					<div id="backToChats" name="backToChats" class="btn-circle" onclick="UI.click(this)">
-						<span class="fa fa-angle-left fa-2x" aria-hidden="true"></span>
+						<svg width="32" height="32" viewBox="20 0 256 512" aria-hidden="true" data-view-component="true" style="fill: var(--color-content-1);" xmlns="http://www.w3.org/2000/svg">
+							<path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"></path>
+						</svg>
 					</div>
 					<div class="topChat">
 						<div class="avatarChat">👾</div>
@@ -394,7 +431,9 @@
 				<div id="chatInputArea" class="chatInputArea">
 					<div id="messageInputLine" class="messageInputLine"><input id="messageInput" type="text" placeholder="Сообщение" onkeydown="{if(event.key=='Enter')UI.sendMessage()}" class="selectable"></div>
 					<div id="buttonSendMessage" class="btn-circle" aria-hidden="true" onclick="UI.sendMessage()">
-						<span class="fa fa-chevron-circle-right fa-2x"></span>
+						<svg width="32" height="32" viewBox="0 0 512 512" aria-hidden="true" data-view-component="true" style="fill: var(--color-content-1);" xmlns="http://www.w3.org/2000/svg">
+							<path d="M256 8c137 0 248 111 248 248S393 504 256 504 8 393 8 256 119 8 256 8zm113.9 231L234.4 103.5c-9.4-9.4-24.6-9.4-33.9 0l-17 17c-9.4 9.4-9.4 24.6 0 33.9L285.1 256 183.5 357.6c-9.4 9.4-9.4 24.6 0 33.9l17 17c9.4 9.4 24.6 9.4 33.9 0L369.9 273c9.4-9.4 9.4-24.6 0-34z"/>
+						</svg>
 					</div>
 				</div>
 			</div>
