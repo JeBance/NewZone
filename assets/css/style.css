@@ -646,7 +646,8 @@ hr {
 	border-bottom: 1px solid red;
 }
 .input-container input:focus ~ label,
-.input-container input:valid ~ label {
+.input-container input:valid ~ label,
+.input-container input:read-only ~ label {
 	top: -12px;
 	font-size: 12px;
 }
