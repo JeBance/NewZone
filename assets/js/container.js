@@ -7,24 +7,17 @@ container.click = async (elem) => {
 		case 'containerCreate':
 			containerInfo.innerHTML = 'Заполните форму. Эти данные будут добавлены в Ваш PGP-ключ. Придумайте сложный пароль от 8 символов для шифрования контейнера.';
 			UI.hideAll('container');
+			UI.hideAll('containerOff');
 			UI.show(containerNameArea, 'input-container');
 			containerNameInput.focus();
 			UI.show(containerEmailArea, 'input-container');
 			UI.show(containerPasswordArea, 'input-container');
 			UI.show(containerPasswordAccept, 'btn btn-start');
+			UI.show(cancelCreateContainer, 'btn btn-start');
 			break;
 
 		case 'containerSave':
 			downloadNZPGPhref.click()
-			break;
-
-		case 'containerOff':
-			PGP.eraseAllSecureData();
-			downloadNZPGPhref.removeAttribute('href');
-			downloadNZPGPhref.removeAttribute('download');
-			UI.hideAll('backToSettings');
-			UI.hide(wraper);
-			container.choice();
 			break;
 
 		case 'file':
@@ -40,10 +33,12 @@ container.click = async (elem) => {
 							let message = await PGP.readMessage(file.data);
 							if (!message) throw new Error('The file is not a secure keystore!');
 							UI.hideAll('container');
+							UI.hideAll('containerOff');
 							containerInfo.innerHTML = 'Введите пароль для дешифровки контейнера.';
 							UI.show(containerPasswordArea, 'input-container');
 							containerPasswordInput.focus();
 							UI.show(containerPasswordAccept, 'btn btn-start');
+							UI.show(cancelCreateContainer, 'btn btn-start');
 						} catch(e) {
 							alert(e);
 						}
@@ -73,6 +68,7 @@ container.click = async (elem) => {
 						if (EMAIL_REGEXP.test(containerEmailInput.value)) {
 							try {
 								UI.hideAll('container');
+								UI.hideAll('containerOff');
 								containerInfo.innerHTML = 'Генерация контейнера ...';
 								loader.show(container, containerContent);
 								let storage = await PGP.createStorage(containerNameInput.value, containerEmailInput.value, containerPasswordInput.value);
@@ -95,6 +91,21 @@ container.click = async (elem) => {
 		default:
 			break;
 	}
+
+	switch(elem.getAttribute("name")) {
+		case 'containerOff':
+			PGP.eraseAllSecureData();
+			downloadNZPGPhref.removeAttribute('href');
+			downloadNZPGPhref.removeAttribute('download');
+			UI.hideAll('backToSettings');
+			UI.hide(wraper);
+			container.choice();
+			break;
+
+		default:
+			break;
+	}
+
 }
 
 container.clearInputs = function()
@@ -112,6 +123,7 @@ container.choice = function()
 	config.dbName = false;
 	container.clearInputs();
 	UI.hideAll('container');
+	UI.hideAll('containerOff');
 	containerInfo.innerHTML = 'Все данные передаются через сервера в зашифрованном виде. Подключите свой ранее созданный PGP контейнер, или создайте новый.';
 	UI.show(containerInfo, 'show');
 	UI.show(containerBrowse, 'btn btn-start');
@@ -122,6 +134,7 @@ container.generate = async function()
 {
 	container.clearInputs();
 	UI.hideAll('container');
+	UI.hideAll('containerOff');
 	let fileHref = await PGP.generateSecureFile();
 	downloadNZPGPhref.setAttribute('href', fileHref);
 	downloadNZPGPhref.setAttribute('download', PGP.fingerprint + '.nz');
