@@ -12,7 +12,7 @@ NZHUB.cyclicMessagesCheck();
 
 const UI = new UserInterface();
 const CHAT = new Chat({ log: true });
-const CHATS = new Chats({ log: true });
+const CHATS = new Chats('chats', { log: true });
 const CONTACT = new Contact();
 const MESSAGES = new Messages({ log: true });
 

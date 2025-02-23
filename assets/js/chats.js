@@ -1,16 +1,19 @@
 class Chats {
 
-	constructor(config = {}) {
+	constructor(elemID = '', config = {}) {
 		this.config = Object.assign({
 			log: false
 		}, config);
+
+		this.elem = document.getElementById(elemID);
+		this.elem.innerHTML = '';
 
 		document.addEventListener("newMessage", (event) => {
 			this.refreshChatsList();
 		});
 	}
 
-	async addChatButton(elem, chat = {}) {
+	async addChatButton(chat = {}) {
 		chat = Object.assign({
 			id: '',
 			title: '',
@@ -63,7 +66,7 @@ class Chats {
 			newDivForLeftItemInfo.append(newDivForLeftItemInfoBottom);
 			newContainerForChat.append(newDivForAvatar);
 			newContainerForChat.append(newDivForLeftItemInfo);
-			elem.append(newContainerForChat);
+			this.elem.append(newContainerForChat);
 		} catch(e) {
 			if (this.config.log) console.log(e);
 		}
@@ -114,11 +117,11 @@ class Chats {
 				}
 			}
 
-			chats.innerHTML = '';
+			this.elem.innerHTML = '';
 
 			for (let m = 0, n = allChats.list.length; m < n; m++) {
 				allChats[m].unreadMessages = unreadMessages[allChats[m].id];
-				await this.addChatButton(chats, allChats[m]);
+				await this.addChatButton(allChats[m]);
 			}
 
 		} catch(e) {
@@ -133,6 +136,5 @@ class Chats {
 		UI.hide(background);
 		UI.show(blockLeft, 'left');
 	}
-
 
 }
