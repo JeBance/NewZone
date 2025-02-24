@@ -14,6 +14,7 @@ const UI = new UserInterface();
 const CHAT = new Chat({ log: true });
 const CHATS = new Chats('chats', { log: true });
 const CONTACT = new Contact();
+const CONTAINER = new Container('container', { log: true });
 const MESSAGES = new Messages({ log: true });
 
 const PGP = new SecureStorage({ log: false });

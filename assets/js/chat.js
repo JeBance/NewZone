@@ -1,12 +1,17 @@
 class Chat {
 
+//	constructor(elemID, config = {}) {
 	constructor(config = {}) {
 		this.config = Object.assign({
 			log: false
 		}, config);
 
+//		this.elem = document.getElementById(elemID);
+//		this.elem.innerHTML = '';
+
 		this.id = '';
 		this.contact = new Contact();
+
 		document.addEventListener("newMessage", (event) => {
 			if (event.detail.chat === this.id) this.addMessage(event.detail);
 		});
@@ -76,5 +81,15 @@ class Chat {
 			if (this.config.log) console.log(e);
 		}
 	}
-
+/*
+	async hide() {
+		try {
+			this.elem.innerHTML = '';
+			this.id = '';
+			this.contact = {};
+		} catch(e) {
+			if (this.config.log) console.log(e);
+		}
+	}
+*/
 }

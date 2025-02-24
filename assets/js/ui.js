@@ -18,21 +18,6 @@ class UserInterface {
 		for (let i = 0, l = elements.length; i < l; i++) this.show(elements[i], attribute);
 	}
 
-	addKeyInfoBlock(elem, contact = {
-		nickname: '',
-		email: '',
-		fingerprint: ''
-	}) {
-		elem.innerHTML = `
-			<div class="desc"><p>Никнейм</p></div>
-			<div class="val"><p>` + contact.nickname + `</p></div>
-			<div class="desc"><p>E-mail</p></div>
-			<div class="val"><p>` + contact.email + `</p></div>
-			<div class="desc"><p>Отпечаток</p></div>
-			<div class="val"><p>` + contact.fingerprint + `</p></div>
-		`;
-	}
-
 	menuAnimation() {
 		if ((menu.className == 'menu') || (menu.className == 'hideMenu menu')) {
 			this.show(menu, 'showMenu menu');
@@ -153,9 +138,9 @@ class UserInterface {
 					this.hideAll('backToSettings');
 					this.show(containerHeader, 'header');
 					if (PGP.active) {
-						await container.generate();
+						await CONTAINER.generate();
 					} else {
-						container.choice();
+						CONTAINER.choice();
 					}
 					this.show(container, 'modal flex-start');
 					break;
