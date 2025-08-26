@@ -1,3 +1,29 @@
+const askUserToUpdate = reg => {
+	return Modal.confirm({
+		onOk: async () => {
+			// вешаем обработчик изменения состояния
+			navigator.serviceWorker.addEventListener('controllerchange', () => {
+				window.location.reload();
+			});
+
+			// пропускаем ожидание 
+			if (reg && reg.waiting) {
+				reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+			}
+		},
+
+		onCancel: () => {
+			Modal.destroyAll();
+		},
+		icon: null,
+		title: 'Обновление',
+		content:
+		'Доступна новая версия приложения! Обновить?',
+		cancelText: 'Не обновлять',
+		okText: 'Обновить'
+	});
+};
+
 const registerServiceWorker = async () => {
 	if ("serviceWorker" in navigator) {
 		try {
@@ -6,6 +32,7 @@ const registerServiceWorker = async () => {
 				console.log("Service worker installing");
 			} else if (registration.waiting) {
 				console.log("Service worker installed");
+				askUserToUpdate(registration);
 			} else if (registration.active) {
 				console.log("Service worker active");
 			}
