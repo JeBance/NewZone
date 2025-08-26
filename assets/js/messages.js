@@ -11,9 +11,9 @@ class Messages {
 		}, config);
 
 		this.list = new Map();
-		document.addEventListener("newMessageFromNZhub", (event) => {
-			this.newMessage(event.detail);
-		});
+//		document.addEventListener("newMessageFromNZhub", (event) => {
+//			this.newMessage(event.detail);
+//		});
 	}
 
 	async initDB() {
