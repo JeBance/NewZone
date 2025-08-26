@@ -1,4 +1,4 @@
-const cacheName = 'NewZone-v0.1';
+const cacheName = 'NewZone-v0.2';
 
 const addResourcesToCache = async (resources) => {
 	const cache = await caches.open(cacheName);
@@ -56,6 +56,7 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener('fetch', (e) => {
 	e.respondWith((async () => {
+		console.log(e);
 		const r = await caches.match(e.request);
 		// console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
 		if (r) return r;
